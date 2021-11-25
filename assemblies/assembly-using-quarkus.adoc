@@ -4,11 +4,6 @@ ifdef::context[:parent-context: {context}]
 :context: using-quarkus
 :imagesdir: _images
 
-[IMPORTANT]
-====
-{product-long} is currently available for Development Preview. Development Preview releases provide early access to a limited set of features that might not be fully tested and that might change in the final GA version. Users should not use Development Preview software in production or for business-critical workloads. Limited documentation is available for Development Preview releases and is typically focused on fundamental user goals.
-====
-
 // Purpose statement for the assembly
 [role="_abstract"]
 As a developer of applications and services, you can connect Quarkus applications to Kafka instances in {product-long}. https://quarkus.io/[Quarkus^] is a Kubernetes-native Java framework made for Java virtual machines (JVMs) and native compilation, and optimized for serverless, cloud, and Kubernetes environments. Quarkus is designed to work with popular Java standards, frameworks, and libraries like Eclipse MicroProfile and Spring, as well as Apache Kafka, RESTEasy (JAX-RS), Hibernate ORM (JPA), Infinispan, Camel, and many more.
@@ -33,10 +28,7 @@ Learn how to use Quarkus applications to produce messages to and consume message
 [#introduction]
 Welcome to the quick start for {product-long} with Quarkus. In this quick start, you'll learn how to use https://quarkus.io/[Quarkus^] to produce messages to and consume messages from your Kafka instances in {product}.
 endif::[]
-ifndef::community[]
-endif::[]
-ifdef::qs[]
-endif::[]
+
 include::modules/guides/proc-importing-quarkus-sample-code.adoc[leveloffset=+1]
 
 include::modules/guides/proc-configuring-quarkus.adoc[leveloffset=+1]
@@ -45,4 +37,10 @@ include::modules/guides/proc-create-prices-topic.adoc[leveloffset=+1]
 
 include::modules/guides/proc-running-quarkus-example-application.adoc[leveloffset=+1]
 
+ifdef::qs[]
+[#conclusion]
+Congratulations! You successfully completed the {product} Quarkus quick start, and are now ready to use your own Quarkus applications with {product}.
+endif::[]
+ifdef::parent-context[:context: {parent-context}]
+ifndef::parent-context[:!context:]
 
