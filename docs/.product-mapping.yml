@@ -2,6 +2,10 @@
 ## split documentation into different proudcts
 ## Each product should have dedicated directory along with the other common documentation folders
 products:
+
+  COMMON:
+    directories:
+      - common
   RHOSAK:
     ## List of the directories that will be searched for adoc files
     ## You can also list each template separately
