@@ -7,6 +7,7 @@ const {execSync} = require('child_process');
 const yaml = require("yaml");
 
 const tmpDirName = "tmp";
+process.env.DOCS_PRODUCT_NAME = "RHOSAK";
 
 // Generate the glob for the modular-docs search to include only the guides for specific product
 getAndValidateMappingsFile = (dir) => {
