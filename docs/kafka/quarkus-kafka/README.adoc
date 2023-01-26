@@ -183,7 +183,7 @@ endif::[]
 == Creating a Kafka topic in {product-kafka}
 
 :topic-name: prices
-include::../../shared-content/cross-service/snip-creating-topic.adoc[]
+include::shared-content/cross-service/snip-creating-topic.adoc[]
 
 [role="_abstract"]
 The application in this quick start uses a Kafka topic called `prices` to produce and consume messages. In this task, you'll create the `prices` topic in your Kafka instance.
