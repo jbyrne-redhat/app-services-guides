@@ -36,4 +36,4 @@
 
 == Contributing
 
-* link:./CONTRIBUTING.adoc[Contributing to {product} guidess]
+* link:./CONTRIBUTING.adoc[Contributing to {product} guides]
