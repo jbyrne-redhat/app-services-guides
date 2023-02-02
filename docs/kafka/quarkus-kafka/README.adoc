@@ -92,7 +92,7 @@ ifdef::context[:parent-context: {context}]
 
 // Purpose statement for the assembly
 [role="_abstract"]
-Another test. As a developer of applications and services, you can connect Quarkus applications to Kafka instances in {product-long-kafka}. https://quarkus.io/[Quarkus^] is a Kubernetes-native Java framework made for Java virtual machines (JVMs) and native compilation, and optimized for serverless, cloud, and Kubernetes environments. Quarkus is designed to work with popular Java standards, frameworks, and libraries like Eclipse MicroProfile and Spring, as well as Apache Kafka, RESTEasy (JAX-RS), Hibernate ORM (JPA), Infinispan, Camel, and many more.
+Second test. As a developer of applications and services, you can connect Quarkus applications to Kafka instances in {product-long-kafka}. https://quarkus.io/[Quarkus^] is a Kubernetes-native Java framework made for Java virtual machines (JVMs) and native compilation, and optimized for serverless, cloud, and Kubernetes environments. Quarkus is designed to work with popular Java standards, frameworks, and libraries like Eclipse MicroProfile and Spring, as well as Apache Kafka, RESTEasy (JAX-RS), Hibernate ORM (JPA), Infinispan, Camel, and many more.
 
 In this quick start, you'll use the {product-kafka} web console to collect connection information for a Kafka instance. Then you'll manually configure a connection from an example Quarkus application to the Kafka instance and start producing and consuming messages.
 
