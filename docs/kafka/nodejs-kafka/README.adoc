@@ -198,7 +198,7 @@ endif::[]
 == Creating a Kafka topic in {product-kafka}
 
 :topic-name: countries
-include::shared-content/cross-service/snip-creating-topic.adoc[]
+include::shared-content/cross-service/snip-creating-topic.adoc[] 
 
 [id="proc-running-nodejs-example-application_{context}"]
 == Running the Node.js example application
