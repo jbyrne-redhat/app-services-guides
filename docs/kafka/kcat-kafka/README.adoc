@@ -96,6 +96,8 @@ As a developer of applications and services, you can use https://github.com/eden
 Kcat is a command-line utility for messaging in Apache Kafka 0.8 and later.
 With Kcat, you can produce and consume messages directly from the command line. You can also list topic and partition information for your Kafka instances.
 
+Donald Duck.
+
 ifndef::community[]
 NOTE: Kcat is an open source community tool. Kcat is not a part of {product-kafka} and is therefore not supported by Red Hat.
 endif::[]
