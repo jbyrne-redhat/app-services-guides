@@ -92,7 +92,7 @@ ifdef::context[:parent-context: {context}]
 
 // Purpose statement for the assembly
 [role="_abstract"]
-As a developer of applications and services, you can use https://github.com/edenhill/kcat[Kcat^] to test and debug your Kafka instances in {product-long-kafka}.
+Third test. As a developer of applications and services, you can use https://github.com/edenhill/kcat[Kcat^] to test and debug your Kafka instances in {product-long-kafka}.
 Kcat is a command-line utility for messaging in Apache Kafka 0.8 and later.
 With Kcat, you can produce and consume messages directly from the command line. You can also list topic and partition information for your Kafka instances.
 
