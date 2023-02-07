@@ -167,7 +167,7 @@ $ export RHOAS_SERVICE_ACCOUNT_CLIENT_SECRET=__<client_secret>__
 == Producing messages in Kcat
 
 [role="_abstract"]
-You can use Kcat to produce messages to Kafka topics in several ways, such as reading them from standard input (`stdin`) on the command line, or from a file. In this task, you produce messages from input on the command line. For more examples of Kcat producer messaging, see https://github.com/edenhill/kcat#examples[Examples^] in the Kcat documentation.
+You can use Kcat to produce messages to Kafka topics in several ways, such as reading them from standard input (`stdin`) on the command line, or from a file. In this task, you produce messages from input on the command line. For more examples of Kcat producer messaging, see https://github.com/edenhill/kcat#examples[Examples^] in the Kcat documentation. 
 
 .Prerequisites
 * Kcat is installed.
