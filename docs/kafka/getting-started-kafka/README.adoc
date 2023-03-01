@@ -96,7 +96,7 @@ ifdef::context[:parent-context: {context}]
 
 // Purpose statement for the assembly
 [role="_abstract"]
-Test 1. As a developer of applications and services, you can use {product-long-kafka} to create and set up Kafka instances and connect your applications and services to these instances. {product-kafka} is a managed cloud service that enables you to add Kafka data-streaming functionality in your applications without having to install, configure, run, and maintain your own Kafka clusters.
+Test one. As a developer of applications and services, you can use {product-long-kafka} to create and set up Kafka instances and connect your applications and services to these instances. {product-kafka} is a managed cloud service that enables you to add Kafka data-streaming functionality in your applications without having to install, configure, run, and maintain your own Kafka clusters.
 
 //For more overview information about {product-kafka}, see [variablized link to overview here https://access.redhat.com/documentation/en-us/red_hat_openshift_streams_for_apache_kafka/].
 
