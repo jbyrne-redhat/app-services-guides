@@ -92,7 +92,7 @@ ifdef::context[:parent-context: {context}]
 
 // Purpose statement for the assembly
 [role="_abstract"]
-Second test. As a developer of applications and services, you can use Kafka scripts to produce and consume messages for Kafka instances in {product-long-kafka}. This is a useful way to test and debug your Kafka instances.
+As a developer of applications and services, you can use Kafka scripts to produce and consume messages for Kafka instances in {product-long-kafka}. This is a useful way to test and debug your Kafka instances.
 The Kafka scripts are a set of shell scripts that are included with the https://kafka.apache.org/downloads[Apache Kafka distribution^].
 
 ifndef::community[]
