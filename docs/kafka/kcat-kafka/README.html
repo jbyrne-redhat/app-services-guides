@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.18">
-<title>Using Node.js applications with Kafka instances in OpenShift Streams for Apache Kafka</title>
+<title>Configuring and connecting Kcat with OpenShift Streams for Apache Kafka</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /*! Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -436,30 +436,17 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 @media amzn-kf8{#header,#content,#footnotes,#footer{padding:0}}
 </style>
 </head>
-<body id="chap-using-nodejs" class="article">
+<body id="chap-using-kafkacat" class="article">
 <div id="header">
-<h1>Using Node.js applications with Kafka instances in OpenShift Streams for Apache Kafka</h1>
+<h1>Configuring and connecting Kcat with OpenShift Streams for Apache Kafka</h1>
 </div>
 <div id="content">
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph _abstract">
-<p>As a developer of applications and services, you can connect Node.js applications to Kafka instances in OpenShift Streams for Apache Kafka. <a href="https://nodejs.org/en/about/" target="_blank" rel="noopener">Node.js</a> is a server-side JavaScript runtime that is designed to build scalable network applications. Node.js provides an I/O model that is based on events and non-blocking operations, which enables efficient applications.</p>
-</div>
-<div class="paragraph">
-<p>In this quick start, you&#8217;ll use the Streams for Apache Kafka web console to collect connection information for a Kafka instance. Then you&#8217;ll manually configure a connection from an example Node.js application to the Kafka instance and start producing and consuming messages.</p>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<div class="title">Note</div>
-</td>
-<td class="content">
-When you&#8217;ve completed this quick start and understand the required connection configuration for a Kafka instance, you can use the OpenShift Application Services command-line interface (CLI) to generate this type of configuration in a more automated way. To learn more, see <a href="https://github.com/redhat-developer/app-services-guides/tree/main/docs/rhoas/rhoas-service-contexts/README.adoc" target="_blank" rel="noopener">Connecting client applications to OpenShift Application Services using the rhoas CLI</a>.
-</td>
-</tr>
-</table>
+<p>As a developer of applications and services, you can use <a href="https://github.com/edenhill/kcat" target="_blank" rel="noopener">Kcat</a> to test and debug your Kafka instances in OpenShift Streams for Apache Kafka.
+Kcat is a command-line utility for messaging in Apache Kafka 0.8 and later.
+With Kcat, you can produce and consume messages directly from the command line. You can also list topic and partition information for your Kafka instances.</p>
 </div>
 <div class="ulist">
 <div class="title">Prerequisites</div>
@@ -471,15 +458,42 @@ When you&#8217;ve completed this quick start and understand the required connect
 <p>You have a command-line terminal application.</p>
 </li>
 <li>
-<p><a href="https://github.com/git-guides/" target="_blank" rel="noopener">Git</a> is installed.</p>
+<p><a href="https://adoptopenjdk.net/" target="_blank" rel="noopener">JDK</a> 11 or later is installed. (The latest LTS version of OpenJDK is recommended.)</p>
 </li>
 <li>
-<p>You have an IDE such as <a href="https://www.jetbrains.com/idea/download/" target="_blank" rel="noopener">IntelliJ IDEA</a>, <a href="https://www.eclipse.org/downloads/" target="_blank" rel="noopener">Eclipse</a>, or <a href="https://code.visualstudio.com/Download" target="_blank" rel="noopener">Visual Studio Code</a>.</p>
-</li>
-<li>
-<p><a href="https://nodejs.org/en/download/" target="_blank" rel="noopener">Node.js 14</a> or later is installed.</p>
+<p>You&#8217;ve installed the latest supported version of <a href="https://github.com/edenhill/kcat" target="_blank" rel="noopener">Kcat</a> for your operating system. To verify your Kcat version, enter the following command:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>$ kcat -V</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You see output similar to the following example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>kcat - Apache Kafka producer and consumer tool
+https://github.com/edenhill/kcat
+Copyright (c) 2014-2021, Magnus Edenhill
+Version 1.7.0 (librdkafka 1.3.0 builtin.features=gzip,snappy,ssl,sasl,regex,lz4,sasl_gssapi,sasl_plain,sasl_scram,plugins,zstd,sasl_oauthbearer)</code></pre>
+</div>
+</div>
 </li>
 </ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="proc-configuring-kafkacat_using-kafkacat">Configuring Kcat to connect to a Kafka instance</h2>
+<div class="sectionbody">
+<div class="paragraph _abstract">
+<p>To enable Kcat to access a Kafka instance, you must configure a connection. The configuration must include the bootstrap server endpoint for the Kafka instance and the credentials for your OpenShift Streams for Apache Kafka service account.</p>
+</div>
+<div class="paragraph">
+<p>You can either pass these values to the <code>kcat</code> command or use a configuration file. In this task, you set environment variable values and then pass them to the <code>kcat</code> command.</p>
+</div>
+<div class="paragraph">
+<p>For more information about Kcat configuration options, see <a href="https://github.com/edenhill/kcat#configuration" target="_blank" rel="noopener">Configuration</a> in the Kcat documentation.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -488,146 +502,135 @@ When you&#8217;ve completed this quick start and understand the required connect
 <div class="title">Note</div>
 </td>
 <td class="content">
-The example Node.js application in this quick start uses the <a href="https://kafka.js.org/" target="_blank" rel="noopener">KafkaJS</a> client by default. If you want to use the <a href="https://github.com/blizzard/node-rdkafka" target="_blank" rel="noopener">node-rdkafka</a> client, you must install some development tools locally on your computer or use a container runtime such as Podman or Docker to run a specified container image and configure a development environment. To learn more, see the <a href="https://github.com/nodeshift-starters/reactive-example/tree/node-rdkafka#node-rdkafka-and-kafkajs">documentation</a> for the example Node.js application.
+Kcat does not yet fully support SASL/OAUTHBEARER authentication, which requires you to specify an access token in addition to service account credentials. Therefore, you use SASL/PLAIN authentication to connect to your Kafka instance with just service account credentials.
+</td>
+</tr>
+</table>
+</div>
+<div class="ulist">
+<div class="title">Prerequisites</div>
+<ul>
+<li>
+<p>You have the bootstrap server endpoint for your Kafka instance. To get the server endpoint, select your Kafka instance in the OpenShift Streams for Apache Kafka web console, select the options icon (three vertical dots), and click <strong>Connection</strong>.</p>
+</li>
+<li>
+<p>You have the generated credentials for your service account. To reset the credentials, use the <a href="https://console.redhat.com/application-services/service-accounts" target="_blank" rel="noopener">Service Accounts</a> page.</p>
+</li>
+<li>
+<p>You&#8217;ve set permissions for your service account to access resources in the Kafka instance. To verify the current permissions, select your Kafka instance in the OpenShift Streams for Apache Kafka web console and click the <strong>Access</strong> tab. To learn more about setting permissions, see <a href="https://github.com/redhat-developer/app-services-guides/tree/main/docs/kafka/access-mgmt-kafka/README.adoc" target="_blank" rel="noopener">Managing account access in OpenShift Streams for Apache Kafka</a>.</p>
+</li>
+</ul>
+</div>
+<div class="ulist">
+<div class="title">Procedure</div>
+<ul>
+<li>
+<p>On the command line, set the Kafka instance bootstrap server and client credentials as environment variables to be used by Kcat. Replace the values with your own server and credential information.</p>
+<div class="listingblock">
+<div class="title">Setting environment variables for bootstrap server and client credentials</div>
+<div class="content">
+<pre class="highlight"><code>$ export KAFKA_HOST=<em>&lt;bootstrap_server&gt;</em>
+$ export RHOAS_SERVICE_ACCOUNT_CLIENT_ID=<em>&lt;client_id&gt;</em>
+$ export RHOAS_SERVICE_ACCOUNT_CLIENT_SECRET=<em>&lt;client_secret&gt;</em></code></pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="proc-producing-messages-kafkacat_using-kafkacat">Producing messages in Kcat</h2>
+<div class="sectionbody">
+<div class="paragraph _abstract">
+<p>You can use Kcat to produce messages to Kafka topics in several ways, such as reading them from standard input (<code>stdin</code>) on the command line, or from a file. In this task, you produce messages from input on the command line. For more examples of Kcat producer messaging, see <a href="https://github.com/edenhill/kcat#examples" target="_blank" rel="noopener">Examples</a> in the Kcat documentation.</p>
+</div>
+<div class="ulist">
+<div class="title">Prerequisites</div>
+<ul>
+<li>
+<p>Kcat is installed.</p>
+</li>
+<li>
+<p>You have a running Kafka instance in OpenShift Streams for Apache Kafka (see <a href="https://github.com/redhat-developer/app-services-guides/tree/main/docs/kafka/getting-started-kafka/README.adoc" target="_blank" rel="noopener">Getting started with OpenShift Streams for Apache Kafka</a>).</p>
+</li>
+<li>
+<p>You have a topic in your Kafka instance that you can use to produce and consume messages.</p>
+</li>
+<li>
+<p>You&#8217;ve set the Kafka bootstrap server endpoint and your service account credentials as environment variables.</p>
+</li>
+</ul>
+</div>
+<div class="olist arabic">
+<div class="title">Procedure</div>
+<ol class="arabic">
+<li>
+<p>On the command line, enter the following command to start Kcat in producer mode. This mode enables you to produce messages to your Kafka topic. Replace <code><em>&lt;kafka-topic&gt;</em></code> with your own topic name.</p>
+<div class="openblock">
+<div class="content">
+<div class="listingblock">
+<div class="title">Starting Kcat in producer mode</div>
+<div class="content">
+<pre class="highlight"><code>$ kcat -t <em>&lt;kafka-topic&gt;</em> -b "$KAFKA_HOST" \
+ -X security.protocol=SASL_SSL -X sasl.mechanisms=PLAIN \
+ -X sasl.username="$RHOAS_SERVICE_ACCOUNT_CLIENT_ID" \
+ -X sasl.password="$RHOAS_SERVICE_ACCOUNT_CLIENT_SECRET" -P</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+Kcat does not yet fully support SASL/OAUTHBEARER authentication, which requires you to specify an access token in addition to service account credentials. Therefore, you use SASL/PLAIN authentication to connect to your Kafka instance with just service account credentials.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+A Kcat producer might behave differently based on the operating system. For example, on Mac operating systems, messages are sent by redirecting them to the Kcat binary in the format <code>echo "message" | kcat &#8230;&#8203;</code>.
 </td>
 </tr>
 </table>
 </div>
 </div>
 </div>
-<div class="sect1">
-<h2 id="proc-importing-nodejs-sample-code_using-nodejs">Importing the Node.js sample code</h2>
-<div class="sectionbody">
-<div class="paragraph _abstract">
-<p>For this quick start, you&#8217;ll use sample code from the Nodeshift Application Starters <a href="https://github.com/nodeshift-starters/reactive-example" target="_blank" rel="noopener">reactive-example</a> repository in GitHub. After you understand the concepts and tasks in this quick start, you can use your own Node.js applications with OpenShift Streams for Apache Kafka in the same way.</p>
-</div>
-<div class="olist arabic">
-<div class="title">Procedure</div>
-<ol class="arabic">
+</li>
 <li>
-<p>On the command line, clone the Nodeshift Application Starters <a href="https://github.com/nodeshift-starters/reactive-example" target="_blank" rel="noopener">reactive-example</a> repository from GitHub.</p>
+<p>With Kcat running in producer mode, enter messages that you want to produce to the Kafka topic, as shown in the following example:</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>$ git clone https://github.com/nodeshift-starters/reactive-example.git</code></pre>
+<pre class="highlight"><code>First message
+Second message
+Third message</code></pre>
 </div>
 </div>
 </li>
 <li>
-<p>In your IDE, open the <code>reactive-example</code> directory of the repository that you cloned.</p>
-</li>
-</ol>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="proc-configuring-nodejs_using-nodejs">Configuring the Node.js example application to connect to a Kafka instance</h2>
-<div class="sectionbody">
-<div class="paragraph _abstract">
-<p>To enable your Node.js application to access a Kafka instance, you must configure a connection by specifying the following details:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>The bootstrap server endpoint for your Kafka instance</p>
+<p>To finish producing the messages you entered, press <code>CTRL+D</code>.</p>
 </li>
 <li>
-<p>The generated credentials for your OpenShift Streams for Apache Kafka service account</p>
-</li>
-<li>
-<p>The Simple Authentication and Security Layer (SASL) mechanism that the client will use to authenticate with the Kafka instance</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>In this task, you&#8217;ll create a new configuration file called <code>rhoas.env</code>. In the file, you&#8217;ll set the required bootstrap server and client credentials as environment variables.</p>
-</div>
-<div class="ulist">
-<div class="title">Prerequisites</div>
-<ul>
-<li>
-<p>You have the bootstrap server endpoint for your Kafka instance. To get the server endpoint, select your Kafka instance in the Streams for Apache Kafka <a href="https://console.redhat.com/application-services/streams/" target="_blank" rel="noopener">web console</a>, select the options icon (three vertical dots), and click <strong>Connection</strong>.</p>
-</li>
-<li>
-<p>You have the generated credentials for your service account. To reset the credentials, use the <a href="https://console.redhat.com/application-services/service-accounts" target="_blank" rel="noopener">Service Accounts</a> page in the <strong>Application Services</strong> section of the Red Hat Hybrid Cloud Console.</p>
-</li>
-</ul>
-</div>
-<div class="olist arabic">
-<div class="title">Procedure</div>
-<ol class="arabic">
-<li>
-<p>In your IDE, create a new file. Save the file with the name <code>rhoas.env</code>, at the root level of the <code>reactive-example</code> directory for the cloned repository.</p>
-</li>
-<li>
-<p>In the <code>rhoas.env</code> file, set the SASL authentication mechanism and the Kafka instance client credentials as shown in the following configuration. Replace the client ID and client secret values with your own credential information. The configuration uses SASL/OAUTHBEARER authentication, which is the recommended authentication mechanism to use in Streams for Apache Kafka.</p>
-<div class="listingblock">
-<div class="title">Setting environment variables in the rhoas.env file</div>
-<div class="content">
-<pre class="highlight"><code>KAFKA_HOST=<em>&lt;bootstrap_server&gt;</em>
-RHOAS_SERVICE_ACCOUNT_CLIENT_ID=<em>&lt;client_id&gt;</em>
-RHOAS_SERVICE_ACCOUNT_CLIENT_SECRET=<em>&lt;client_secret&gt;</em>
-KAFKA_SASL_MECHANISM=oauthbearer
-RHOAS_TOKEN_ENDPOINT_URL=https://sso.redhat.com/auth/realms/redhat-external/protocol/openid-connect/token</code></pre>
-</div>
-</div>
-</li>
-<li>
-<p>Save the <code>rhoas.env</code> file.</p>
-</li>
-</ol>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="proc-creating-countries-topic_using-nodejs">Creating a Kafka topic in Streams for Apache Kafka</h2>
-<div class="sectionbody">
-<div class="paragraph _abstract">
-<p>The Node.js application in this quick start uses a Kafka topic called <code>countries</code> to produce and consume messages. In this task, you&#8217;ll create the <code>countries</code> topic in your Kafka instance.</p>
-</div>
-<div class="ulist">
-<div class="title">Prerequisites</div>
-<ul>
-<li>
-<p>You have a running Kafka instance in OpenShift Streams for Apache Kafka.</p>
-</li>
-</ul>
-</div>
-<div class="olist arabic">
-<div class="title">Procedure</div>
-<ol class="arabic">
-<li>
-<p>In the Streams for Apache Kafka <a href="https://console.redhat.com/application-services/streams/" target="_blank" rel="noopener">web console</a>, select <strong>Kafka Instances</strong> and then click the name of the Kafka instance that you want to add a topic to.</p>
-</li>
-<li>
-<p>Select the <strong>Topics</strong> tab.</p>
-</li>
-<li>
-<p>Click <strong>Create topic</strong> and follow the guided steps to define the topic details.</p>
-<div class="openblock">
-<div class="content">
-<div class="paragraph">
-<p>You must specify the following topic properties:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><strong>Topic name</strong>: For this quick start, enter <code>countries</code> as the topic name.</p>
-</li>
-<li>
-<p><strong>Partitions</strong>: Set the number of partitions for the topic. For this quick start, set the value to <code>1</code>.</p>
-</li>
-<li>
-<p><strong>Message retention</strong>: Set the message retention time and size. For this quick start, set the retention time to <code>A week</code> and the retention size to <code>Unlimited</code>.</p>
-</li>
-<li>
-<p><strong>Replicas</strong>: For this release of Streams for Apache Kafka, the replica values are preconfigured. The number of partition replicas for the topic is set to <code>3</code> and the minimum number of follower replicas that must be in sync with a partition leader is set to <code>2</code>. For a trial Kafka instance, the number of replicas and the minimum in-sync replica factor are both set to <code>1</code>.</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>After you complete the setup, the new topic appears on the <strong>Topics</strong> page. You can now run the Node.js application to start producing and consuming messages.</p>
-</div>
-</div>
+<p>Keep the producer running so that you can use it again later, when you create a consumer.</p>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+On Mac operating systems, pressing <code>CTRL+D</code> produces the messages you entered and then stops the producer. To use the producer again, you must restart it, as shown earlier in this task.
+</td>
+</tr>
+</table>
 </div>
 </li>
 </ol>
@@ -636,42 +639,29 @@ RHOAS_TOKEN_ENDPOINT_URL=https://sso.redhat.com/auth/realms/redhat-external/prot
 <div class="title">Verification</div>
 <ul>
 <li>
-<p>Verify that the <code>countries</code> topic is listed on the <strong>Topics</strong> page.</p>
+<p>Verify that your producer is still running without any errors in the terminal.</p>
 </li>
 </ul>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="proc-running-nodejs-example-application_using-nodejs">Running the Node.js example application</h2>
+<h2 id="proc-consuming-messages-kafkacat_using-kafkacat">Consuming messages in Kcat</h2>
 <div class="sectionbody">
 <div class="paragraph _abstract">
-<p>After you configure your Node.js application to connect to a Kafka instance, and you create the required Kafka topic, you&#8217;re ready to run the application.</p>
-</div>
-<div class="paragraph">
-<p>In this task, you&#8217;ll run the following components of the Node.js application:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>A <code>producer-backend</code> component that generates random country names and sends these names to the Kafka topic</p>
-</li>
-<li>
-<p>A <code>consumer-backend</code> component that consumes the country names from the Kafka topic</p>
-</li>
-</ul>
+<p>You can also use Kcat to consume messages from Kafka topics. In this task, you use Kcat to consume the messages that you previously produced to your topic.</p>
 </div>
 <div class="ulist">
 <div class="title">Prerequisites</div>
 <ul>
 <li>
-<p>You&#8217;ve configured the Node.js example application to connect to a Kafka instance.</p>
+<p>Kcat is installed.</p>
 </li>
 <li>
-<p>You&#8217;ve created the <code>countries</code> topic.</p>
+<p>You have a running Kafka instance in OpenShift Streams for Apache Kafka (see <a href="https://github.com/redhat-developer/app-services-guides/tree/main/docs/kafka/getting-started-kafka/README.adoc" target="_blank" rel="noopener">Getting started with OpenShift Streams for Apache Kafka</a>).</p>
 </li>
 <li>
-<p>You&#8217;ve set permissions for your service account to produce and consume messages in the <code>countries</code> topic. For the Node.js application in this example, the consumer group you must specify in your permissions is called <code>consumer-test</code>. To learn how to configure access permissions for a Kafka instance, see <a href="https://github.com/redhat-developer/app-services-guides/tree/main/docs/kafka/access-mgmt-kafka/README.adoc" target="_blank" rel="noopener">Managing account access in OpenShift Streams for Apache Kafka</a>.</p>
+<p>You used Kcat to produce example messages to a topic in your Kafka instance.</p>
 </li>
 </ul>
 </div>
@@ -679,107 +669,39 @@ RHOAS_TOKEN_ENDPOINT_URL=https://sso.redhat.com/auth/realms/redhat-external/prot
 <div class="title">Procedure</div>
 <ol class="arabic">
 <li>
-<p>On the command line, navigate to the <code>reactive-example</code> directory of the repository that you cloned.</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>$ cd reactive-example</code></pre>
-</div>
-</div>
+<p>Open a second terminal window or tab, separate from your producer.</p>
 </li>
 <li>
-<p>Navigate to the directory for the consumer component. Use Node Package Manager (npm) to install the dependencies for this component.</p>
-<div class="listingblock">
-<div class="title">Installing dependencies for the consumer component</div>
+<p>On the command line, enter the following command to start Kcat in <em>consumer</em> mode. This mode enables you to consume messages from your Kafka topic. Replace <code><em>&lt;kafka-topic&gt;</em></code> with the name of the topic that you previously produced messages to.</p>
+<div class="openblock">
 <div class="content">
-<pre class="highlight"><code>$ cd consumer-backend
-$ npm install</code></pre>
-</div>
-</div>
-</li>
-<li>
-<p>Run the consumer component.</p>
 <div class="listingblock">
+<div class="title">Starting Kcat in consumer mode</div>
 <div class="content">
-<pre class="highlight"><code>$ node consumer.js</code></pre>
+<pre class="highlight"><code>$ kcat -t <em>&lt;kafka-topic&gt;</em> -b "$KAFKA_HOST" \
+ -X security.protocol=SASL_SSL -X sasl.mechanisms=PLAIN \
+ -X sasl.username="$RHOAS_SERVICE_ACCOUNT_CLIENT_ID" \
+ -X sasl.password="$RHOAS_SERVICE_ACCOUNT_CLIENT_SECRET" -C</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>You see the Node.js application run and connect to the Kafka instance. However, because you haven&#8217;t yet run the producer component, the consumer has no country names to display.</p>
+<p>You see output that looks like the following example. The message values are the ones you previously sent using the producer.</p>
 </div>
-<div class="paragraph">
-<p>If the application fails to run, review the error log in the command-line window and address any problems. Also, review the steps in this quick start to ensure that the application and Kafka topic are configured correctly.</p>
-</div>
-</li>
-<li>
-<p>Open a second command-line window or tab.</p>
-</li>
-<li>
-<p>On the second command line, navigate to the <code>reactive-example</code> directory of the repository that you cloned.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>$ cd reactive-example</code></pre>
+<pre class="highlight"><code>First message
+Second message
+Third message
+% Reached end of topic <em>&lt;kafka-topic&gt;</em> [0] at offset 3</code></pre>
+</div>
+</div>
 </div>
 </div>
 </li>
 <li>
-<p>Navigate to the directory for the producer component. Use Node Package Manager to install the dependencies for this component.</p>
-<div class="listingblock">
-<div class="title">Installing dependencies for the producer component</div>
-<div class="content">
-<pre class="highlight"><code>$ cd producer-backend
-$ npm install</code></pre>
-</div>
-</div>
+<p>If your producer is still running in a separate terminal, continue entering messages in the producer terminal and observe the messages being consumed in the consumer terminal.</p>
 </li>
-<li>
-<p>Run the producer component.</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>$ node producer.js</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>When the producer component runs, you see output like that shown in the following example:</p>
-</div>
-<div class="listingblock">
-<div class="title">Example output from the producer component</div>
-<div class="content">
-<pre class="highlight"><code>Ghana
-Réunion
-Guatemala
-Luxembourg
-Mayotte
-Syria
-United Kingdom
-Bolivia
-Haiti</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>As shown in the example, the producer component runs and generates messages that represent country names.</p>
-</div>
-</li>
-<li>
-<p>Switch back to the first command-line window.</p>
-<div class="paragraph">
-<p>You now see that the consumer component displays the same country names generated by the producer, and in the same order, as shown in the following example:</p>
-</div>
-<div class="listingblock">
-<div class="title">Example output from the consumer component</div>
-<div class="content">
-<pre class="highlight"><code>Ghana
-Réunion
-Guatemala
-Luxembourg
-Mayotte
-Syria
-United Kingdom
-Bolivia
-Haiti</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The output from both components confirms that they successfully connected to the Kafka instance. The components are using the Kafka topic that you created to produce and consume messages.</p>
+</ol>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -788,23 +710,19 @@ Haiti</code></pre>
 <div class="title">Note</div>
 </td>
 <td class="content">
-You can also use the OpenShift Streams for Apache Kafka web console to browse messages in the Kafka topic. For more information, see <a href="https://github.com/redhat-developer/app-services-guides/tree/main/docs/kafka/message-browsing-kafka/README.adoc" target="_blank" rel="noopener">Browsing messages in the OpenShift Streams for Apache Kafka web console</a>.
+You can also use the Streams for Apache Kafka web console to browse messages in the Kafka topic. For more information, see <a href="https://github.com/redhat-developer/app-services-guides/tree/main/docs/kafka/message-browsing-kafka/README.adoc" target="_blank" rel="noopener">Browsing messages in the OpenShift Streams for Apache Kafka web console</a>.
 </td>
 </tr>
 </table>
 </div>
+<div class="olist arabic">
+<div class="title">Verification</div>
+<ol class="arabic">
+<li>
+<p>Verify that your consumer is running without any errors in the terminal.</p>
 </li>
 <li>
-<p>In your IDE, in the <code>producer-backend</code> directory of the repository that you cloned, open the <code>producer.js</code> file.</p>
-<div class="paragraph">
-<p>Observe that the producer component is configured to process environment variables from the <code>rhoas.env</code> file that you created. The component used the bootstrap server endpoint and client credentials stored in this file to connect to the Kafka instance.</p>
-</div>
-</li>
-<li>
-<p>In the <code>consumer-backend</code> directory, open the <code>consumer.js</code> file.</p>
-<div class="paragraph">
-<p>Observe that the consumer component is also configured to process environment variables from the <code>rhoas.env</code> file that you created.</p>
-</div>
+<p>Verify that the consumer displays the messages from your Kafka topic.</p>
 </li>
 </ol>
 </div>

@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.18">
-<title>Using Node.js applications with Kafka instances in OpenShift Streams for Apache Kafka</title>
+<title>Getting started with OpenShift Service Registry</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /*! Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -436,18 +436,57 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 @media amzn-kf8{#header,#content,#footnotes,#footer{padding:0}}
 </style>
 </head>
-<body id="chap-using-nodejs" class="article">
+<body id="chap-getting-started-service-registry" class="article">
 <div id="header">
-<h1>Using Node.js applications with Kafka instances in OpenShift Streams for Apache Kafka</h1>
+<h1>Getting started with OpenShift Service Registry</h1>
 </div>
 <div id="content">
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph _abstract">
-<p>As a developer of applications and services, you can connect Node.js applications to Kafka instances in OpenShift Streams for Apache Kafka. <a href="https://nodejs.org/en/about/" target="_blank" rel="noopener">Node.js</a> is a server-side JavaScript runtime that is designed to build scalable network applications. Node.js provides an I/O model that is based on events and non-blocking operations, which enables efficient applications.</p>
+<p>As a developer of applications and services, you can use OpenShift Service Registry to create and set up Service Registry instances and connect your applications and services to these instances. OpenShift Service Registry is a managed cloud service that enables you to manage schema and API definitions in your applications without having to install, configure, run, and maintain your own Service Registry clusters.</p>
 </div>
 <div class="paragraph">
-<p>In this quick start, you&#8217;ll use the Streams for Apache Kafka web console to collect connection information for a Kafka instance. Then you&#8217;ll manually configure a connection from an example Node.js application to the Kafka instance and start producing and consuming messages.</p>
+<p>For more overview information, see the <a href="https://access.redhat.com/documentation/en-us/red_hat_openshift_service_registry/1" target="_blank" rel="noopener">OpenShift Service Registry user documentation</a></p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="proc-creating-service-registry-instance_getting-started-sr">Creating a Service Registry instance</h2>
+<div class="sectionbody">
+<div class="paragraph _abstract">
+<p>Use the OpenShift Service Registry web console to create and configure a Service Registry instance for your applications or services. A Service Registry instance is an isolated virtual tenant in a multi-tenanted deployment with its own unique instance URL and configuration to connect to producer and consumer applications.</p>
+</div>
+<div class="ulist">
+<div class="title">Prerequisites</div>
+<ul>
+<li>
+<p>You&#8217;re logged in to the Service Registry web console at <a href="https://console.redhat.com/application-services/service-registry/" class="bare" target="_blank" rel="noopener">https://console.redhat.com/application-services/service-registry/</a>.</p>
+</li>
+</ul>
+</div>
+<div class="olist arabic">
+<div class="title">Procedure</div>
+<ol class="arabic">
+<li>
+<p>In the <a href="https://console.redhat.com/application-services/service-registry/">Service Registry web console</a>, click <strong>Create Service Registry instance</strong>.</p>
+</li>
+<li>
+<p>Enter a unique <strong>Instance name</strong>, such as <code>my-service-registry-instance</code>.</p>
+</li>
+<li>
+<p>Click <strong>Create</strong> to start the creation process for your Service Registry instance. The new Service Registry instance is listed in the instances table.</p>
+</li>
+<li>
+<p>When the <strong>Status</strong> is <strong>Ready</strong>, you can start using this Service Registry instance. You can use the options icon (three vertical dots) to connect to or delete the instance as needed.</p>
+</li>
+</ol>
+</div>
+<div class="imageblock screencapture">
+<div class="content">
+<img src="./images/service-registry-instance-options.png" alt="Image of Service Registry instance options menu">
+</div>
+<div class="title">Figure 1. Service Registry instance options menu</div>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -456,31 +495,56 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="title">Note</div>
 </td>
 <td class="content">
-When you&#8217;ve completed this quick start and understand the required connection configuration for a Kafka instance, you can use the OpenShift Application Services command-line interface (CLI) to generate this type of configuration in a more automated way. To learn more, see <a href="https://github.com/redhat-developer/app-services-guides/tree/main/docs/rhoas/rhoas-service-contexts/README.adoc" target="_blank" rel="noopener">Connecting client applications to OpenShift Application Services using the rhoas CLI</a>.
+You can see all Service Registry instances created by other users in your organization, but you might not have permission to connect to those instances. Only instance owners or users with permission can connect to the instance, access associated service accounts, or delete the instance.
 </td>
 </tr>
 </table>
+</div>
+<div class="olist arabic">
+<div class="title">Verification</div>
+<ol class="arabic">
+<li>
+<p>Verify that the new Service Registry instance is listed in the instances table.</p>
+</li>
+<li>
+<p>Verify that the state of the new Service Registry instance is shown as <strong>Ready</strong>.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="proc-uploading-registry-schema_getting-started-sr">Uploading a schema to Service Registry</h2>
+<div class="sectionbody">
+<div class="paragraph _abstract">
+<p>After you create a Service Registry instance, you can upload schema or API content to the instance. The following example shows uploading an Apache Avro schema for serializing and deserializing Kafka messages in client applications.</p>
 </div>
 <div class="ulist">
 <div class="title">Prerequisites</div>
 <ul>
 <li>
-<p>You have a running Kafka instance in Streams for Apache Kafka (see <a href="https://github.com/redhat-developer/app-services-guides/tree/main/docs/kafka/getting-started-kafka/README.adoc" target="_blank" rel="noopener">Getting started with OpenShift Streams for Apache Kafka</a>).</p>
-</li>
-<li>
-<p>You have a command-line terminal application.</p>
-</li>
-<li>
-<p><a href="https://github.com/git-guides/" target="_blank" rel="noopener">Git</a> is installed.</p>
-</li>
-<li>
-<p>You have an IDE such as <a href="https://www.jetbrains.com/idea/download/" target="_blank" rel="noopener">IntelliJ IDEA</a>, <a href="https://www.eclipse.org/downloads/" target="_blank" rel="noopener">Eclipse</a>, or <a href="https://code.visualstudio.com/Download" target="_blank" rel="noopener">Visual Studio Code</a>.</p>
-</li>
-<li>
-<p><a href="https://nodejs.org/en/download/" target="_blank" rel="noopener">Node.js 14</a> or later is installed.</p>
+<p>You&#8217;ve created a Service Registry instance and the instance is in <strong>Ready</strong> state.</p>
 </li>
 </ul>
 </div>
+<div class="olist arabic">
+<div class="title">Procedure</div>
+<ol class="arabic">
+<li>
+<p>In the <strong>Service Registry</strong> instances page of the web console, select the Service Registry instance that you want to upload a schema to.</p>
+</li>
+<li>
+<p>Click <strong>Upload artifact</strong> and complete the form to define the schema details:</p>
+<div class="imageblock screencapture">
+<div class="content">
+<img src="./images/upload-schema.png" alt="Image of form to upload a schema">
+</div>
+<div class="title">Figure 2. Guided steps to define artifact details</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Group</strong>: Enter an optional unique group name such as <code>my-org</code> to organize the artifact in a named collection. Each group contains a logically related set of schemas or API designs, typically managed by a single entity, belonging to a particular application or organization.</p>
 <div class="admonitionblock note">
 <table>
 <tr>
@@ -488,146 +552,74 @@ When you&#8217;ve completed this quick start and understand the required connect
 <div class="title">Note</div>
 </td>
 <td class="content">
-The example Node.js application in this quick start uses the <a href="https://kafka.js.org/" target="_blank" rel="noopener">KafkaJS</a> client by default. If you want to use the <a href="https://github.com/blizzard/node-rdkafka" target="_blank" rel="noopener">node-rdkafka</a> client, you must install some development tools locally on your computer or use a container runtime such as Podman or Docker to run a specified container image and configure a development environment. To learn more, see the <a href="https://github.com/nodeshift-starters/reactive-example/tree/node-rdkafka#node-rdkafka-and-kafkajs">documentation</a> for the example Node.js application.
+Specifying a group is optional when using the web console, and a <code>default</code> group is automatically created.
 </td>
 </tr>
 </table>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="proc-importing-nodejs-sample-code_using-nodejs">Importing the Node.js sample code</h2>
-<div class="sectionbody">
-<div class="paragraph _abstract">
-<p>For this quick start, you&#8217;ll use sample code from the Nodeshift Application Starters <a href="https://github.com/nodeshift-starters/reactive-example" target="_blank" rel="noopener">reactive-example</a> repository in GitHub. After you understand the concepts and tasks in this quick start, you can use your own Node.js applications with OpenShift Streams for Apache Kafka in the same way.</p>
-</div>
-<div class="olist arabic">
-<div class="title">Procedure</div>
-<ol class="arabic">
+</li>
 <li>
-<p>On the command line, clone the Nodeshift Application Starters <a href="https://github.com/nodeshift-starters/reactive-example" target="_blank" rel="noopener">reactive-example</a> repository from GitHub.</p>
+<p><strong>ID</strong>: Enter an optional unique ID for this artifact such as <code>my-ID</code>. If you do not specify a unique artifact ID, Service Registry generates one automatically as a UUID.</p>
+</li>
+<li>
+<p><strong>Type</strong>: Use the default <strong>Auto-Detect</strong> setting to automatically detect the artifact type, or select the artifact type from the drop-down, for example, Avro Schema or OpenAPI.</p>
+</li>
+<li>
+<p><strong>Artifact</strong>: Drag and drop or click <strong>Browse</strong> to upload a file. For this example, copy and paste the following simple Avro schema:</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>$ git clone https://github.com/nodeshift-starters/reactive-example.git</code></pre>
+<pre class="highlight"><code class="language-json" data-lang="json">{
+"type": "record",
+"namespace": "com.example",
+"name": "FullName",
+"fields": [
+{ "name": "first", "type": "string" },
+{ "name": "last", "type": "string" }
+]}</code></pre>
 </div>
 </div>
-</li>
-<li>
-<p>In your IDE, open the <code>reactive-example</code> directory of the repository that you cloned.</p>
-</li>
-</ol>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="proc-configuring-nodejs_using-nodejs">Configuring the Node.js example application to connect to a Kafka instance</h2>
-<div class="sectionbody">
-<div class="paragraph _abstract">
-<p>To enable your Node.js application to access a Kafka instance, you must configure a connection by specifying the following details:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>The bootstrap server endpoint for your Kafka instance</p>
-</li>
-<li>
-<p>The generated credentials for your OpenShift Streams for Apache Kafka service account</p>
-</li>
-<li>
-<p>The Simple Authentication and Security Layer (SASL) mechanism that the client will use to authenticate with the Kafka instance</p>
 </li>
 </ul>
 </div>
+</li>
+<li>
+<p>Click <strong>Upload</strong> to complete the operation and display the new artifact details:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Info</strong>: Displays the artifact name, group, description, lifecycle status, when created, and last modified.</p>
+</li>
+<li>
+<p><strong>Content</strong>: Displays a read-only view of the full artifact content.</p>
+</li>
+<li>
+<p><strong>Documentation</strong>: (OpenAPI only): Displays automatically-generated REST API documentation.</p>
+</li>
+<li>
+<p><strong>Content Rules</strong>: Displays artifact content rules that you can enable and configure. You can configure a <strong>Validity Rule</strong> or <strong>Compatibility Rule</strong> by selecting the appropriate rule configuration from the drop-down. For details on supported rules, see the <a href="https://access.redhat.com/documentation/en-us/red_hat_openshift_service_registry/1" target="_blank" rel="noopener">OpenShift Service Registry user documentation</a>.</p>
 <div class="paragraph">
-<p>In this task, you&#8217;ll create a new configuration file called <code>rhoas.env</code>. In the file, you&#8217;ll set the required bootstrap server and client credentials as environment variables.</p>
+<p>You can now use this schema to serialize and deserialize messages from Kafka client applications.</p>
 </div>
-<div class="ulist">
-<div class="title">Prerequisites</div>
-<ul>
-<li>
-<p>You have the bootstrap server endpoint for your Kafka instance. To get the server endpoint, select your Kafka instance in the Streams for Apache Kafka <a href="https://console.redhat.com/application-services/streams/" target="_blank" rel="noopener">web console</a>, select the options icon (three vertical dots), and click <strong>Connection</strong>.</p>
-</li>
-<li>
-<p>You have the generated credentials for your service account. To reset the credentials, use the <a href="https://console.redhat.com/application-services/service-accounts" target="_blank" rel="noopener">Service Accounts</a> page in the <strong>Application Services</strong> section of the Red Hat Hybrid Cloud Console.</p>
 </li>
 </ul>
 </div>
-<div class="olist arabic">
-<div class="title">Procedure</div>
-<ol class="arabic">
-<li>
-<p>In your IDE, create a new file. Save the file with the name <code>rhoas.env</code>, at the root level of the <code>reactive-example</code> directory for the cloned repository.</p>
 </li>
 <li>
-<p>In the <code>rhoas.env</code> file, set the SASL authentication mechanism and the Kafka instance client credentials as shown in the following configuration. Replace the client ID and client secret values with your own credential information. The configuration uses SASL/OAUTHBEARER authentication, which is the recommended authentication mechanism to use in Streams for Apache Kafka.</p>
-<div class="listingblock">
-<div class="title">Setting environment variables in the rhoas.env file</div>
-<div class="content">
-<pre class="highlight"><code>KAFKA_HOST=<em>&lt;bootstrap_server&gt;</em>
-RHOAS_SERVICE_ACCOUNT_CLIENT_ID=<em>&lt;client_id&gt;</em>
-RHOAS_SERVICE_ACCOUNT_CLIENT_SECRET=<em>&lt;client_secret&gt;</em>
-KAFKA_SASL_MECHANISM=oauthbearer
-RHOAS_TOKEN_ENDPOINT_URL=https://sso.redhat.com/auth/realms/redhat-external/protocol/openid-connect/token</code></pre>
-</div>
-</div>
+<p>On the right of the screen, you can click <strong>Upload new version</strong> to add a new artifact version.</p>
 </li>
 <li>
-<p>Save the <code>rhoas.env</code> file.</p>
-</li>
-</ol>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="proc-creating-countries-topic_using-nodejs">Creating a Kafka topic in Streams for Apache Kafka</h2>
-<div class="sectionbody">
-<div class="paragraph _abstract">
-<p>The Node.js application in this quick start uses a Kafka topic called <code>countries</code> to produce and consume messages. In this task, you&#8217;ll create the <code>countries</code> topic in your Kafka instance.</p>
-</div>
-<div class="ulist">
-<div class="title">Prerequisites</div>
-<ul>
-<li>
-<p>You have a running Kafka instance in OpenShift Streams for Apache Kafka.</p>
-</li>
-</ul>
-</div>
-<div class="olist arabic">
-<div class="title">Procedure</div>
-<ol class="arabic">
-<li>
-<p>In the Streams for Apache Kafka <a href="https://console.redhat.com/application-services/streams/" target="_blank" rel="noopener">web console</a>, select <strong>Kafka Instances</strong> and then click the name of the Kafka instance that you want to add a topic to.</p>
-</li>
-<li>
-<p>Select the <strong>Topics</strong> tab.</p>
-</li>
-<li>
-<p>Click <strong>Create topic</strong> and follow the guided steps to define the topic details.</p>
-<div class="openblock">
-<div class="content">
-<div class="paragraph">
-<p>You must specify the following topic properties:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><strong>Topic name</strong>: For this quick start, enter <code>countries</code> as the topic name.</p>
-</li>
-<li>
-<p><strong>Partitions</strong>: Set the number of partitions for the topic. For this quick start, set the value to <code>1</code>.</p>
-</li>
-<li>
-<p><strong>Message retention</strong>: Set the message retention time and size. For this quick start, set the retention time to <code>A week</code> and the retention size to <code>Unlimited</code>.</p>
-</li>
-<li>
-<p><strong>Replicas</strong>: For this release of Streams for Apache Kafka, the replica values are preconfigured. The number of partition replicas for the topic is set to <code>3</code> and the minimum number of follower replicas that must be in sync with a partition leader is set to <code>2</code>. For a trial Kafka instance, the number of replicas and the minimum in-sync replica factor are both set to <code>1</code>.</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>After you complete the setup, the new topic appears on the <strong>Topics</strong> page. You can now run the Node.js application to start producing and consuming messages.</p>
-</div>
-</div>
+<p>You can click <strong>Delete</strong> to delete an artifact as needed.</p>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Important</div>
+</td>
+<td class="content">
+Deleting an artifact deletes the artifact and all of its versions, and cannot be undone. Artifact versions are immutable and cannot be deleted individually.
+</td>
+</tr>
+</table>
 </div>
 </li>
 </ol>
@@ -636,42 +628,23 @@ RHOAS_TOKEN_ENDPOINT_URL=https://sso.redhat.com/auth/realms/redhat-external/prot
 <div class="title">Verification</div>
 <ul>
 <li>
-<p>Verify that the <code>countries</code> topic is listed on the <strong>Topics</strong> page.</p>
+<p>Verify that the new schema is listed in the <strong>Artifacts</strong> table.</p>
 </li>
 </ul>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="proc-running-nodejs-example-application_using-nodejs">Running the Node.js example application</h2>
+<h2 id="proc-connecting-registry-clients_getting-started-sr">Connecting client applications to Service Registry</h2>
 <div class="sectionbody">
 <div class="paragraph _abstract">
-<p>After you configure your Node.js application to connect to a Kafka instance, and you create the required Kafka topic, you&#8217;re ready to run the application.</p>
-</div>
-<div class="paragraph">
-<p>In this task, you&#8217;ll run the following components of the Node.js application:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>A <code>producer-backend</code> component that generates random country names and sends these names to the Kafka topic</p>
-</li>
-<li>
-<p>A <code>consumer-backend</code> component that consumes the country names from the Kafka topic</p>
-</li>
-</ul>
+<p>To connect your applications or services to a Service Registry instance in the web console, you must copy and save the Service Registry instance URL, create a service account, and copy and save the generated credentials. You&#8217;ll use these details later when you configure your application for Service Registry.</p>
 </div>
 <div class="ulist">
 <div class="title">Prerequisites</div>
 <ul>
 <li>
-<p>You&#8217;ve configured the Node.js example application to connect to a Kafka instance.</p>
-</li>
-<li>
-<p>You&#8217;ve created the <code>countries</code> topic.</p>
-</li>
-<li>
-<p>You&#8217;ve set permissions for your service account to produce and consume messages in the <code>countries</code> topic. For the Node.js application in this example, the consumer group you must specify in your permissions is called <code>consumer-test</code>. To learn how to configure access permissions for a Kafka instance, see <a href="https://github.com/redhat-developer/app-services-guides/tree/main/docs/kafka/access-mgmt-kafka/README.adoc" target="_blank" rel="noopener">Managing account access in OpenShift Streams for Apache Kafka</a>.</p>
+<p>You&#8217;ve created a Service Registry instance and the instance is in <strong>Ready</strong> state.</p>
 </li>
 </ul>
 </div>
@@ -679,108 +652,54 @@ RHOAS_TOKEN_ENDPOINT_URL=https://sso.redhat.com/auth/realms/redhat-external/prot
 <div class="title">Procedure</div>
 <ol class="arabic">
 <li>
-<p>On the command line, navigate to the <code>reactive-example</code> directory of the repository that you cloned.</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>$ cd reactive-example</code></pre>
-</div>
+<p>In the <strong>Service Registry Instances</strong> page of the web console, for the instance that you want to connect to, select the options icon (three vertical dots), and click <strong>Connection</strong>.</p>
+</li>
+<li>
+<p>Depending on the client libraries that you want to use, chose the API for your needs:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Core Registry API</strong> is the most powerful and works with Apicurio client libraries</p>
+</li>
+<li>
+<p><strong>Schema Registry compatibility API</strong> provides compatibility with the Confluent Schema Registry API</p>
+</li>
+<li>
+<p><strong>CNCF Schema Registry API</strong> provides compatibility with the CNCF specification</p>
+</li>
+</ul>
 </div>
 </li>
 <li>
-<p>Navigate to the directory for the consumer component. Use Node Package Manager (npm) to install the dependencies for this component.</p>
-<div class="listingblock">
-<div class="title">Installing dependencies for the consumer component</div>
-<div class="content">
-<pre class="highlight"><code>$ cd consumer-backend
-$ npm install</code></pre>
-</div>
-</div>
-</li>
-<li>
-<p>Run the consumer component.</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>$ node consumer.js</code></pre>
-</div>
-</div>
+<p>In the <strong>Connection</strong> page, copy the <strong>Core Registry API</strong> URL, or one of the other API URLs if you are using a different client, to a secure location. This is the server endpoint that you&#8217;ll need to connect to this Service Registry instance.</p>
 <div class="paragraph">
-<p>You see the Node.js application run and connect to the Kafka instance. However, because you haven&#8217;t yet run the producer component, the consumer has no country names to display.</p>
-</div>
-<div class="paragraph">
-<p>If the application fails to run, review the error log in the command-line window and address any problems. Also, review the steps in this quick start to ensure that the application and Kafka topic are configured correctly.</p>
+<p>The remainder of this section describes how to create a service account and copy the generated credentials.
+If you want to use the credentials of an <em>existing</em> service account, you can skip to the next section.</p>
 </div>
 </li>
 <li>
-<p>Open a second command-line window or tab.</p>
+<p>Under <strong>Service Accounts</strong>, click <strong>Create service account</strong> to generate the credentials that you can use to connect applications to Service Registry and Kafka instances.</p>
 </li>
 <li>
-<p>On the second command line, navigate to the <code>reactive-example</code> directory of the repository that you cloned.</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>$ cd reactive-example</code></pre>
-</div>
-</div>
-</li>
-<li>
-<p>Navigate to the directory for the producer component. Use Node Package Manager to install the dependencies for this component.</p>
-<div class="listingblock">
-<div class="title">Installing dependencies for the producer component</div>
-<div class="content">
-<pre class="highlight"><code>$ cd producer-backend
-$ npm install</code></pre>
-</div>
+<p>Copy the generated <strong>Client ID</strong> and <strong>Client Secret</strong> to a secure location.</p>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Important</div>
+</td>
+<td class="content">
+The generated credentials are displayed only one time. Ensure that you&#8217;ve successfully and securely saved the copied credentials before closing the credentials window.
+</td>
+</tr>
+</table>
 </div>
 </li>
 <li>
-<p>Run the producer component.</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>$ node producer.js</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>When the producer component runs, you see output like that shown in the following example:</p>
-</div>
-<div class="listingblock">
-<div class="title">Example output from the producer component</div>
-<div class="content">
-<pre class="highlight"><code>Ghana
-Réunion
-Guatemala
-Luxembourg
-Mayotte
-Syria
-United Kingdom
-Bolivia
-Haiti</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>As shown in the example, the producer component runs and generates messages that represent country names.</p>
-</div>
+<p>After you save the generated credentials to a secure location, select the confirmation check box in the credentials window and close the window.</p>
 </li>
 <li>
-<p>Switch back to the first command-line window.</p>
-<div class="paragraph">
-<p>You now see that the consumer component displays the same country names generated by the producer, and in the same order, as shown in the following example:</p>
-</div>
-<div class="listingblock">
-<div class="title">Example output from the consumer component</div>
-<div class="content">
-<pre class="highlight"><code>Ghana
-Réunion
-Guatemala
-Luxembourg
-Mayotte
-Syria
-United Kingdom
-Bolivia
-Haiti</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The output from both components confirms that they successfully connected to the Kafka instance. The components are using the Kafka topic that you created to produce and consume messages.</p>
-</div>
+<p>For the <strong>Authentication method</strong>, copy the OAuth <strong>Token endpoint URL</strong> to a secure location. This is the endpoint that you’ll use with your service account credentials to authenticate the connection to this Service Registry instance.</p>
 <div class="admonitionblock note">
 <table>
 <tr>
@@ -788,25 +707,104 @@ Haiti</code></pre>
 <div class="title">Note</div>
 </td>
 <td class="content">
-You can also use the OpenShift Streams for Apache Kafka web console to browse messages in the Kafka topic. For more information, see <a href="https://github.com/redhat-developer/app-services-guides/tree/main/docs/kafka/message-browsing-kafka/README.adoc" target="_blank" rel="noopener">Browsing messages in the OpenShift Streams for Apache Kafka web console</a>.
+HTTP Basic authentication is also available for tools and libraries that don&#8217;t support OAuth, but OAuth is recommended whenever possible. With HTTP Basic, you use only the service account credentials to authenticate the connection to the Service Registry instance.
 </td>
 </tr>
 </table>
 </div>
-</li>
-<li>
-<p>In your IDE, in the <code>producer-backend</code> directory of the repository that you cloned, open the <code>producer.js</code> file.</p>
 <div class="paragraph">
-<p>Observe that the producer component is configured to process environment variables from the <code>rhoas.env</code> file that you created. The component used the bootstrap server endpoint and client credentials stored in this file to connect to the Kafka instance.</p>
+<p>You’ll use the service account information that you saved to configure your applications to connect to your Service Registry instances later when you&#8217;re ready.</p>
 </div>
-</li>
-<li>
-<p>In the <code>consumer-backend</code> directory, open the <code>consumer.js</code> file.</p>
 <div class="paragraph">
-<p>Observe that the consumer component is also configured to process environment variables from the <code>rhoas.env</code> file that you created.</p>
+<p>For example, if you plan to use <a href="https://github.com/edenhill/kcat" target="_blank" rel="noopener">Kcat</a> to interact with your Kafka instance and deserialize Avro messages using Service Registry, you&#8217;ll use this information to set your Service Registry URL in the client environment variables.</p>
+</div>
+<div class="paragraph">
+<p>To review your service account information, reset your credentials, or delete the service account, use the left navigation menu to go to the <strong>Service Accounts</strong> page.</p>
 </div>
 </li>
 </ol>
+</div>
+<div class="olist arabic">
+<div class="title">Verification</div>
+<ol class="arabic">
+<li>
+<p>Verify that the Service Registry instance URL is saved to a secure location.</p>
+</li>
+<li>
+<p>Verify that the client credentials are saved to a secure location.</p>
+</li>
+<li>
+<p>Verify that your service account was successfully created in the <strong>Service Accounts</strong> page.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="proc-setting-service-account-user-roles_getting-started-sr">Assigning a role for a service account to access a Service Registry instance</h2>
+<div class="sectionbody">
+<div class="paragraph _abstract">
+<p>After you create a service account for applications to connect to a Service Registry instance, you must also set the appropriate level of access for the new account in the <strong>Access</strong> tab of the Service Registry instance. Service Registry uses role-based access to enable you to manage how other user accounts and service accounts can interact with the Service Registry instance that you create.</p>
+</div>
+<div class="ulist">
+<div class="title">Prerequisites</div>
+<ul>
+<li>
+<p>You&#8217;ve created a Service Registry instance and the instance is in <strong>Ready</strong> state.</p>
+</li>
+<li>
+<p>You&#8217;ve created a service account that you want to allow to access the running Service Registry instance.</p>
+</li>
+</ul>
+</div>
+<div class="olist arabic">
+<div class="title">Procedure</div>
+<ol class="arabic">
+<li>
+<p>In the <strong>Service Registry Instances</strong> page of the web console, click the name of the Service Registry instance that you want the service account to access.</p>
+</li>
+<li>
+<p>Click the <strong>Access</strong> tab to view the accounts and roles already assigned for this instance.</p>
+</li>
+<li>
+<p>Click <strong>Grant access</strong> to assign a role to the service account.</p>
+</li>
+<li>
+<p>In the <strong>Account</strong> field, select or enter the service account name that you want to assign the role to.</p>
+</li>
+<li>
+<p>Select the <strong>Role</strong> that you want to assign to the account, for example, <strong>Manager</strong> for write access to this instance.</p>
+</li>
+<li>
+<p>Click <strong>Save</strong> to finish.</p>
+</li>
+</ol>
+</div>
+<div class="ulist">
+<div class="title">Verification</div>
+<ul>
+<li>
+<p>Verify that the new role for the service account is listed in the <strong>Access</strong> page of the Service Registry instance.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1 _additional-resources">
+<h2 id="_additional_resources">Additional resources</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/redhat-developer/app-services-guides/tree/main/docs/registry/access-mgmt-registry/README.adoc" target="_blank" rel="noopener">Managing account access in Red Hat OpenShift Service Registry</a></p>
+</li>
+<li>
+<p><a href="https://access.redhat.com/documentation/en-us/red_hat_openshift_service_registry/1" target="_blank" rel="noopener">OpenShift Service Registry user documentation</a></p>
+</li>
+<li>
+<p><a href="https://access.redhat.com/documentation/en-us/red_hat_openshift_streams_for_apache_kafka/1" target="_blank" rel="noopener">OpenShift Streams for Apache Kafka user documentation</a></p>
+</li>
+</ul>
 </div>
 </div>
 </div>

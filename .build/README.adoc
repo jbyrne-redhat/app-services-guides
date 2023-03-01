@@ -1,3 +1,0 @@
-This module allows us to preview the QuickStarts built in a sample application.
-
-See link:../CONTRIBUTING.adoc[the contributing guide] for more info.

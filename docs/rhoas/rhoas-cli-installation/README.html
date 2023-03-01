@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.18">
-<title>Using Node.js applications with Kafka instances in OpenShift Streams for Apache Kafka</title>
+<title>Installing and configuring the OpenShift Application Services CLI</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /*! Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -436,18 +436,46 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 @media amzn-kf8{#header,#content,#footnotes,#footer{padding:0}}
 </style>
 </head>
-<body id="chap-using-nodejs" class="article">
+<body id="chap-installing-rhoas-cli" class="article">
 <div id="header">
-<h1>Using Node.js applications with Kafka instances in OpenShift Streams for Apache Kafka</h1>
+<h1>Installing and configuring the OpenShift Application Services CLI</h1>
 </div>
 <div id="content">
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph _abstract">
-<p>As a developer of applications and services, you can connect Node.js applications to Kafka instances in OpenShift Streams for Apache Kafka. <a href="https://nodejs.org/en/about/" target="_blank" rel="noopener">Node.js</a> is a server-side JavaScript runtime that is designed to build scalable network applications. Node.js provides an I/O model that is based on events and non-blocking operations, which enables efficient applications.</p>
+<p>With the OpenShift Application Services <code>rhoas</code> command-line interface (CLI), you can manage your application services from a terminal.</p>
 </div>
 <div class="paragraph">
-<p>In this quick start, you&#8217;ll use the Streams for Apache Kafka web console to collect connection information for a Kafka instance. Then you&#8217;ll manually configure a connection from an example Node.js application to the Kafka instance and start producing and consuming messages.</p>
+<p>This guide describes how to set up <code>rhoas</code> by doing the following:</p>
+</div>
+<div class="openblock">
+<div class="content">
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/redhat-developer/app-services-guides/tree/main/docs/rhoas/rhoas-cli-installation/README.adoc#proc-installing-rhoas_installing-rhoas-cli">Install <code>rhoas</code> on your operating system</a></p>
+</li>
+<li>
+<p><a href="https://github.com/redhat-developer/app-services-guides/tree/main/docs/rhoas/rhoas-cli-installation/README.adoc#proc-configuring-rhoas_installing-rhoas-cli">Configure <code>rhoas</code> to enable command completion</a></p>
+</li>
+<li>
+<p><a href="https://github.com/redhat-developer/app-services-guides/tree/main/docs/rhoas/rhoas-cli-installation/README.adoc#proc-logging-in-to-rhoas_installing-rhoas-cli">Log in to <code>rhoas</code></a></p>
+</li>
+<li>
+<p><a href="https://github.com/redhat-developer/app-services-guides/tree/main/docs/rhoas/rhoas-cli-installation/README.adoc#proc-logging-out-rhoas_installing-rhoas-cli">Log out of <code>rhoas</code></a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="proc-installing-rhoas_installing-rhoas-cli">Installing the rhoas CLI</h2>
+<div class="sectionbody">
+<div class="paragraph _abstract">
+<p>You can install <code>rhoas</code> on Linux, macOS, or Windows.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -456,30 +484,268 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="title">Note</div>
 </td>
 <td class="content">
-When you&#8217;ve completed this quick start and understand the required connection configuration for a Kafka instance, you can use the OpenShift Application Services command-line interface (CLI) to generate this type of configuration in a more automated way. To learn more, see <a href="https://github.com/redhat-developer/app-services-guides/tree/main/docs/rhoas/rhoas-service-contexts/README.adoc" target="_blank" rel="noopener">Connecting client applications to OpenShift Application Services using the rhoas CLI</a>.
+The <code>rhoas</code> <a href="https://github.com/redhat-developer/app-services-cli/releases" target="_blank" rel="noopener">Releases page</a> lists the bug fixes and new features for every <code>rhoas</code> release.
 </td>
 </tr>
 </table>
 </div>
+<h3 id="installing-rhoas-cli-linux_installing-rhoas-cli" class="discrete">Installing the rhoas CLI on Linux</h3>
+<div class="paragraph">
+<p>If you are using Linux, you can install <code>rhoas</code> by either using the installation script, or the RPM.
+The installation script installs the latest version of <code>rhoas</code> by default.</p>
+</div>
+<h4 id="installation-script_installing-rhoas-cli" class="discrete">Installation script</h4>
+<div class="olist arabic">
+<div class="title">Procedure</div>
+<ol class="arabic">
+<li>
+<p>Review the <a href="https://github.com/redhat-developer/app-services-cli/blob/main/scripts/install.sh" target="_blank" rel="noopener"><code>install.sh</code> installation script</a>.</p>
+</li>
+<li>
+<p>Run the <code>install.sh</code> script:</p>
+<div class="openblock">
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-shell" data-lang="shell">$ curl -o- https://raw.githubusercontent.com/redhat-developer/app-services-cli/main/scripts/install.sh | bash</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>rhoas</code> CLI is installed in <code>$HOME/.local/bin</code>.</p>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>Verify that the <code>rhoas</code> installation directory is in a directory on your <code>PATH</code>.</p>
+<div class="openblock">
+<div class="content">
+<div class="paragraph">
+<p>To check your <code>PATH</code>, run the following command:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-shell" data-lang="shell">$ echo $PATH</code></pre>
+</div>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>Check the <code>rhoas</code> version to verify that the CLI is installed.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-shell" data-lang="shell">$ rhoas --version</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+<h4 id="rpm-installation_installing-rhoas-cli" class="discrete">RPM installation</h4>
+<div class="paragraph">
+<p>You can install <code>rhoas</code> as an RPM if you are using Red Hat Enterprise Linux (RHEL), Fedora, or CentOS.</p>
+</div>
+<div class="olist arabic">
+<div class="title">Procedure</div>
+<ol class="arabic">
+<li>
+<p>Navigate to the <code>rhoas</code> <a href="https://github.com/redhat-developer/app-services-cli/releases" target="_blank" rel="noopener">Releases page</a> and choose the version that you&#8217;d like to download.</p>
+</li>
+<li>
+<p>Use <code>dnf</code>/<code>yum</code> to install the desired version of <code>rhoas</code>.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-shell" data-lang="shell">$ sudo dnf install -y https://github.com/redhat-developer/app-services-cli/releases/download/v&lt;<em>version-num</em>&gt;_/rhoas_&lt;<em>version-num</em>&gt;_linux_amd64.rpm</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Check the <code>rhoas</code> version to verify that the CLI is installed.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-shell" data-lang="shell">$ rhoas --version</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+<h3 id="installing-rhoas-cli-macos_installing-rhoas-cli" class="discrete">Installing the rhoas CLI on macOS</h3>
+<div class="olist arabic">
+<div class="title">Procedure</div>
+<ol class="arabic">
+<li>
+<p>Review the <a href="https://github.com/redhat-developer/app-services-cli/blob/main/scripts/install.sh" target="_blank" rel="noopener"><code>install.sh</code> installation script</a>.</p>
+</li>
+<li>
+<p>Run the <code>install.sh</code> script:</p>
+<div class="openblock">
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-shell" data-lang="shell">$ curl -o- https://raw.githubusercontent.com/redhat-developer/app-services-cli/main/scripts/install.sh | bash</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>rhoas</code> CLI is installed in <code>$HOME/bin</code>.</p>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>Verify that the <code>rhoas</code> installation directory is in a directory on your <code>PATH</code>.</p>
+<div class="openblock">
+<div class="content">
+<div class="paragraph">
+<p>To check your <code>PATH</code>, run the following command:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-shell" data-lang="shell">$ echo $PATH</code></pre>
+</div>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>Check the <code>rhoas</code> version to verify that the CLI is installed.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-shell" data-lang="shell">$ rhoas --version</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+<h3 id="installing-rhoas-cli-windows_installing-rhoas-cli" class="discrete">Installing the rhoas CLI on Windows</h3>
+<div class="olist arabic">
+<div class="title">Procedure</div>
+<ol class="arabic">
+<li>
+<p>Navigate to the <code>rhoas</code> <a href="https://github.com/redhat-developer/app-services-cli/releases" target="_blank" rel="noopener">Releases page</a>.</p>
+</li>
+<li>
+<p>Download the latest <code>rhoas</code> .zip file.</p>
+</li>
+<li>
+<p>On your computer, create a <code>C:\rhoas</code> folder.</p>
+</li>
+<li>
+<p>Extract the <code>rhoas.exe</code> file from the .zip file that you downloaded.</p>
+</li>
+<li>
+<p>Move the <code>rhoas.exe</code> file to <code>C:\rhoas</code>.</p>
+</li>
+<li>
+<p>If you are using Windows 10, set the <code>PATH</code> variable.</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Click <strong>Search</strong> and type <code>env</code> or <code>environment</code>.</p>
+</li>
+<li>
+<p>Select <strong>Edit environment variables for your account</strong>.</p>
+</li>
+<li>
+<p>In the <strong>Variable</strong> section, select <strong>Path</strong>, and click <strong>Edit</strong>.</p>
+</li>
+<li>
+<p>Click <strong>New</strong>, and enter <code>C:\rhoas</code>.</p>
+</li>
+<li>
+<p>Click <strong>OK</strong> to save changes.</p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Open a terminal and check the <code>rhoas</code> version to verify that the CLI is installed.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-shell" data-lang="shell">$ rhoas --version</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="proc-configuring-rhoas_installing-rhoas-cli">Configuring rhoas</h2>
+<div class="sectionbody">
+<div class="paragraph _abstract">
+<p>After you install the <code>rhoas</code> CLI,
+you can enable command completion to automatically complete <code>rhoas</code> commands or suggest options when you press <strong>Tab</strong>.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+The procedure for enabling command completion depends on the shell you are using.
+To determine which shell you are using, run the <code>echo $0</code> command.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>You can enable command completion for each of the following shells:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/redhat-developer/app-services-guides/tree/main/docs/rhoas/rhoas-cli-installation/README.adoc#enabling-command-completion-bash_installing-rhoas-cli">Bash</a></p>
+</li>
+<li>
+<p><a href="https://github.com/redhat-developer/app-services-guides/tree/main/docs/rhoas/rhoas-cli-installation/README.adoc#enabling-command-completion-zsh_installing-rhoas-cli">Zsh</a></p>
+</li>
+<li>
+<p><a href="https://github.com/redhat-developer/app-services-guides/tree/main/docs/rhoas/rhoas-cli-installation/README.adoc#enabling-command-completion-fish_installing-rhoas-cli">Fish</a></p>
+</li>
+</ul>
+</div>
 <div class="ulist">
 <div class="title">Prerequisites</div>
 <ul>
-<li>
-<p>You have a running Kafka instance in Streams for Apache Kafka (see <a href="https://github.com/redhat-developer/app-services-guides/tree/main/docs/kafka/getting-started-kafka/README.adoc" target="_blank" rel="noopener">Getting started with OpenShift Streams for Apache Kafka</a>).</p>
-</li>
 <li>
 <p>You have a command-line terminal application.</p>
 </li>
 <li>
-<p><a href="https://github.com/git-guides/" target="_blank" rel="noopener">Git</a> is installed.</p>
+<p>You&#8217;ve installed the <code>rhoas</code> CLI.</p>
 </li>
 <li>
-<p>You have an IDE such as <a href="https://www.jetbrains.com/idea/download/" target="_blank" rel="noopener">IntelliJ IDEA</a>, <a href="https://www.eclipse.org/downloads/" target="_blank" rel="noopener">Eclipse</a>, or <a href="https://code.visualstudio.com/Download" target="_blank" rel="noopener">Visual Studio Code</a>.</p>
-</li>
-<li>
-<p><a href="https://nodejs.org/en/download/" target="_blank" rel="noopener">Node.js 14</a> or later is installed.</p>
+<p>If you&#8217;re using macOS, you&#8217;ve installed <code>bash-completion</code> configured in your <code>.bash_profile</code> file.</p>
 </li>
 </ul>
+</div>
+<h3 id="enabling-command-completion-bash_installing-rhoas-cli" class="discrete">Enabling command completion on Bash</h3>
+<div class="olist arabic">
+<div class="title">Procedure</div>
+<ol class="arabic">
+<li>
+<p>Create the <code>rhoas_completions</code> script file.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-shell" data-lang="shell">$ rhoas completion bash &gt; rhoas_completions</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Move the script file to a special Bash completions directory.</p>
+<div class="openblock">
+<div class="content">
+<div class="listingblock">
+<div class="title">Linux</div>
+<div class="content">
+<pre class="highlight"><code class="language-shell" data-lang="shell">$ sudo mv rhoas_completions /etc/bash_completion.d/rhoas</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">macOS</div>
+<div class="content">
+<pre class="highlight"><code class="language-shell" data-lang="shell">$ sudo mv rhoas_completions /usr/local/etc/bash_completion.d/rhoas</code></pre>
+</div>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -488,325 +754,156 @@ When you&#8217;ve completed this quick start and understand the required connect
 <div class="title">Note</div>
 </td>
 <td class="content">
-The example Node.js application in this quick start uses the <a href="https://kafka.js.org/" target="_blank" rel="noopener">KafkaJS</a> client by default. If you want to use the <a href="https://github.com/blizzard/node-rdkafka" target="_blank" rel="noopener">node-rdkafka</a> client, you must install some development tools locally on your computer or use a container runtime such as Podman or Docker to run a specified container image and configure a development environment. To learn more, see the <a href="https://github.com/nodeshift-starters/reactive-example/tree/node-rdkafka#node-rdkafka-and-kafkajs">documentation</a> for the example Node.js application.
+For macOS, to find the location of your <code>bash-completion</code> directory, check the <code>~/.bashrc</code> or <code>~/.bash_profile</code> file.
 </td>
 </tr>
 </table>
 </div>
 </div>
 </div>
-<div class="sect1">
-<h2 id="proc-importing-nodejs-sample-code_using-nodejs">Importing the Node.js sample code</h2>
-<div class="sectionbody">
-<div class="paragraph _abstract">
-<p>For this quick start, you&#8217;ll use sample code from the Nodeshift Application Starters <a href="https://github.com/nodeshift-starters/reactive-example" target="_blank" rel="noopener">reactive-example</a> repository in GitHub. After you understand the concepts and tasks in this quick start, you can use your own Node.js applications with OpenShift Streams for Apache Kafka in the same way.</p>
+</li>
+<li>
+<p>Open a new terminal window.</p>
+<div class="paragraph">
+<p>Command completion is enabled.</p>
 </div>
+</li>
+</ol>
+</div>
+<h3 id="enabling-command-completion-zsh_installing-rhoas-cli" class="discrete">Enabling command completion on Zsh</h3>
 <div class="olist arabic">
 <div class="title">Procedure</div>
 <ol class="arabic">
 <li>
-<p>On the command line, clone the Nodeshift Application Starters <a href="https://github.com/nodeshift-starters/reactive-example" target="_blank" rel="noopener">reactive-example</a> repository from GitHub.</p>
+<p>Install the command completion script.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>$ git clone https://github.com/nodeshift-starters/reactive-example.git</code></pre>
+<pre class="highlight"><code class="language-shell" data-lang="shell">$ rhoas completion zsh &gt; "${fpath[1]}/_rhoas"</code></pre>
 </div>
 </div>
 </li>
 <li>
-<p>In your IDE, open the <code>reactive-example</code> directory of the repository that you cloned.</p>
+<p>Unless already installed, enable command completions.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-shell" data-lang="shell">$ echo "autoload -U compinit; compinit" &gt;&gt; ~/.zshrc</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Open a new terminal window.</p>
+<div class="paragraph">
+<p>Command completion is enabled.</p>
+</div>
+</li>
+</ol>
+</div>
+<h3 id="enabling-command-completion-fish_installing-rhoas-cli" class="discrete">Enabling command completion on Fish</h3>
+<div class="olist arabic">
+<div class="title">Procedure</div>
+<ol class="arabic">
+<li>
+<p>Install fish completions.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-shell" data-lang="shell">$ rhoas completion fish &gt; ~/.config/fish/completions/rhoas.fish</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Open a new terminal window.</p>
+<div class="paragraph">
+<p>Command completion is enabled.</p>
+</div>
 </li>
 </ol>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="proc-configuring-nodejs_using-nodejs">Configuring the Node.js example application to connect to a Kafka instance</h2>
+<h2 id="proc-logging-in-to-rhoas_installing-rhoas-cli">Logging in to rhoas</h2>
 <div class="sectionbody">
 <div class="paragraph _abstract">
-<p>To enable your Node.js application to access a Kafka instance, you must configure a connection by specifying the following details:</p>
+<p>After <code>rhoas</code> is installed, you can log in to access your application services.</p>
 </div>
 <div class="ulist">
+<div class="title">Prerequisites</div>
 <ul>
 <li>
-<p>The bootstrap server endpoint for your Kafka instance</p>
+<p>You have a Application Services account.</p>
 </li>
 <li>
-<p>The generated credentials for your OpenShift Streams for Apache Kafka service account</p>
-</li>
-<li>
-<p>The Simple Authentication and Security Layer (SASL) mechanism that the client will use to authenticate with the Kafka instance</p>
+<p>You&#8217;ve installed the <code>rhoas</code> CLI.</p>
 </li>
 </ul>
+</div>
+<div class="olist arabic">
+<div class="title">Procedure</div>
+<ol class="arabic">
+<li>
+<p>In a terminal, log in to <code>rhoas</code>.</p>
+<div class="openblock">
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-shell" data-lang="shell">$ rhoas login</code></pre>
+</div>
 </div>
 <div class="paragraph">
-<p>In this task, you&#8217;ll create a new configuration file called <code>rhoas.env</code>. In the file, you&#8217;ll set the required bootstrap server and client credentials as environment variables.</p>
+<p>Your web browser opens the <a href="https://sso.redhat.com" target="_blank" rel="noopener">Red Hat Single Sign-On page</a>.</p>
 </div>
-<div class="ulist">
-<div class="title">Prerequisites</div>
-<ul>
-<li>
-<p>You have the bootstrap server endpoint for your Kafka instance. To get the server endpoint, select your Kafka instance in the Streams for Apache Kafka <a href="https://console.redhat.com/application-services/streams/" target="_blank" rel="noopener">web console</a>, select the options icon (three vertical dots), and click <strong>Connection</strong>.</p>
-</li>
-<li>
-<p>You have the generated credentials for your service account. To reset the credentials, use the <a href="https://console.redhat.com/application-services/service-accounts" target="_blank" rel="noopener">Service Accounts</a> page in the <strong>Application Services</strong> section of the Red Hat Hybrid Cloud Console.</p>
-</li>
-</ul>
-</div>
-<div class="olist arabic">
-<div class="title">Procedure</div>
-<ol class="arabic">
-<li>
-<p>In your IDE, create a new file. Save the file with the name <code>rhoas.env</code>, at the root level of the <code>reactive-example</code> directory for the cloned repository.</p>
-</li>
-<li>
-<p>In the <code>rhoas.env</code> file, set the SASL authentication mechanism and the Kafka instance client credentials as shown in the following configuration. Replace the client ID and client secret values with your own credential information. The configuration uses SASL/OAUTHBEARER authentication, which is the recommended authentication mechanism to use in Streams for Apache Kafka.</p>
-<div class="listingblock">
-<div class="title">Setting environment variables in the rhoas.env file</div>
-<div class="content">
-<pre class="highlight"><code>KAFKA_HOST=<em>&lt;bootstrap_server&gt;</em>
-RHOAS_SERVICE_ACCOUNT_CLIENT_ID=<em>&lt;client_id&gt;</em>
-RHOAS_SERVICE_ACCOUNT_CLIENT_SECRET=<em>&lt;client_secret&gt;</em>
-KAFKA_SASL_MECHANISM=oauthbearer
-RHOAS_TOKEN_ENDPOINT_URL=https://sso.redhat.com/auth/realms/redhat-external/protocol/openid-connect/token</code></pre>
 </div>
 </div>
 </li>
 <li>
-<p>Save the <code>rhoas.env</code> file.</p>
-</li>
-</ol>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="proc-creating-countries-topic_using-nodejs">Creating a Kafka topic in Streams for Apache Kafka</h2>
-<div class="sectionbody">
-<div class="paragraph _abstract">
-<p>The Node.js application in this quick start uses a Kafka topic called <code>countries</code> to produce and consume messages. In this task, you&#8217;ll create the <code>countries</code> topic in your Kafka instance.</p>
-</div>
-<div class="ulist">
-<div class="title">Prerequisites</div>
-<ul>
-<li>
-<p>You have a running Kafka instance in OpenShift Streams for Apache Kafka.</p>
-</li>
-</ul>
-</div>
-<div class="olist arabic">
-<div class="title">Procedure</div>
-<ol class="arabic">
-<li>
-<p>In the Streams for Apache Kafka <a href="https://console.redhat.com/application-services/streams/" target="_blank" rel="noopener">web console</a>, select <strong>Kafka Instances</strong> and then click the name of the Kafka instance that you want to add a topic to.</p>
-</li>
-<li>
-<p>Select the <strong>Topics</strong> tab.</p>
-</li>
-<li>
-<p>Click <strong>Create topic</strong> and follow the guided steps to define the topic details.</p>
+<p>Enter your credentials to log in to your Red Hat account.</p>
 <div class="openblock">
 <div class="content">
 <div class="paragraph">
-<p>You must specify the following topic properties:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><strong>Topic name</strong>: For this quick start, enter <code>countries</code> as the topic name.</p>
-</li>
-<li>
-<p><strong>Partitions</strong>: Set the number of partitions for the topic. For this quick start, set the value to <code>1</code>.</p>
-</li>
-<li>
-<p><strong>Message retention</strong>: Set the message retention time and size. For this quick start, set the retention time to <code>A week</code> and the retention size to <code>Unlimited</code>.</p>
-</li>
-<li>
-<p><strong>Replicas</strong>: For this release of Streams for Apache Kafka, the replica values are preconfigured. The number of partition replicas for the topic is set to <code>3</code> and the minimum number of follower replicas that must be in sync with a partition leader is set to <code>2</code>. For a trial Kafka instance, the number of replicas and the minimum in-sync replica factor are both set to <code>1</code>.</p>
-</li>
-</ul>
+<p>Welcome pages in the browser notify you that you&#8217;ve been logged in to <code>rhoas</code> successfully.</p>
 </div>
 <div class="paragraph">
-<p>After you complete the setup, the new topic appears on the <strong>Topics</strong> page. You can now run the Node.js application to start producing and consuming messages.</p>
+<p>In your terminal, the <code>rhoas login</code> command indicates that you&#8217;re logged in.</p>
 </div>
 </div>
 </div>
 </li>
 </ol>
-</div>
-<div class="ulist">
-<div class="title">Verification</div>
-<ul>
-<li>
-<p>Verify that the <code>countries</code> topic is listed on the <strong>Topics</strong> page.</p>
-</li>
-</ul>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="proc-running-nodejs-example-application_using-nodejs">Running the Node.js example application</h2>
+<h2 id="proc-logging-out-rhoas_installing-rhoas-cli">Logging out of rhoas</h2>
 <div class="sectionbody">
 <div class="paragraph _abstract">
-<p>After you configure your Node.js application to connect to a Kafka instance, and you create the required Kafka topic, you&#8217;re ready to run the application.</p>
-</div>
-<div class="paragraph">
-<p>In this task, you&#8217;ll run the following components of the Node.js application:</p>
+<p>You can log out from the <code>rhoas</code> CLI by using the <code>rhoas logout</code> command.</p>
 </div>
 <div class="ulist">
-<ul>
-<li>
-<p>A <code>producer-backend</code> component that generates random country names and sends these names to the Kafka topic</p>
-</li>
-<li>
-<p>A <code>consumer-backend</code> component that consumes the country names from the Kafka topic</p>
-</li>
-</ul>
-</div>
-<div class="ulist">
-<div class="title">Prerequisites</div>
-<ul>
-<li>
-<p>You&#8217;ve configured the Node.js example application to connect to a Kafka instance.</p>
-</li>
-<li>
-<p>You&#8217;ve created the <code>countries</code> topic.</p>
-</li>
-<li>
-<p>You&#8217;ve set permissions for your service account to produce and consume messages in the <code>countries</code> topic. For the Node.js application in this example, the consumer group you must specify in your permissions is called <code>consumer-test</code>. To learn how to configure access permissions for a Kafka instance, see <a href="https://github.com/redhat-developer/app-services-guides/tree/main/docs/kafka/access-mgmt-kafka/README.adoc" target="_blank" rel="noopener">Managing account access in OpenShift Streams for Apache Kafka</a>.</p>
-</li>
-</ul>
-</div>
-<div class="olist arabic">
 <div class="title">Procedure</div>
-<ol class="arabic">
+<ul>
 <li>
-<p>On the command line, navigate to the <code>reactive-example</code> directory of the repository that you cloned.</p>
+<p>Log out of <code>rhoas</code>.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>$ cd reactive-example</code></pre>
+<pre class="highlight"><code class="language-shell" data-lang="shell">$ rhoas logout</code></pre>
 </div>
 </div>
+</li>
+</ul>
+</div>
+<div class="ulist _additional-resources">
+<div class="title">Additional resources</div>
+<ul>
+<li>
+<p><a href="https://github.com/redhat-developer/app-services-guides/tree/main/docs/kafka/rhoas-cli-getting-started-kafka/README.adoc" target="_blank" rel="noopener"><em>Getting started with the rhoas CLI for OpenShift Streams for Apache Kafka</em></a></p>
 </li>
 <li>
-<p>Navigate to the directory for the consumer component. Use Node Package Manager (npm) to install the dependencies for this component.</p>
-<div class="listingblock">
-<div class="title">Installing dependencies for the consumer component</div>
-<div class="content">
-<pre class="highlight"><code>$ cd consumer-backend
-$ npm install</code></pre>
-</div>
-</div>
+<p><a href="https://github.com/redhat-developer/app-services-guides/tree/main/docs/registry/rhoas-cli-getting-started-registry/README.adoc" target="_blank" rel="noopener"><em>Getting started with the rhoas CLI for OpenShift Service Registry</em></a></p>
 </li>
 <li>
-<p>Run the consumer component.</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>$ node consumer.js</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>You see the Node.js application run and connect to the Kafka instance. However, because you haven&#8217;t yet run the producer component, the consumer has no country names to display.</p>
-</div>
-<div class="paragraph">
-<p>If the application fails to run, review the error log in the command-line window and address any problems. Also, review the steps in this quick start to ensure that the application and Kafka topic are configured correctly.</p>
-</div>
+<p><a href="https://github.com/redhat-developer/app-services-cli/tree/main/docs/commands" target="_blank" rel="noopener"><em>CLI command reference (rhoas)</em></a></p>
 </li>
-<li>
-<p>Open a second command-line window or tab.</p>
-</li>
-<li>
-<p>On the second command line, navigate to the <code>reactive-example</code> directory of the repository that you cloned.</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>$ cd reactive-example</code></pre>
-</div>
-</div>
-</li>
-<li>
-<p>Navigate to the directory for the producer component. Use Node Package Manager to install the dependencies for this component.</p>
-<div class="listingblock">
-<div class="title">Installing dependencies for the producer component</div>
-<div class="content">
-<pre class="highlight"><code>$ cd producer-backend
-$ npm install</code></pre>
-</div>
-</div>
-</li>
-<li>
-<p>Run the producer component.</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>$ node producer.js</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>When the producer component runs, you see output like that shown in the following example:</p>
-</div>
-<div class="listingblock">
-<div class="title">Example output from the producer component</div>
-<div class="content">
-<pre class="highlight"><code>Ghana
-Réunion
-Guatemala
-Luxembourg
-Mayotte
-Syria
-United Kingdom
-Bolivia
-Haiti</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>As shown in the example, the producer component runs and generates messages that represent country names.</p>
-</div>
-</li>
-<li>
-<p>Switch back to the first command-line window.</p>
-<div class="paragraph">
-<p>You now see that the consumer component displays the same country names generated by the producer, and in the same order, as shown in the following example:</p>
-</div>
-<div class="listingblock">
-<div class="title">Example output from the consumer component</div>
-<div class="content">
-<pre class="highlight"><code>Ghana
-Réunion
-Guatemala
-Luxembourg
-Mayotte
-Syria
-United Kingdom
-Bolivia
-Haiti</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The output from both components confirms that they successfully connected to the Kafka instance. The components are using the Kafka topic that you created to produce and consume messages.</p>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<div class="title">Note</div>
-</td>
-<td class="content">
-You can also use the OpenShift Streams for Apache Kafka web console to browse messages in the Kafka topic. For more information, see <a href="https://github.com/redhat-developer/app-services-guides/tree/main/docs/kafka/message-browsing-kafka/README.adoc" target="_blank" rel="noopener">Browsing messages in the OpenShift Streams for Apache Kafka web console</a>.
-</td>
-</tr>
-</table>
-</div>
-</li>
-<li>
-<p>In your IDE, in the <code>producer-backend</code> directory of the repository that you cloned, open the <code>producer.js</code> file.</p>
-<div class="paragraph">
-<p>Observe that the producer component is configured to process environment variables from the <code>rhoas.env</code> file that you created. The component used the bootstrap server endpoint and client credentials stored in this file to connect to the Kafka instance.</p>
-</div>
-</li>
-<li>
-<p>In the <code>consumer-backend</code> directory, open the <code>consumer.js</code> file.</p>
-<div class="paragraph">
-<p>Observe that the consumer component is also configured to process environment variables from the <code>rhoas.env</code> file that you created.</p>
-</div>
-</li>
-</ol>
+</ul>
 </div>
 </div>
 </div>

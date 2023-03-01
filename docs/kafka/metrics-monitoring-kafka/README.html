@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.18">
-<title>Using Node.js applications with Kafka instances in OpenShift Streams for Apache Kafka</title>
+<title>Monitoring metrics in OpenShift Streams for Apache Kafka</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /*! Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -436,18 +436,189 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 @media amzn-kf8{#header,#content,#footnotes,#footer{padding:0}}
 </style>
 </head>
-<body id="chap-using-nodejs" class="article">
+<body id="chap-monitoring-metrics" class="article">
 <div id="header">
-<h1>Using Node.js applications with Kafka instances in OpenShift Streams for Apache Kafka</h1>
+<h1>Monitoring metrics in OpenShift Streams for Apache Kafka</h1>
 </div>
 <div id="content">
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph _abstract">
-<p>As a developer of applications and services, you can connect Node.js applications to Kafka instances in OpenShift Streams for Apache Kafka. <a href="https://nodejs.org/en/about/" target="_blank" rel="noopener">Node.js</a> is a server-side JavaScript runtime that is designed to build scalable network applications. Node.js provides an I/O model that is based on events and non-blocking operations, which enables efficient applications.</p>
+<p>As a developer or administrator, you can view metrics in OpenShift Streams for Apache Kafka to visualize the performance and data usage for Kafka instances and topics that you have access to. You can view metrics directly in the Streams for Apache Kafka web console, or use the metrics API endpoint provided by Streams for Apache Kafka to import the data into your own metrics monitoring tool, such as Prometheus.</p>
 </div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="ref-supported-metrics_monitoring-metrics">Supported metrics in Streams for Apache Kafka</h2>
+<div class="sectionbody">
+<div class="paragraph _abstract">
+<p>OpenShift Streams for Apache Kafka supports the following metrics for Kafka instances and topics. In the Streams for Apache Kafka web console, the <strong>Dashboard</strong> page of a Kafka instance displays a subset of these metrics. To learn more about the limits associated with both trial and production Kafka instance types, see <a href="https://access.redhat.com/articles/5979061">Red Hat OpenShift Streams for Apache Kafka Service Limits</a>.</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Cluster metrics</dt>
+<dd>
+<div class="openblock">
+<div class="content">
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>kafka_namespace:haproxy_server_bytes_in_total:rate5m</code></dt>
+<dd>
+<p>Number of incoming bytes per second for the cluster in the last five minutes. This ingress metric represents all the data that producers are sending to topics in the cluster.</p>
 <div class="paragraph">
-<p>In this quick start, you&#8217;ll use the Streams for Apache Kafka web console to collect connection information for a Kafka instance. Then you&#8217;ll manually configure a connection from an example Node.js application to the Kafka instance and start producing and consuming messages.</p>
+<p>The Kafka instance type determines the maximum incoming byte rate.</p>
+</div>
+</dd>
+<dt class="hdlist1"><code>kafka_namespace:haproxy_server_bytes_out_total:rate5m</code></dt>
+<dd>
+<p>Number of outgoing bytes per second for the cluster in the last five minutes. This egress metric represents all the data that consumers are receiving from topics in the cluster.</p>
+<div class="paragraph">
+<p>The Kafka instance type determines the maximum outgoing byte rate.</p>
+</div>
+</dd>
+<dt class="hdlist1"><code>kafka_namespace:kafka_server_socket_server_metrics_connection_count:sum</code></dt>
+<dd>
+<p>Number of current client connections to the cluster. Kafka clients use persistent connections to interact with brokers in the cluster. For example, a consumer holds a connection to each broker it is receiving data from and a connection to its group coordinator.</p>
+<div class="paragraph">
+<p>The Kafka instance type determines the maximum number of active connections.</p>
+</div>
+</dd>
+<dt class="hdlist1"><code>kafka_namespace:kafka_server_socket_server_metrics_connection_creation_rate:sum</code></dt>
+<dd>
+<p>Number of client connection creations per second for the cluster. Kafka clients use persistent connections to interact with brokers in the cluster. A constant high number of connection creations might indicate a client issue.</p>
+<div class="paragraph">
+<p>The Kafka instance type determines the maximum connection creation rate.</p>
+</div>
+</dd>
+<dt class="hdlist1"><code>kafka_topic:kafka_topic_partitions:count</code></dt>
+<dd>
+<p>Number of topics in the cluster. This metric does not include internal Kafka topics, such as <code>__consumer_offsets</code> and <code>__transaction_state</code>.</p>
+</dd>
+<dt class="hdlist1"><code>kafka_topic:kafka_topic_partitions:sum</code></dt>
+<dd>
+<p>Number of partitions across all topics in the cluster. This metric does not include partitions from internal Kafka topics, such as <code>__consumer_offsets</code> and <code>__transaction_state</code>.</p>
+<div class="paragraph">
+<p>The Kafka instance type determines the maximum number of partitions.</p>
+</div>
+</dd>
+<dt class="hdlist1"><code>kas_broker_partition_log_size_bytes_top50</code></dt>
+<dd>
+<p>Sizes, in bytes, of the fifty largest topic partitions on each broker in the cluster. The total amount of storage being used by all topic partitions on a broker is shown by the <code>kafka_broker_quota_totalstorageusedbytes</code> broker metric. The total usage for a broker must stay below the <code>kafka_broker_quota_softlimitbytes</code> value to avoid throttling of producers.</p>
+</dd>
+<dt class="hdlist1"><code>kas_topic_partition_log_size_bytes</code></dt>
+<dd>
+<p>Size, in bytes, of each topic partition on each broker in the cluster. The total amount of storage being used by all topic partitions on a broker is shown by the <code>kafka_broker_quota_totalstorageusedbytes</code> broker metric. The total usage for a broker must stay below the <code>kafka_broker_quota_softlimitbytes</code> value to avoid throttling of producers.</p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+</dd>
+<dt class="hdlist1">Broker metrics</dt>
+<dd>
+<div class="openblock">
+<div class="content">
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>kafka_broker_quota_softlimitbytes</code></dt>
+<dd>
+<p>Maximum amount of storage, in bytes, for this broker before producers are throttled. When this limit is reached, the broker starts throttling producers to prevent them from sending additional data.</p>
+<div class="paragraph">
+<p>The Kafka instance type determines the maximum storage in the broker.</p>
+</div>
+</dd>
+<dt class="hdlist1"><code>kafka_broker_quota_totalstorageusedbytes</code></dt>
+<dd>
+<p>Amount of storage, in bytes, that is currently used by partitions in the broker. The storage usage depends on the number and retention configurations of the partitions. This metric must stay below the <code>kafka_broker_quota_softlimitbytes</code> value.</p>
+</dd>
+<dt class="hdlist1"><code>kafka_controller_kafkacontroller_global_partition_count</code></dt>
+<dd>
+<p>Number of partitions in the cluster. Only the broker that is the current controller in the cluster reports this metric. Any other brokers report a value of <code>0</code>. This count includes partitions from internal Kafka topics, such as <code>__consumer_offsets</code> and <code>__transaction_state</code>. This metric is similar to the <code>kafka_topic:kafka_topic_partitions:sum</code> cluster metric.</p>
+</dd>
+<dt class="hdlist1"><code>kafka_controller_kafkacontroller_offline_partitions_count</code></dt>
+<dd>
+<p>Number of partitions in the cluster that are currently offline. Offline partitions cannot be used by clients for producing or consuming data. Only the broker that is the current controller in the cluster reports this metric. Any other brokers report <code>0</code>.</p>
+</dd>
+<dt class="hdlist1"><code>kubelet_volume_stats_available_bytes</code></dt>
+<dd>
+<p>Amount of disk space, in bytes, that is available in the broker.</p>
+</dd>
+<dt class="hdlist1"><code>kubelet_volume_stats_used_bytes</code></dt>
+<dd>
+<p>Amount of disk space, in bytes, that is currently used in the broker. This metric is similar to the <code>kafka_broker_quota_totalstorageusedbytes</code> broker metric.</p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+</dd>
+<dt class="hdlist1">Topic metrics</dt>
+<dd>
+<div class="openblock">
+<div class="content">
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>kafka_server_brokertopicmetrics_bytes_in_total</code></dt>
+<dd>
+<p>Number of incoming bytes to topics in the instance.</p>
+</dd>
+<dt class="hdlist1"><code>kafka_server_brokertopicmetrics_bytes_out_total</code></dt>
+<dd>
+<p>Number of outgoing bytes from topics in the instance.</p>
+</dd>
+<dt class="hdlist1"><code>kafka_server_brokertopicmetrics_messages_in_total</code></dt>
+<dd>
+<p>Number of messages per second received by one or more topics in the instance.</p>
+</dd>
+<dt class="hdlist1"><code>kafka_topic:kafka_server_brokertopicmetrics_bytes_in_total:rate5m</code></dt>
+<dd>
+<p>Number of incoming bytes to topics in the instance in the last five minutes.</p>
+</dd>
+<dt class="hdlist1"><code>kafka_topic:kafka_server_brokertopicmetrics_bytes_out_total:rate5m</code></dt>
+<dd>
+<p>Number of outgoing bytes from topics in the instance in the last five minutes.</p>
+</dd>
+<dt class="hdlist1"><code>kafka_topic:kafka_server_brokertopicmetrics_messages_in_total:rate5m</code></dt>
+<dd>
+<p>Number of messages per second received by one or more topics in the instance in the last five minutes.</p>
+</dd>
+<dt class="hdlist1"><code>kafka_topic:kafka_log_log_size:sum</code></dt>
+<dd>
+<p>Log size, in bytes, of each topic and replica across all brokers in the cluster.</p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="proc-viewing-metrics_monitoring-metrics">Viewing metrics for a Kafka instance in Streams for Apache Kafka</h2>
+<div class="sectionbody">
+<div class="paragraph _abstract">
+<p>After you produce and consume messages in your services using methods such as <a href="https://kafka.apache.org/downloads" target="_blank" rel="noopener">Kafka</a> scripts, <a href="https://github.com/edenhill/kcat" target="_blank" rel="noopener">Kcat</a>, or a <a href="https://quarkus.io/" target="_blank" rel="noopener">Quarkus</a> application, you can return to the Kafka instance in the web console and use the <strong>Dashboard</strong> page to view metrics for the instance and topics. The metrics help you understand the performance and data usage for your Kafka instance and topics.</p>
+</div>
+<div class="ulist">
+<div class="title">Prerequisites</div>
+<ul>
+<li>
+<p>You have access to a running Kafka instance in Streams for Apache Kafka that contains topics. For more information about access management in Streams for Apache Kafka, see <a href="https://github.com/redhat-developer/app-services-guides/tree/main/docs/kafka/access-mgmt-kafka/README.adoc" target="_blank" rel="noopener">Managing account access in OpenShift Streams for Apache Kafka</a>.</p>
+</li>
+</ul>
+</div>
+<div class="ulist">
+<div class="title">Procedure</div>
+<ul>
+<li>
+<p>In the <strong>Kafka Instances</strong> page of the web console, click the name of the Kafka instance and select the <strong>Dashboard</strong> tab.</p>
+<div class="paragraph">
+<p>When you create a Kafka instance and add new topics, the <strong>Dashboard</strong> page is initially empty. After you start producing and consuming messages in your services, you can return to this page to view related metrics. For example, to use Kafka scripts to produce and consume messages, see <a href="https://github.com/redhat-developer/app-services-guides/tree/main/docs/kafka/kafka-bin-scripts-kafka/README.adoc" target="_blank" rel="noopener">Configuring and connecting Kafka scripts with OpenShift Streams for Apache Kafka</a>.</p>
+</div>
+</li>
+</ul>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -456,39 +627,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="title">Note</div>
 </td>
 <td class="content">
-When you&#8217;ve completed this quick start and understand the required connection configuration for a Kafka instance, you can use the OpenShift Application Services command-line interface (CLI) to generate this type of configuration in a more automated way. To learn more, see <a href="https://github.com/redhat-developer/app-services-guides/tree/main/docs/rhoas/rhoas-service-contexts/README.adoc" target="_blank" rel="noopener">Connecting client applications to OpenShift Application Services using the rhoas CLI</a>.
-</td>
-</tr>
-</table>
-</div>
-<div class="ulist">
-<div class="title">Prerequisites</div>
-<ul>
-<li>
-<p>You have a running Kafka instance in Streams for Apache Kafka (see <a href="https://github.com/redhat-developer/app-services-guides/tree/main/docs/kafka/getting-started-kafka/README.adoc" target="_blank" rel="noopener">Getting started with OpenShift Streams for Apache Kafka</a>).</p>
-</li>
-<li>
-<p>You have a command-line terminal application.</p>
-</li>
-<li>
-<p><a href="https://github.com/git-guides/" target="_blank" rel="noopener">Git</a> is installed.</p>
-</li>
-<li>
-<p>You have an IDE such as <a href="https://www.jetbrains.com/idea/download/" target="_blank" rel="noopener">IntelliJ IDEA</a>, <a href="https://www.eclipse.org/downloads/" target="_blank" rel="noopener">Eclipse</a>, or <a href="https://code.visualstudio.com/Download" target="_blank" rel="noopener">Visual Studio Code</a>.</p>
-</li>
-<li>
-<p><a href="https://nodejs.org/en/download/" target="_blank" rel="noopener">Node.js 14</a> or later is installed.</p>
-</li>
-</ul>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<div class="title">Note</div>
-</td>
-<td class="content">
-The example Node.js application in this quick start uses the <a href="https://kafka.js.org/" target="_blank" rel="noopener">KafkaJS</a> client by default. If you want to use the <a href="https://github.com/blizzard/node-rdkafka" target="_blank" rel="noopener">node-rdkafka</a> client, you must install some development tools locally on your computer or use a container runtime such as Podman or Docker to run a specified container image and configure a development environment. To learn more, see the <a href="https://github.com/nodeshift-starters/reactive-example/tree/node-rdkafka#node-rdkafka-and-kafkajs">documentation</a> for the example Node.js application.
+In some cases, after you start producing and consuming messages, you might need to wait several minutes for the latest metrics to appear. You might also need to wait until your instance and topics contain enough data for metrics to appear.
 </td>
 </tr>
 </table>
@@ -496,59 +635,28 @@ The example Node.js application in this quick start uses the <a href="https://ka
 </div>
 </div>
 <div class="sect1">
-<h2 id="proc-importing-nodejs-sample-code_using-nodejs">Importing the Node.js sample code</h2>
+<h2 id="proc-configuring-metrics-prometheus_monitoring-metrics">Configuring metrics monitoring for a Kafka instance in Prometheus</h2>
 <div class="sectionbody">
 <div class="paragraph _abstract">
-<p>For this quick start, you&#8217;ll use sample code from the Nodeshift Application Starters <a href="https://github.com/nodeshift-starters/reactive-example" target="_blank" rel="noopener">reactive-example</a> repository in GitHub. After you understand the concepts and tasks in this quick start, you can use your own Node.js applications with OpenShift Streams for Apache Kafka in the same way.</p>
-</div>
-<div class="olist arabic">
-<div class="title">Procedure</div>
-<ol class="arabic">
-<li>
-<p>On the command line, clone the Nodeshift Application Starters <a href="https://github.com/nodeshift-starters/reactive-example" target="_blank" rel="noopener">reactive-example</a> repository from GitHub.</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>$ git clone https://github.com/nodeshift-starters/reactive-example.git</code></pre>
-</div>
-</div>
-</li>
-<li>
-<p>In your IDE, open the <code>reactive-example</code> directory of the repository that you cloned.</p>
-</li>
-</ol>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="proc-configuring-nodejs_using-nodejs">Configuring the Node.js example application to connect to a Kafka instance</h2>
-<div class="sectionbody">
-<div class="paragraph _abstract">
-<p>To enable your Node.js application to access a Kafka instance, you must configure a connection by specifying the following details:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>The bootstrap server endpoint for your Kafka instance</p>
-</li>
-<li>
-<p>The generated credentials for your OpenShift Streams for Apache Kafka service account</p>
-</li>
-<li>
-<p>The Simple Authentication and Security Layer (SASL) mechanism that the client will use to authenticate with the Kafka instance</p>
-</li>
-</ul>
+<p>As an alternative to viewing metrics for a Kafka instance in the OpenShift Streams for Apache Kafka web console, you can export your metrics to <a href="https://prometheus.io/docs/introduction/overview/" target="_blank" rel="noopener">Prometheus</a> and integrate the metrics with your own metrics monitoring platform. Streams for Apache Kafka provides a <code>kafkas/{id}/metrics/federate</code> API endpoint that you can configure as a scrape target for Prometheus to use to collect and store metrics. You can then access the metrics in the <a href="https://prometheus.io/docs/visualization/browser/" target="_blank" rel="noopener">Prometheus expression browser</a> or in a data-graphing tool such as <a href="https://prometheus.io/docs/visualization/grafana/" target="_blank" rel="noopener">Grafana</a>.</p>
 </div>
 <div class="paragraph">
-<p>In this task, you&#8217;ll create a new configuration file called <code>rhoas.env</code>. In the file, you&#8217;ll set the required bootstrap server and client credentials as environment variables.</p>
+<p>This procedure follows the <a href="https://prometheus.io/docs/prometheus/latest/configuration/configuration/#configuration-file" target="_blank" rel="noopener">Configuration File</a> method defined by Prometheus for integrating third-party metrics. If you use the Prometheus Operator in your monitoring environment, you can also follow the <a href="https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/additional-scrape-config.md#additional-scrape-configuration" target="_blank" rel="noopener">Additional Scrape Configuration</a> method.</p>
 </div>
 <div class="ulist">
 <div class="title">Prerequisites</div>
 <ul>
 <li>
-<p>You have the bootstrap server endpoint for your Kafka instance. To get the server endpoint, select your Kafka instance in the Streams for Apache Kafka <a href="https://console.redhat.com/application-services/streams/" target="_blank" rel="noopener">web console</a>, select the options icon (three vertical dots), and click <strong>Connection</strong>.</p>
+<p>You have access to a running Kafka instance that contains topics in Streams for Apache Kafka. For more information about access management in Streams for Apache Kafka, see <a href="https://github.com/redhat-developer/app-services-guides/tree/main/docs/kafka/access-mgmt-kafka/README.adoc" target="_blank" rel="noopener">Managing account access in OpenShift Streams for Apache Kafka</a>.</p>
 </li>
 <li>
-<p>You have the generated credentials for your service account. To reset the credentials, use the <a href="https://console.redhat.com/application-services/service-accounts" target="_blank" rel="noopener">Service Accounts</a> page in the <strong>Application Services</strong> section of the Red Hat Hybrid Cloud Console.</p>
+<p>You have the ID and the SASL/OAUTHBEARER token endpoint for the Kafka instance. To relocate the Kafka instance ID and the token endpoint, select your Kafka instance in the Streams for Apache Kafka web console, select the options menu (three vertical dots), and click <strong>Connection</strong>.</p>
+</li>
+<li>
+<p>You have the generated credentials for your service account that has access to the Kafka instance. To reset the credentials, use the <a href="https://console.redhat.com/application-services/service-accounts" target="_blank" rel="noopener">Service Accounts</a> page in the <strong>Application Services</strong> section of the Red Hat Hybrid Cloud Console.</p>
+</li>
+<li>
+<p>You&#8217;ve installed a Prometheus instance in your monitoring environment. For installation instructions, see <a href="https://prometheus.io/docs/prometheus/latest/getting_started/" target="_blank" rel="noopener">Getting Started</a> in the Prometheus documentation.</p>
 </li>
 </ul>
 </div>
@@ -556,230 +664,46 @@ The example Node.js application in this quick start uses the <a href="https://ka
 <div class="title">Procedure</div>
 <ol class="arabic">
 <li>
-<p>In your IDE, create a new file. Save the file with the name <code>rhoas.env</code>, at the root level of the <code>reactive-example</code> directory for the cloned repository.</p>
-</li>
-<li>
-<p>In the <code>rhoas.env</code> file, set the SASL authentication mechanism and the Kafka instance client credentials as shown in the following configuration. Replace the client ID and client secret values with your own credential information. The configuration uses SASL/OAUTHBEARER authentication, which is the recommended authentication mechanism to use in Streams for Apache Kafka.</p>
-<div class="listingblock">
-<div class="title">Setting environment variables in the rhoas.env file</div>
-<div class="content">
-<pre class="highlight"><code>KAFKA_HOST=<em>&lt;bootstrap_server&gt;</em>
-RHOAS_SERVICE_ACCOUNT_CLIENT_ID=<em>&lt;client_id&gt;</em>
-RHOAS_SERVICE_ACCOUNT_CLIENT_SECRET=<em>&lt;client_secret&gt;</em>
-KAFKA_SASL_MECHANISM=oauthbearer
-RHOAS_TOKEN_ENDPOINT_URL=https://sso.redhat.com/auth/realms/redhat-external/protocol/openid-connect/token</code></pre>
-</div>
-</div>
-</li>
-<li>
-<p>Save the <code>rhoas.env</code> file.</p>
-</li>
-</ol>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="proc-creating-countries-topic_using-nodejs">Creating a Kafka topic in Streams for Apache Kafka</h2>
-<div class="sectionbody">
-<div class="paragraph _abstract">
-<p>The Node.js application in this quick start uses a Kafka topic called <code>countries</code> to produce and consume messages. In this task, you&#8217;ll create the <code>countries</code> topic in your Kafka instance.</p>
-</div>
-<div class="ulist">
-<div class="title">Prerequisites</div>
-<ul>
-<li>
-<p>You have a running Kafka instance in OpenShift Streams for Apache Kafka.</p>
-</li>
-</ul>
-</div>
-<div class="olist arabic">
-<div class="title">Procedure</div>
-<ol class="arabic">
-<li>
-<p>In the Streams for Apache Kafka <a href="https://console.redhat.com/application-services/streams/" target="_blank" rel="noopener">web console</a>, select <strong>Kafka Instances</strong> and then click the name of the Kafka instance that you want to add a topic to.</p>
-</li>
-<li>
-<p>Select the <strong>Topics</strong> tab.</p>
-</li>
-<li>
-<p>Click <strong>Create topic</strong> and follow the guided steps to define the topic details.</p>
+<p>In your Prometheus configuration file, add the following information. Replace the variable values with your own Kafka instance and service account information.</p>
 <div class="openblock">
 <div class="content">
 <div class="paragraph">
-<p>You must specify the following topic properties:</p>
+<p>The <code>&lt;kafka_instance_id&gt;</code> is the ID of the Kafka instance. The <code>&lt;client_id&gt;</code> and <code>&lt;client_secret&gt;</code> are the generated credentials for your service account that you copied previously. The <code>&lt;token_url&gt;</code> is the SASL/OAUTHBEARER token endpoint for the Kafka instance.</p>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p><strong>Topic name</strong>: For this quick start, enter <code>countries</code> as the topic name.</p>
-</li>
-<li>
-<p><strong>Partitions</strong>: Set the number of partitions for the topic. For this quick start, set the value to <code>1</code>.</p>
-</li>
-<li>
-<p><strong>Message retention</strong>: Set the message retention time and size. For this quick start, set the retention time to <code>A week</code> and the retention size to <code>Unlimited</code>.</p>
-</li>
-<li>
-<p><strong>Replicas</strong>: For this release of Streams for Apache Kafka, the replica values are preconfigured. The number of partition replicas for the topic is set to <code>3</code> and the minimum number of follower replicas that must be in sync with a partition leader is set to <code>2</code>. For a trial Kafka instance, the number of replicas and the minimum in-sync replica factor are both set to <code>1</code>.</p>
-</li>
-</ul>
+<div class="listingblock">
+<div class="title">Required information for Prometheus configuration file</div>
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">- job_name: "kafka-federate"
+  static_configs:
+  - targets: ["api.openshift.com"]
+  scheme: "https"
+  metrics_path: "/api/kafkas_mgmt/v1/kafkas/<em>&lt;kafka_instance_id&gt;</em>/metrics/federate"
+  oauth2:
+    client_id: "<em>&lt;client_id&gt;</em>"
+    client_secret: "<em>&lt;client_secret&gt;</em>"
+    token_url: "<em>&lt;token_url&gt;</em>"</code></pre>
+</div>
 </div>
 <div class="paragraph">
-<p>After you complete the setup, the new topic appears on the <strong>Topics</strong> page. You can now run the Node.js application to start producing and consuming messages.</p>
+<p>The new scrape target becomes available after the configuration has reloaded.</p>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>View your collected metrics in the Prometheus expression browser at <code>http://<em>&lt;host&gt;</em>:<em>&lt;port&gt;</em>/graph</code>, or integrate your Prometheus data source with a data-graphing tool such as Grafana. For information about Prometheus metrics in Grafana, see <a href="https://prometheus.io/docs/visualization/grafana/" target="_blank" rel="noopener">Grafana Support for Prometheus</a> in the Grafana documentation.</p>
+<div class="openblock">
+<div class="content">
+<div class="paragraph">
+<p>If you use Grafana with your Prometheus instance, you can import the predefined <a href="https://grafana.com/grafana/dashboards/15835" target="_blank" rel="noopener">OpenShift Streams for Apache Kafka Grafana dashboard</a> to set up your metrics display. For import instructions, see <a href="https://grafana.com/docs/grafana/v7.5/dashboards/export-import/#importing-a-dashboard" target="_blank" rel="noopener">Importing a dashboard</a> in the Grafana documentation.</p>
 </div>
 </div>
 </div>
 </li>
 </ol>
 </div>
-<div class="ulist">
-<div class="title">Verification</div>
-<ul>
-<li>
-<p>Verify that the <code>countries</code> topic is listed on the <strong>Topics</strong> page.</p>
-</li>
-</ul>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="proc-running-nodejs-example-application_using-nodejs">Running the Node.js example application</h2>
-<div class="sectionbody">
-<div class="paragraph _abstract">
-<p>After you configure your Node.js application to connect to a Kafka instance, and you create the required Kafka topic, you&#8217;re ready to run the application.</p>
-</div>
 <div class="paragraph">
-<p>In this task, you&#8217;ll run the following components of the Node.js application:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>A <code>producer-backend</code> component that generates random country names and sends these names to the Kafka topic</p>
-</li>
-<li>
-<p>A <code>consumer-backend</code> component that consumes the country names from the Kafka topic</p>
-</li>
-</ul>
-</div>
-<div class="ulist">
-<div class="title">Prerequisites</div>
-<ul>
-<li>
-<p>You&#8217;ve configured the Node.js example application to connect to a Kafka instance.</p>
-</li>
-<li>
-<p>You&#8217;ve created the <code>countries</code> topic.</p>
-</li>
-<li>
-<p>You&#8217;ve set permissions for your service account to produce and consume messages in the <code>countries</code> topic. For the Node.js application in this example, the consumer group you must specify in your permissions is called <code>consumer-test</code>. To learn how to configure access permissions for a Kafka instance, see <a href="https://github.com/redhat-developer/app-services-guides/tree/main/docs/kafka/access-mgmt-kafka/README.adoc" target="_blank" rel="noopener">Managing account access in OpenShift Streams for Apache Kafka</a>.</p>
-</li>
-</ul>
-</div>
-<div class="olist arabic">
-<div class="title">Procedure</div>
-<ol class="arabic">
-<li>
-<p>On the command line, navigate to the <code>reactive-example</code> directory of the repository that you cloned.</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>$ cd reactive-example</code></pre>
-</div>
-</div>
-</li>
-<li>
-<p>Navigate to the directory for the consumer component. Use Node Package Manager (npm) to install the dependencies for this component.</p>
-<div class="listingblock">
-<div class="title">Installing dependencies for the consumer component</div>
-<div class="content">
-<pre class="highlight"><code>$ cd consumer-backend
-$ npm install</code></pre>
-</div>
-</div>
-</li>
-<li>
-<p>Run the consumer component.</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>$ node consumer.js</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>You see the Node.js application run and connect to the Kafka instance. However, because you haven&#8217;t yet run the producer component, the consumer has no country names to display.</p>
-</div>
-<div class="paragraph">
-<p>If the application fails to run, review the error log in the command-line window and address any problems. Also, review the steps in this quick start to ensure that the application and Kafka topic are configured correctly.</p>
-</div>
-</li>
-<li>
-<p>Open a second command-line window or tab.</p>
-</li>
-<li>
-<p>On the second command line, navigate to the <code>reactive-example</code> directory of the repository that you cloned.</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>$ cd reactive-example</code></pre>
-</div>
-</div>
-</li>
-<li>
-<p>Navigate to the directory for the producer component. Use Node Package Manager to install the dependencies for this component.</p>
-<div class="listingblock">
-<div class="title">Installing dependencies for the producer component</div>
-<div class="content">
-<pre class="highlight"><code>$ cd producer-backend
-$ npm install</code></pre>
-</div>
-</div>
-</li>
-<li>
-<p>Run the producer component.</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>$ node producer.js</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>When the producer component runs, you see output like that shown in the following example:</p>
-</div>
-<div class="listingblock">
-<div class="title">Example output from the producer component</div>
-<div class="content">
-<pre class="highlight"><code>Ghana
-Réunion
-Guatemala
-Luxembourg
-Mayotte
-Syria
-United Kingdom
-Bolivia
-Haiti</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>As shown in the example, the producer component runs and generates messages that represent country names.</p>
-</div>
-</li>
-<li>
-<p>Switch back to the first command-line window.</p>
-<div class="paragraph">
-<p>You now see that the consumer component displays the same country names generated by the producer, and in the same order, as shown in the following example:</p>
-</div>
-<div class="listingblock">
-<div class="title">Example output from the consumer component</div>
-<div class="content">
-<pre class="highlight"><code>Ghana
-Réunion
-Guatemala
-Luxembourg
-Mayotte
-Syria
-United Kingdom
-Bolivia
-Haiti</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The output from both components confirms that they successfully connected to the Kafka instance. The components are using the Kafka topic that you created to produce and consume messages.</p>
+<p>When you create a Kafka instance and add new topics, the metrics are initially empty. After you start producing and consuming messages in your services, you can return to your monitoring tool to view related metrics. For example, to use Kafka scripts to produce and consume messages, see <a href="https://github.com/redhat-developer/app-services-guides/tree/main/docs/kafka/kafka-bin-scripts-kafka/README.adoc" target="_blank" rel="noopener">Configuring and connecting Kafka scripts with OpenShift Streams for Apache Kafka</a>.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -788,25 +712,130 @@ Haiti</code></pre>
 <div class="title">Note</div>
 </td>
 <td class="content">
-You can also use the OpenShift Streams for Apache Kafka web console to browse messages in the Kafka topic. For more information, see <a href="https://github.com/redhat-developer/app-services-guides/tree/main/docs/kafka/message-browsing-kafka/README.adoc" target="_blank" rel="noopener">Browsing messages in the OpenShift Streams for Apache Kafka web console</a>.
+In some cases, after you start producing and consuming messages, you might need to wait several minutes for the latest metrics to appear. You might also need to wait until your instance and topics contain enough data for metrics to appear.
 </td>
 </tr>
 </table>
 </div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If you use the Prometheus Operator in your monitoring environment, you can alternatively create a <code>kafka-federate.yaml</code> file as an additional scrape configuration in your Prometheus custom resource as shown in the following example commands. For more information about this method, see <a href="https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/additional-scrape-config.md#additional-scrape-configuration" target="_blank" rel="noopener">Additional Scrape Configuration</a> in the Prometheus documentation.</p>
+</div>
+<div class="listingblock">
+<div class="title">Example <code>kafka-federate.yaml</code> file</div>
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">- job_name: "kafka-federate"
+  static_configs:
+  - targets: ["api.openshift.com"]
+  scheme: "https"
+  metrics_path: "/api/kafkas_mgmt/v1/kafkas/<em>&lt;kafka_instance_id&gt;</em>/metrics/federate"
+  oauth2:
+    client_id: "<em>&lt;client_id&gt;</em>"
+    client_secret: "<em>&lt;client_secret&gt;</em>"
+    token_url: "<em>&lt;token_url&gt;</em>"</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Example command to create and apply a Kubernetes secret</div>
+<div class="content">
+<pre class="highlight"><code>kubectl create secret generic additional-scrape-configs --from-file=<em>&lt;~/kafka-federate.yaml&gt;</em> --dry-run -o yaml \
+kubectl apply -f - -n <em>&lt;namespace&gt;</em></code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Example Prometheus custom resource with new secret</div>
+<div class="content">
+<pre class="highlight"><code>apiVersion: monitoring.coreos.com/v1
+kind: Prometheus
+metadata:
+    ...
+spec:
+    ...
+    additionalScrapeConfigs:
+        name: additional-scrape-configs
+        key: kafka-federate.yaml</code></pre>
+</div>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="proc-configuring-prometheus-alerts_monitoring-metrics">Configuring Prometheus alerts for Kafka instance limits</h2>
+<div class="sectionbody">
+<div class="ulist">
+<div class="title">Prerequisites</div>
+<ul>
+<li>
+<p>You have successfully configured metrics monitoring for a Kafka instance in Prometheus.</p>
 </li>
 <li>
-<p>In your IDE, in the <code>producer-backend</code> directory of the repository that you cloned, open the <code>producer.js</code> file.</p>
-<div class="paragraph">
-<p>Observe that the producer component is configured to process environment variables from the <code>rhoas.env</code> file that you created. The component used the bootstrap server endpoint and client credentials stored in this file to connect to the Kafka instance.</p>
-</div>
+<p>You use the Prometheus Operator in your monitoring environment.</p>
 </li>
 <li>
-<p>In the <code>consumer-backend</code> directory, open the <code>consumer.js</code> file.</p>
-<div class="paragraph">
-<p>Observe that the consumer component is also configured to process environment variables from the <code>rhoas.env</code> file that you created.</p>
+<p>You can define <a href="https://prometheus.io/docs/prometheus/latest/configuration/alerting_rules/" target="_blank" rel="noopener">alerting rules</a> in Prometheus and can deploy an <a href="https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/user-guides/alerting.md/" target="_blank" rel="noopener">Alertmanager cluster</a> in Prometheus Operator.</p>
+</li>
+</ul>
 </div>
+<div class="olist arabic">
+<div class="title">Procedure</div>
+<ol class="arabic">
+<li>
+<p>Create a <code>PrometheusRule</code> custom resource with alerts defined for the <a href="https://access.redhat.com/articles/5979061">capacity of your Kafka instance</a>.</p>
+</li>
+<li>
+<p>Apply the <code>PrometheusRule</code> to the cluster that you are federating the metrics to.</p>
 </li>
 </ol>
+</div>
+<div class="listingblock">
+<div class="title">Example <code>PrometheusRule</code> custom resource for a Kafka broker storage limit alert</div>
+<div class="content">
+<pre class="highlight"><code>apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+spec:
+  groups:
+    - name: limits
+      rules:
+        - alert: KafkaBrokerStorageFillingUp
+          expr: predict_linear(kubelet_volume_stats_available_bytes{persistentvolumeclaim=~"data-(.+)-kafka-[0-9]+"}[1h], 4 * 3600)
+          labels:
+            severity: &lt;SOME_SEVERITY&gt;
+          annotations:
+            summary: 'Broker PersistentVolume is filling up.'
+            description: 'Based on recent sampling, the Broker PersistentVolume claimed by {{ $labels.persistentvolumeclaim }} is expected to fill up within four days.</code></pre>
+</div>
+</div>
+<div class="ulist _additional-resources">
+<div class="title">Additional resources</div>
+<ul>
+<li>
+<p><a href="https://github.com/redhat-developer/app-services-guides/tree/main/docs/kafka/getting-started-kafka/README.adoc" target="_blank" rel="noopener">Getting started with OpenShift Streams for Apache Kafka</a></p>
+</li>
+<li>
+<p><a href="https://github.com/redhat-developer/app-services-guides/tree/main/docs/kafka/rhoas-cli-getting-started-kafka/README.adoc" target="_blank" rel="noopener">Getting started with the <code>rhoas</code> CLI for OpenShift Streams for Apache Kafka</a></p>
+</li>
+<li>
+<p><a href="https://github.com/redhat-developer/app-services-cli/tree/main/docs/commands" target="_blank" rel="noopener">CLI command reference (rhoas)</a></p>
+</li>
+<li>
+<p><a href="https://prometheus.io/docs/prometheus/latest/getting_started/" target="_blank" rel="noopener">Getting Started</a> in the Prometheus documentation</p>
+</li>
+<li>
+<p><a href="https://prometheus.io/docs/visualization/grafana/" target="_blank" rel="noopener">Grafana Support for Prometheus</a></p>
+</li>
+<li>
+<p><a href="https://grafana.com/docs/grafana/latest/datasources/prometheus/" target="_blank" rel="noopener">Prometheus Data Source</a> in the Grafana documentation</p>
+</li>
+</ul>
 </div>
 </div>
 </div>

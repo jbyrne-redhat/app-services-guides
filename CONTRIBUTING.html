@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.18">
-<title>Using Node.js applications with Kafka instances in OpenShift Streams for Apache Kafka</title>
+<title>Contributing to App Services guides</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /*! Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -436,18 +436,329 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 @media amzn-kf8{#header,#content,#footnotes,#footer{padding:0}}
 </style>
 </head>
-<body id="chap-using-nodejs" class="article">
+<body class="article">
 <div id="header">
-<h1>Using Node.js applications with Kafka instances in OpenShift Streams for Apache Kafka</h1>
+<h1>Contributing to App Services guides</h1>
 </div>
 <div id="content">
-<div id="preamble">
+<div class="sect1">
+<h2 id="_prerequisites">Prerequisites</h2>
 <div class="sectionbody">
-<div class="paragraph _abstract">
-<p>As a developer of applications and services, you can connect Node.js applications to Kafka instances in OpenShift Streams for Apache Kafka. <a href="https://nodejs.org/en/about/" target="_blank" rel="noopener">Node.js</a> is a server-side JavaScript runtime that is designed to build scalable network applications. Node.js provides an I/O model that is based on events and non-blocking operations, which enables efficient applications.</p>
+<div class="paragraph">
+<p>The guides toolchain is heavily dependent on AsciiDoc and Node.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Install your favourite tool for editing AsciiDoc (for example, VS Code or IntelliJ).</p>
+</li>
+<li>
+<p>Install the latest Active long-term support (LTS) version of <a href="https://nodejs.org/en/about/releases/">Node</a> (<code>node</code>) .</p>
+</li>
+<li>
+<p>Install <a href="https://github.com/nvm-sh/nvm">Node Version Manager</a> (<code>nvm</code>).</p>
+</li>
+<li>
+<p>After you install <code>node</code> and <code>nvm</code>, run the following commands from your local  <code>app-services-guides</code> repository&#8217;s top-level directory (for example, <code>Users/myname/mylocalGitRepos/app-services-guides/</code>):</p>
+<div class="listingblock">
+<div class="content">
+<pre>nvm install &amp;&amp; nvm use</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>npm --prefix .build install</pre>
+</div>
+</div>
+</li>
+<li>
+<p>If you will be generating modular docs, install the following software:</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Java 15 or later</p>
+</li>
+<li>
+<p><a href="https://maven.apache.org/install.html">Apache Maven 3.x</a></p>
+</li>
+<li>
+<p><a href="https://docs.asciidoctor.org/asciidoctor/latest/install/">Asciidoctor 2</a></p>
+</li>
+</ol>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_creating_a_guide">Creating a guide</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To create a new guide:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Decide on the <em>identifier</em> for your guide. The identifier should be concise and accurately describe the guide. For example the guide for using Streams for Apache Kafka with <code>kafkacat</code> has the identifier <code>kafkacat</code>. The identifier must be written in lowercase <a href="https://en.wikipedia.org/wiki/Letter_case#Special_case_styles">kebab case</a>.</p>
+</li>
+<li>
+<p>Create a new directory, using the <em>identifier</em> as the name.</p>
+</li>
+<li>
+<p>Use the content from one of <code>README.adoc</code> files in another existing guide folder as a template to modify and add documentation to the new file.</p>
+</li>
+<li>
+<p>If you need to add attributes, don&#8217;t add them directly to the document but put them in <code>_attributes.adoc</code> and then run</p>
+</li>
+<li>
+<p>When you add section ids (e.g. <code>[id="proc-running-quarkus-example-application-using-operator_{context}"]}) to a guide, the section id must be <strong>globally</strong> unique within the entire app-services-guides repository - if they conflict with a section id in another guide modular docs generation will fail. The `_{context}</code> is not considered part of the id, and does not provide any form of uniqueness for the id.</p>
+<div class="listingblock">
+<div class="content">
+<pre>npm --prefix .build run generate:attributes</pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_repository_structure">Repository structure</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This repository is designed to be usable for people browsing it on GitHub, as well as reusable (for example, in quick starts) in implementations of services such as Streams for Apache Kafka or Service Registry.</p>
 </div>
 <div class="paragraph">
-<p>In this quick start, you&#8217;ll use the Streams for Apache Kafka web console to collect connection information for a Kafka instance. Then you&#8217;ll manually configure a connection from an example Node.js application to the Kafka instance and start producing and consuming messages.</p>
+<p>Each guide is contained in a separate directory. The directory must contain:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>README.adoc</code></dt>
+<dd>
+<p>contains the guide, written using <a href="https://asciidoctor.org/docs/asciidoc-writers-guide/">AsciiDoc</a>.</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>Additionally, the directory may contain:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>quickstart.yml</code></dt>
+<dd>
+<p>if the guide is also a <a href="https://github.com/patternfly/patternfly-quickstarts">quick start</a>, then this file defines the quick start. It normally references snippets of content from the guide that allow for the <a href="https://en.wikipedia.org/wiki/Don%27t_repeat_yourself">DRY principle</a> to be applied.</p>
+</dd>
+<dt class="hdlist1"><code>pantheon.yml</code></dt>
+<dd>
+<p>this repository supports the <a href="https://github.com/redhataccess/pantheon">Pantheon 2.x</a> modular documentation management and publication system built on top of AsciiDoc. This file defines how the quick start snippets can be loaded from Pantheon rather than directly by Asciidoctor.js.</p>
+</dd>
+<dt class="hdlist1">Sample code</dt>
+<dd>
+<p>Many guides have associated code (and other artifacts such as build files, deployment descriptors and scripts). These are also placed in the directory.</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>There are a number of additional directories which don&#8217;t contain guides. These all start with <code>.</code>.</p>
+</div>
+<div class="paragraph">
+<p>The <code>app-services-guides</code> repository&#8217;s <code>.build</code> directory contains a TypeScript project that is used to provide:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>a local preview for quick starts</p>
+</li>
+<li>
+<p>a production build</p>
+</li>
+<li>
+<p>targets to lint all guides</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The <code>.github</code> directory contains GitHub Actions that are used to validate pull requests.</p>
+</div>
+<div class="sect2">
+<h3 id="_attribute_injection">Attribute injection</h3>
+<div class="paragraph">
+<p>AsciiDoc attributes are injected into all files by a code generator. Do not edit the attribtes in the source files, but instead edit the <code>_attributes.adoc</code> file and add them there. Then run:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>npm --prefix .build run generate:attributes</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The code generator looks for a block that starts with:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>////
+START GENERATED ATTRIBUTES
+WARNING: This content is generated by running npm --prefix .build run generate:attributes
+////</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And ends with:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>////
+END GENERATED ATTRIBUTES
+////</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Anything between the start of the start block and the end of the end block will be replaced by the code generator when attribute generation runs.</p>
+</div>
+<div class="paragraph">
+<p>A check exists in the continuous integration job that validates that generation is up to date. If generation is not up to date then continuous integration will fail.</p>
+</div>
+<div class="paragraph">
+<p>The file <code>./doc/.adocignore</code> contains a list of globs which will be ignored by the attribute injector</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_creating_a_quick_start">Creating a quick start</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Many of the guides in this repository are also available as "quick starts". Quick starts are available in the Web UI for the Streams for Apache Kafka and are based on the <a href="https://github.com/patternfly/patternfly-quickstarts">PatternFly</a> project.</p>
+</div>
+<div class="paragraph">
+<p>We would always recommend starting with a guide and then adding the quick start metadata. This will allow your content to be accessible both in the Web UI and via GitHub.</p>
+</div>
+<div class="sect2">
+<h3 id="_adding_support_for_quickstart_yml_to_your_ide">Adding support for quickstart.yml to your IDE</h3>
+<div class="paragraph">
+<p>A schema for <code>quickstart.yml</code> is provided in <code>quickstart.schema.json</code>. To load this into your IDE:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Follow <a href="https://www.jetbrains.com/help/idea/json.html#ws_json_schema_add_custom">this guide for IntelliJ</a>, use <code>**/quickstart.yml</code> as the file path pattern</p>
+</li>
+<li>
+<p>Install <a href="https://marketplace.visualstudio.com/items?itemName=redhat.vscode-yaml">the YAML extension for VS Code</a>, follow the documentation to associate the schema to <code>**/quickstart.yml</code></p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_previewing_the_quick_starts_locally">Previewing the quick starts locally</h3>
+<div class="paragraph">
+<p>You can preview the quick start catalog and the quick start pages locally. (Note that the preview shows <em>all</em> of the quick starts in the <code>app-services-guides</code> repository, not just one quick start.)</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Verify that you installed Node (<code>node</code>) and Node Version Manager (<code>nvm</code>) as  described in the <strong>Prerequisites</strong> section at the top of this page.</p>
+</li>
+<li>
+<p>Make sure that your working directory is your local <code>app-services-guides</code> repository&#8217;s <code>.build</code> directory, for example:</p>
+<div class="listingblock">
+<div class="content">
+<pre>cd app-services-guides/.build</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Install the project dependencies:</p>
+<div class="listingblock">
+<div class="content">
+<pre>npm install</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Start the web server</p>
+<div class="listingblock">
+<div class="content">
+<pre>npm run start:dev</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>(Optional) You can run the local preview with custom attributes by specifying an attributes file on the command line. The attributes file can be either an AsciiDoc file (only the attributes declared in the document are used) or a YAML file.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>export ATTRIBUTES_FILE=&lt;path to attributes file&gt;
+npm run start:dev</pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Your web browser should open automatically to <a href="http://localhost:9001" class="bare">http://localhost:9001</a> and show the quick start catalog.</p>
+</div>
+<div class="paragraph">
+<p>"Hot reload" is enabled, which means that saving a change to any <code>quickstart.yml</code> or <code>*.adoc</code> file will trigger a rebuild and reload the content in the browser automatically.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_converting_your_guide_into_a_quick_start">Converting your guide into a quick start</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Add a <code>quickstart.yml</code> file to the same directory as the <code>README.adoc</code> for the guide.</p>
+</li>
+<li>
+<p>All quick starts must have an <code>apiVersion: console.openshift.io/v1</code>, and a <code>kind: QuickStarts</code> as well as  an associate array <code>metadata</code> with a member with key <code>name</code>, which must be given the <code>identifier</code> as a value:</p>
+<div class="listingblock">
+<div class="content">
+<pre>apiVersion: console.openshift.io/v1
+kind: QuickStarts
+metadata:
+  name: &lt;identifier&gt;</pre>
+</div>
+</div>
+</li>
+<li>
+<p>The <code>spec</code> associative array defines the quick start content. Start by defining the content type of the quickstart (Quick start / Documentation), the version of the quick start, the base64 value of an icon to use, and how long the quick start should take to complete.</p>
+<div class="listingblock">
+<div class="content">
+<pre>spec:
+  version: &lt;quick start version&gt;
+  type:
+    text: Quick start // or Documentation if it has an external link
+    color: green // orange for Documentation
+  icon: data:image/svg+xml;base64,&lt;base64-string&gt; // you can find the base64 string here: https://base64.guru/converter/encode/image
+  durationMinutes: &lt;duration&gt;</pre>
+</div>
+</div>
+</li>
+<li>
+<p>The <code>displayName</code> of the quick start is used both in the catalog and as the heading for the quick start drawer.</p>
+<div class="listingblock">
+<div class="content">
+<pre>  displayName: !snippet/title README.adoc#&lt;id&gt;</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>!&lt;tag name&gt;</code> syntax represents a custom data type in YAML. When the <code>quickstart.yml</code> document is deserialized by the YAML parser, the quick start renderer is able to inject content. The <code>quickstart.yml</code> parser makes use of custom data types to inject content from an AsciiDoc file into the quick start. This allows us to better comply with the DRY principle.</p>
+</div>
+<div class="paragraph">
+<p>The tag <code>!snippet/title</code> allows us to use a <a href="https://asciidoctor.org/docs/asciidoc-writers-guide/<mark>titles-titles-titles">title</a> from an AsciiDoc file. In order to this we provide the relative path to an AsciiDoc source file (in this case the <code>README.adoc</code> that contains the guide content), followed by the <code></mark>#</code> symbol, followed by the <a href="https://docs.asciidoctor.org/asciidoc/latest/sections/custom-ids/">id</a> of a <a href="https://docs.asciidoctor.org/asciidoc/latest/blocks/">block</a>.</p>
+</div>
+<div class="paragraph">
+<p>Other tags available are <code>!snippet</code> (which renders the content of the block as HTML) and <code>!snippet/proc</code> (which renders a procedure as a quick start task). All the custom data types described use the same scheme to reference a block.</p>
+</div>
+</li>
+<li>
+<p>The <code>description</code> will be rendered in the quick start catalog below the display name.</p>
+<div class="listingblock">
+<div class="content">
+<pre>  description: !snippet README.adoc#description</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>!snippet</code> tag type allows us to use the content of a <a href="https://docs.asciidoctor.org/asciidoc/latest/blocks/">block</a>; it achieves this by rendering the contents of the referenced block as HTML and then using that HTML. The reference scheme is the same as described earlier.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -456,30 +767,29 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="title">Note</div>
 </td>
 <td class="content">
-When you&#8217;ve completed this quick start and understand the required connection configuration for a Kafka instance, you can use the OpenShift Application Services command-line interface (CLI) to generate this type of configuration in a more automated way. To learn more, see <a href="https://github.com/redhat-developer/app-services-guides/tree/main/docs/rhoas/rhoas-service-contexts/README.adoc" target="_blank" rel="noopener">Connecting client applications to OpenShift Application Services using the rhoas CLI</a>.
+In AsciiDoc A block contains the content of any children blocks (e.g. a Level 1 section block contains any Level 2, 3, 4, or 5 section blocks until another Level 1 section block is declared). This can cause a lot of unneeded content to be rendered. A clear understanding of the way blocks work in AsciiDoc is helpful to use the <code>!snippet</code> tag.
 </td>
 </tr>
 </table>
 </div>
-<div class="ulist">
-<div class="title">Prerequisites</div>
-<ul>
-<li>
-<p>You have a running Kafka instance in Streams for Apache Kafka (see <a href="https://github.com/redhat-developer/app-services-guides/tree/main/docs/kafka/getting-started-kafka/README.adoc" target="_blank" rel="noopener">Getting started with OpenShift Streams for Apache Kafka</a>).</p>
 </li>
 <li>
-<p>You have a command-line terminal application.</p>
+<p>The <code>prerequisites</code> of the quick start are rendered in the quick start catalog.</p>
+<div class="listingblock">
+<div class="content">
+<pre>  prerequisites:
+    - Requirement 1
+    - Requirement 2</pre>
+</div>
+</div>
 </li>
 <li>
-<p><a href="https://github.com/git-guides/" target="_blank" rel="noopener">Git</a> is installed.</p>
-</li>
-<li>
-<p>You have an IDE such as <a href="https://www.jetbrains.com/idea/download/" target="_blank" rel="noopener">IntelliJ IDEA</a>, <a href="https://www.eclipse.org/downloads/" target="_blank" rel="noopener">Eclipse</a>, or <a href="https://code.visualstudio.com/Download" target="_blank" rel="noopener">Visual Studio Code</a>.</p>
-</li>
-<li>
-<p><a href="https://nodejs.org/en/download/" target="_blank" rel="noopener">Node.js 14</a> or later is installed.</p>
-</li>
-</ul>
+<p>The <code>introduction</code> is used as the content for the first page of the quick start.</p>
+<div class="listingblock">
+<div class="content">
+<pre>  introduction: |-
+    *Lorem* ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</pre>
+</div>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -488,298 +798,79 @@ When you&#8217;ve completed this quick start and understand the required connect
 <div class="title">Note</div>
 </td>
 <td class="content">
-The example Node.js application in this quick start uses the <a href="https://kafka.js.org/" target="_blank" rel="noopener">KafkaJS</a> client by default. If you want to use the <a href="https://github.com/blizzard/node-rdkafka" target="_blank" rel="noopener">node-rdkafka</a> client, you must install some development tools locally on your computer or use a container runtime such as Podman or Docker to run a specified container image and configure a development environment. To learn more, see the <a href="https://github.com/nodeshift-starters/reactive-example/tree/node-rdkafka#node-rdkafka-and-kafkajs">documentation</a> for the example Node.js application.
+A <code>!snippet</code> tag could be used here, but in this case we chose to inline the text into the <code>quickstart.yml</code> as we did not have suitable text to reuse in the guide. <a href="https://en.wikipedia.org/wiki/Markdown">Markdown</a> is used to provide formatting for inline text.
 </td>
 </tr>
 </table>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="proc-importing-nodejs-sample-code_using-nodejs">Importing the Node.js sample code</h2>
-<div class="sectionbody">
-<div class="paragraph _abstract">
-<p>For this quick start, you&#8217;ll use sample code from the Nodeshift Application Starters <a href="https://github.com/nodeshift-starters/reactive-example" target="_blank" rel="noopener">reactive-example</a> repository in GitHub. After you understand the concepts and tasks in this quick start, you can use your own Node.js applications with OpenShift Streams for Apache Kafka in the same way.</p>
-</div>
-<div class="olist arabic">
-<div class="title">Procedure</div>
-<ol class="arabic">
+</li>
 <li>
-<p>On the command line, clone the Nodeshift Application Starters <a href="https://github.com/nodeshift-starters/reactive-example" target="_blank" rel="noopener">reactive-example</a> repository from GitHub.</p>
+<p>The <code>conclusion</code> is used for the content of the final page of the quick start.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>$ git clone https://github.com/nodeshift-starters/reactive-example.git</code></pre>
+<pre>  conclusion: |-
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</pre>
 </div>
 </div>
 </li>
 <li>
-<p>In your IDE, open the <code>reactive-example</code> directory of the repository that you cloned.</p>
+<p>The <code>nextQuickStart</code> list is rendered at the end of the quick start to provide the user with next steps. The value of each list member should be the <em>identifier</em> of another quick start in this repository.</p>
+</li>
+<li>
+<p>The bulk of the quick start is the <code>tasks</code>. The task can be fully described using <code>quickstart.yml</code> however we recommend using the <code>!snippet/proc</code> tag to reference an existing <a href="https://redhat-documentation.github.io/modular-docs/#creating-procedure-modules">procedure</a>.</p>
+<div class="paragraph">
+<p>When building the quick start from the procedure the parser will use the procedure introduction followed by the procedure body for the body of the task. It will use the procedure verification as the review instructions. The procedure additional resources and prerequisites are ignored as the quick start format does not have equivalent areas.</p>
+</div>
+<div class="paragraph">
+<p>Any section of the task can be overridden by providing the relevant entry in the associative array. In this case a member with key <code>proc</code> is used to specify the <code>!snippet/proc</code> tag.</p>
+</div>
+</li>
+<li>
+<p>Verify that the quick start is rendering as expected by previewing it locally.</p>
 </li>
 </ol>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="proc-configuring-nodejs_using-nodejs">Configuring the Node.js example application to connect to a Kafka instance</h2>
-<div class="sectionbody">
-<div class="paragraph _abstract">
-<p>To enable your Node.js application to access a Kafka instance, you must configure a connection by specifying the following details:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>The bootstrap server endpoint for your Kafka instance</p>
-</li>
-<li>
-<p>The generated credentials for your OpenShift Streams for Apache Kafka service account</p>
-</li>
-<li>
-<p>The Simple Authentication and Security Layer (SASL) mechanism that the client will use to authenticate with the Kafka instance</p>
-</li>
-</ul>
+<div class="sect2">
+<h3 id="_environment_variable_in_guides_and_code">Environment Variable in guides and code</h3>
+<div class="paragraph">
+<p>One of the benefits of displaying guides within the Web UI is that allows us to have much greater context on what the user is doing.</p>
 </div>
 <div class="paragraph">
-<p>In this task, you&#8217;ll create a new configuration file called <code>rhoas.env</code>. In the file, you&#8217;ll set the required bootstrap server and client credentials as environment variables.</p>
+<p>In keeping with Kubernetes, we recommend using environment variables as a method of providing configuration to applications.</p>
 </div>
-<div class="ulist">
-<div class="title">Prerequisites</div>
-<ul>
+</div>
+<div class="sect2">
+<h3 id="_highlighting_page_elements_from_a_quick_start">Highlighting page elements from a quick start</h3>
+<div class="olist arabic">
+<ol class="arabic">
 <li>
-<p>You have the bootstrap server endpoint for your Kafka instance. To get the server endpoint, select your Kafka instance in the Streams for Apache Kafka <a href="https://console.redhat.com/application-services/streams/" target="_blank" rel="noopener">web console</a>, select the options icon (three vertical dots), and click <strong>Connection</strong>.</p>
+<p>To highlight items from a quick start, first the target item needs to have a data attribute: <strong>data-quickstart-id="something"</strong></p>
 </li>
 <li>
-<p>You have the generated credentials for your service account. To reset the credentials, use the <a href="https://console.redhat.com/application-services/service-accounts" target="_blank" rel="noopener">Service Accounts</a> page in the <strong>Application Services</strong> section of the Red Hat Hybrid Cloud Console.</p>
+<p>Then in asciidoc, the trigger element needs to have the <strong><code>data-highlight__something</code></strong> class/role, where the part after <strong><code>data-highlight__</code></strong> matches the data-quickstart-id of the target
+Here are some examples:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>link:[Click me to highlight the logo, role="data-highlight__logo"]</code></p>
+</li>
+<li>
+<p><code>link:[Click me to highlight the Home nav item, role="data-highlight__home"]</code></p>
+</li>
+<li>
+<p><code>link:[Click here to highlight the Quick starts nav item, role="data-highlight__quickstarts"]</code></p>
 </li>
 </ul>
 </div>
-<div class="olist arabic">
-<div class="title">Procedure</div>
-<ol class="arabic">
-<li>
-<p>In your IDE, create a new file. Save the file with the name <code>rhoas.env</code>, at the root level of the <code>reactive-example</code> directory for the cloned repository.</p>
-</li>
-<li>
-<p>In the <code>rhoas.env</code> file, set the SASL authentication mechanism and the Kafka instance client credentials as shown in the following configuration. Replace the client ID and client secret values with your own credential information. The configuration uses SASL/OAUTHBEARER authentication, which is the recommended authentication mechanism to use in Streams for Apache Kafka.</p>
-<div class="listingblock">
-<div class="title">Setting environment variables in the rhoas.env file</div>
-<div class="content">
-<pre class="highlight"><code>KAFKA_HOST=<em>&lt;bootstrap_server&gt;</em>
-RHOAS_SERVICE_ACCOUNT_CLIENT_ID=<em>&lt;client_id&gt;</em>
-RHOAS_SERVICE_ACCOUNT_CLIENT_SECRET=<em>&lt;client_secret&gt;</em>
-KAFKA_SASL_MECHANISM=oauthbearer
-RHOAS_TOKEN_ENDPOINT_URL=https://sso.redhat.com/auth/realms/redhat-external/protocol/openid-connect/token</code></pre>
-</div>
-</div>
-</li>
-<li>
-<p>Save the <code>rhoas.env</code> file.</p>
 </li>
 </ol>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="proc-creating-countries-topic_using-nodejs">Creating a Kafka topic in Streams for Apache Kafka</h2>
-<div class="sectionbody">
-<div class="paragraph _abstract">
-<p>The Node.js application in this quick start uses a Kafka topic called <code>countries</code> to produce and consume messages. In this task, you&#8217;ll create the <code>countries</code> topic in your Kafka instance.</p>
-</div>
-<div class="ulist">
-<div class="title">Prerequisites</div>
-<ul>
-<li>
-<p>You have a running Kafka instance in OpenShift Streams for Apache Kafka.</p>
-</li>
-</ul>
-</div>
-<div class="olist arabic">
-<div class="title">Procedure</div>
-<ol class="arabic">
-<li>
-<p>In the Streams for Apache Kafka <a href="https://console.redhat.com/application-services/streams/" target="_blank" rel="noopener">web console</a>, select <strong>Kafka Instances</strong> and then click the name of the Kafka instance that you want to add a topic to.</p>
-</li>
-<li>
-<p>Select the <strong>Topics</strong> tab.</p>
-</li>
-<li>
-<p>Click <strong>Create topic</strong> and follow the guided steps to define the topic details.</p>
-<div class="openblock">
-<div class="content">
+<div class="sect2">
+<h3 id="_integrating_the_quick_start_with_pantheon">Integrating the quick start with Pantheon</h3>
 <div class="paragraph">
-<p>You must specify the following topic properties:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><strong>Topic name</strong>: For this quick start, enter <code>countries</code> as the topic name.</p>
-</li>
-<li>
-<p><strong>Partitions</strong>: Set the number of partitions for the topic. For this quick start, set the value to <code>1</code>.</p>
-</li>
-<li>
-<p><strong>Message retention</strong>: Set the message retention time and size. For this quick start, set the retention time to <code>A week</code> and the retention size to <code>Unlimited</code>.</p>
-</li>
-<li>
-<p><strong>Replicas</strong>: For this release of Streams for Apache Kafka, the replica values are preconfigured. The number of partition replicas for the topic is set to <code>3</code> and the minimum number of follower replicas that must be in sync with a partition leader is set to <code>2</code>. For a trial Kafka instance, the number of replicas and the minimum in-sync replica factor are both set to <code>1</code>.</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>After you complete the setup, the new topic appears on the <strong>Topics</strong> page. You can now run the Node.js application to start producing and consuming messages.</p>
-</div>
-</div>
-</div>
-</li>
-</ol>
-</div>
-<div class="ulist">
-<div class="title">Verification</div>
-<ul>
-<li>
-<p>Verify that the <code>countries</code> topic is listed on the <strong>Topics</strong> page.</p>
-</li>
-</ul>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="proc-running-nodejs-example-application_using-nodejs">Running the Node.js example application</h2>
-<div class="sectionbody">
-<div class="paragraph _abstract">
-<p>After you configure your Node.js application to connect to a Kafka instance, and you create the required Kafka topic, you&#8217;re ready to run the application.</p>
-</div>
-<div class="paragraph">
-<p>In this task, you&#8217;ll run the following components of the Node.js application:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>A <code>producer-backend</code> component that generates random country names and sends these names to the Kafka topic</p>
-</li>
-<li>
-<p>A <code>consumer-backend</code> component that consumes the country names from the Kafka topic</p>
-</li>
-</ul>
-</div>
-<div class="ulist">
-<div class="title">Prerequisites</div>
-<ul>
-<li>
-<p>You&#8217;ve configured the Node.js example application to connect to a Kafka instance.</p>
-</li>
-<li>
-<p>You&#8217;ve created the <code>countries</code> topic.</p>
-</li>
-<li>
-<p>You&#8217;ve set permissions for your service account to produce and consume messages in the <code>countries</code> topic. For the Node.js application in this example, the consumer group you must specify in your permissions is called <code>consumer-test</code>. To learn how to configure access permissions for a Kafka instance, see <a href="https://github.com/redhat-developer/app-services-guides/tree/main/docs/kafka/access-mgmt-kafka/README.adoc" target="_blank" rel="noopener">Managing account access in OpenShift Streams for Apache Kafka</a>.</p>
-</li>
-</ul>
-</div>
-<div class="olist arabic">
-<div class="title">Procedure</div>
-<ol class="arabic">
-<li>
-<p>On the command line, navigate to the <code>reactive-example</code> directory of the repository that you cloned.</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>$ cd reactive-example</code></pre>
-</div>
-</div>
-</li>
-<li>
-<p>Navigate to the directory for the consumer component. Use Node Package Manager (npm) to install the dependencies for this component.</p>
-<div class="listingblock">
-<div class="title">Installing dependencies for the consumer component</div>
-<div class="content">
-<pre class="highlight"><code>$ cd consumer-backend
-$ npm install</code></pre>
-</div>
-</div>
-</li>
-<li>
-<p>Run the consumer component.</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>$ node consumer.js</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>You see the Node.js application run and connect to the Kafka instance. However, because you haven&#8217;t yet run the producer component, the consumer has no country names to display.</p>
-</div>
-<div class="paragraph">
-<p>If the application fails to run, review the error log in the command-line window and address any problems. Also, review the steps in this quick start to ensure that the application and Kafka topic are configured correctly.</p>
-</div>
-</li>
-<li>
-<p>Open a second command-line window or tab.</p>
-</li>
-<li>
-<p>On the second command line, navigate to the <code>reactive-example</code> directory of the repository that you cloned.</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>$ cd reactive-example</code></pre>
-</div>
-</div>
-</li>
-<li>
-<p>Navigate to the directory for the producer component. Use Node Package Manager to install the dependencies for this component.</p>
-<div class="listingblock">
-<div class="title">Installing dependencies for the producer component</div>
-<div class="content">
-<pre class="highlight"><code>$ cd producer-backend
-$ npm install</code></pre>
-</div>
-</div>
-</li>
-<li>
-<p>Run the producer component.</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>$ node producer.js</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>When the producer component runs, you see output like that shown in the following example:</p>
-</div>
-<div class="listingblock">
-<div class="title">Example output from the producer component</div>
-<div class="content">
-<pre class="highlight"><code>Ghana
-Réunion
-Guatemala
-Luxembourg
-Mayotte
-Syria
-United Kingdom
-Bolivia
-Haiti</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>As shown in the example, the producer component runs and generates messages that represent country names.</p>
-</div>
-</li>
-<li>
-<p>Switch back to the first command-line window.</p>
-<div class="paragraph">
-<p>You now see that the consumer component displays the same country names generated by the producer, and in the same order, as shown in the following example:</p>
-</div>
-<div class="listingblock">
-<div class="title">Example output from the consumer component</div>
-<div class="content">
-<pre class="highlight"><code>Ghana
-Réunion
-Guatemala
-Luxembourg
-Mayotte
-Syria
-United Kingdom
-Bolivia
-Haiti</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The output from both components confirms that they successfully connected to the Kafka instance. The components are using the Kafka topic that you created to produce and consume messages.</p>
+<p><a href="https://github.com/redhataccess/pantheon">Pantheon 2.x</a> is a modular documentation management and publication system built on top of AsciiDoc.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -788,25 +879,252 @@ Haiti</code></pre>
 <div class="title">Note</div>
 </td>
 <td class="content">
-You can also use the OpenShift Streams for Apache Kafka web console to browse messages in the Kafka topic. For more information, see <a href="https://github.com/redhat-developer/app-services-guides/tree/main/docs/kafka/message-browsing-kafka/README.adoc" target="_blank" rel="noopener">Browsing messages in the OpenShift Streams for Apache Kafka web console</a>.
+Currently, Pantheon is integrated with quick starts during the Webpack build, meaning that to refresh the content you must rebuild the quick starts.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>In order to use content published by Pantheon you must map the <code>!snippet</code> and <code>snippet/*</code> tags that need to use Pantheon to a Pantheon UUID and type. Additionally, you must provide the base URL of your Pantheon server.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Create a <code>pantheon.yml</code> file alongside the <code>quickstart.yml</code> file</p>
+</li>
+<li>
+<p>For each tag that needs to reference Pantheon, add it as a member to the root associative array in the <code>pantheon.yml</code> with the <code>&lt;tag&gt; &lt;tag value&gt;</code> as the key. For example, to map <code>!snippet/title README.adoc#using-quick-starts</code> to a Pantheon instance hosted on <code>pantheon.example.org</code>:</p>
+<div class="listingblock">
+<div class="content">
+<pre>"!snippet/title README.adoc#using-quick-starts": https://pantheon.example.org/api/assembly/variant.json/53dfb804-2038-4545-b917-2cb01a09ef91</pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+Any tags not referenced in <code>pantheon.yml</code> will continue to use the AsciiDoc source.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The simplest form of mapping is to simply copy and paste the API URL in. The <code>!snippet/title</code> tag will use the value of the <code>title</code> key (in either the <code>assembly</code> or the <code>module</code>). The <code>!snippet/proc</code> tag will use the value of the <code>body</code> (in either the <code>assembly</code> or the <code>module</code>) and must reference a module directly. The <code>!snippet</code> tag will use the value of the <code>body</code> (in either the <code>assembly</code> or the <code>module</code>), searching for the id in the html.</p>
+</div>
+<div class="paragraph">
+<p>If more control is required the value of the key in the root associative array should be an associative array, with:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>an <code>uuid</code> member that specifies the uuid of the module or assembly to load (required)</p>
+</li>
+<li>
+<p>a <code>type</code> member that specifies the type (<code>module</code> or <code>assembly</code> to load) (required)</p>
+</li>
+</ul>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Additionally, you may choose to add:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>a <code>jsonPathExpression</code> member that overrides the <a href="https://github.com/dchester/jsonpath#jsonpath-syntax">JSON Path</a> to the value in the JSON document returned by the Pantheon API. By default, <code>!snippet</code> uses <code>$.*.body</code>, <code>!snippet/title</code> uses <code>$.\*.title</code> and <code>!snippet/proc</code> uses <code>$.\*.body</code>.</p>
+</li>
+<li>
+<p>a <code>cssSelector</code> member that overrides the <a href="https://www.w3schools.com/cssref/css_selectors.asp">CSS selector</a> applied to the <code>body</code> element of the document returned by the Pantheon API. By default, <code>!snippet</code> uses <code>#&lt;id&gt;</code> whilst <code>!snippet/title</code> and <code>!snippet/proc</code> do not use a css selector.</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Warning</div>
+</td>
+<td class="content">
+When using the local preview with Pantheon the default AsciidoctorJS templates are used rather than the Pantheon templates because the Pantheon template format (Haml) is not supported by Asciidoctor.js
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+The schema for <code>pantheon.yml</code> is in <code>pantheon.schema.json</code> and can be used in the same way as the <code>quickstart.schema.json</code>.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_draft_quick_starts">Draft quick starts</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Draft quick starts are hidden from end users. To set a quick start as draft, add this to the <code>quickstart.yml</code> metadata section:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>metadata:
+  name: my-quickstart
+  annotations:
+    draft: true
+    ...</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_generating_modular_documentation">Generating modular documentation</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>We generate <a href="https://github.com/redhat-documentation/modular-docs">Modular Documentation</a> from this repository, using <code>npm</code> scripts.</p>
+</div>
+<div class="paragraph">
+<p>Every time you submit a pull request a job will run that will verify the generation of modular documentation will succeed.</p>
+</div>
+<div class="paragraph">
+<p>Every time a pull request is merged to <code>main</code>, the modular documentation for the content in the <code>HEAD</code> of <code>main</code> will be generated to the <a href="https://github.com/redhat-developer/app-services-guides/tree/modular-docs">modular docs</a> branch.</p>
+</div>
+<div class="paragraph">
+<p>To run the modular documentation generation locally run:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>npm --prefix .build run generate:modular-docs</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Having run the modular documentation generation, you can then push the changes up to the <code>modular-docs</code> branch on GitHub run:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>npm --prefix .build run commitandpush:modular-docs</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To run the modular documentation generation locally, and then push the changes up to the <code>modular-docs</code> branch on GitHub all in one go, run:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>npm --prefix .build run publish:modular-docs</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To run the modular documentation generation locally, and then push the changes up to a different branch and/or repository, run:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>npm --prefix .build run publish:modular-docs --repo=&lt;git repo&gt; --branch=&lt;branch&gt;</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_submitting_a_pull_request">Submitting a pull request</h2>
+<div class="sectionbody">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Before submitting a pull request, make sure the attributes in documents are up to date by running</p>
+<div class="listingblock">
+<div class="content">
+<pre>npm --prefix .build run generate:attributes</pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+If you check in out of date attributes the build will fail
 </td>
 </tr>
 </table>
 </div>
 </li>
 <li>
-<p>In your IDE, in the <code>producer-backend</code> directory of the repository that you cloned, open the <code>producer.js</code> file.</p>
-<div class="paragraph">
-<p>Observe that the producer component is configured to process environment variables from the <code>rhoas.env</code> file that you created. The component used the bootstrap server endpoint and client credentials stored in this file to connect to the Kafka instance.</p>
-</div>
+<p>Having create the PR, automated tests will run. If they fail, use the error log to determine the problem, and fix it</p>
 </li>
 <li>
-<p>In the <code>consumer-backend</code> directory, open the <code>consumer.js</code> file.</p>
-<div class="paragraph">
-<p>Observe that the consumer component is also configured to process environment variables from the <code>rhoas.env</code> file that you created.</p>
-</div>
+<p>Once your build is passing ask for review from a Subject Matter Expert (who will check for accuracy), a writer (who will check that the content is up to expected quality for substance, formatting, style, structure and consistency), and a developer who will ensure the steps covered by the quick start are the end to end test suite.</p>
 </li>
 </ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_adding_new_product_to_repository">Adding new product to repository</h2>
+<div class="sectionbody">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Go to ./docs/.product-mapping.yml file and add new product to the list of products.</p>
+</li>
+<li>
+<p>Under directories please provide all directories with quickstarts that should be included in the product.</p>
+</li>
+<li>
+<p>Go to .github/workflows/modular-docs-publish.yaml file and add new product values under "matrix.include" section
+This will push proper modular documentation to the modular-docs-"product_name" branch on release</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_releases">Releases</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Guides are released by creating tag in format vx.x.x - where x is number representing semver version.
+Releases should be created at major milestones based on the documented features being already published and available to users.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Use following link to create new release
+link: <a href="https://github.com/redhat-developer/app-services-guides/releases/new" class="bare">https://github.com/redhat-developer/app-services-guides/releases/new</a></p>
+</li>
+<li>
+<p>Please provide tag name. For example v0.1.0</p>
+</li>
+<li>
+<p>Please provide the same value for release title (v0.1.0)</p>
+</li>
+<li>
+<p>Please click on "Autogenerate Release Notes" to generate release notes</p>
+</li>
+<li>
+<p>Select Publish release to create release</p>
+</li>
+</ol>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+CICD process will automatically synchronize changes with downstream on release
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>

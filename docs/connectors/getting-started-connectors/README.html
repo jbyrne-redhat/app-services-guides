@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.18">
-<title>Using Node.js applications with Kafka instances in OpenShift Streams for Apache Kafka</title>
+<title>Getting started with OpenShift Connectors</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /*! Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -436,198 +436,274 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 @media amzn-kf8{#header,#content,#footnotes,#footer{padding:0}}
 </style>
 </head>
-<body id="chap-using-nodejs" class="article">
+<body id="chap-getting-started-connectors" class="article">
 <div id="header">
-<h1>Using Node.js applications with Kafka instances in OpenShift Streams for Apache Kafka</h1>
+<h1>Getting started with OpenShift Connectors</h1>
 </div>
 <div id="content">
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph _abstract">
-<p>As a developer of applications and services, you can connect Node.js applications to Kafka instances in OpenShift Streams for Apache Kafka. <a href="https://nodejs.org/en/about/" target="_blank" rel="noopener">Node.js</a> is a server-side JavaScript runtime that is designed to build scalable network applications. Node.js provides an I/O model that is based on events and non-blocking operations, which enables efficient applications.</p>
+<p>As a developer of applications and services, you can use OpenShift Connectors to create and configure connections between OpenShift Streams for Apache Kafka and third-party systems.</p>
 </div>
 <div class="paragraph">
-<p>In this quick start, you&#8217;ll use the Streams for Apache Kafka web console to collect connection information for a Kafka instance. Then you&#8217;ll manually configure a connection from an example Node.js application to the Kafka instance and start producing and consuming messages.</p>
+<p>In this example, you connect a data source (a data generator) that creates Kafka messages and a data sink (an HTTP endpoint) that consumes the Kafka messages.</p>
 </div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<div class="title">Note</div>
-</td>
-<td class="content">
-When you&#8217;ve completed this quick start and understand the required connection configuration for a Kafka instance, you can use the OpenShift Application Services command-line interface (CLI) to generate this type of configuration in a more automated way. To learn more, see <a href="https://github.com/redhat-developer/app-services-guides/tree/main/docs/rhoas/rhoas-service-contexts/README.adoc" target="_blank" rel="noopener">Connecting client applications to OpenShift Application Services using the rhoas CLI</a>.
-</td>
-</tr>
-</table>
+<div class="imageblock">
+<div class="content">
+<img src="./images/images/connectors-getting-started-connectors/connectors-example-diagram.png" alt="Image of data flowing from a data source to a data sink">
+</div>
+<div class="title">Figure 1. Example flow of messages from a data source to a data sink</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="proc-verifying-prerequisites-for-connectors_getting-started-connectors">Verifying the prerequisites for using OpenShift Connectors</h2>
+<div class="sectionbody">
+<div class="paragraph _abstract">
+<p>Before you use Connectors, you must complete the following prerequisites:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Determine which OpenShift environment to use for your <em>Connectors namespace</em>. The Connectors namespace is where your Connectors instances are deployed.</p>
+</li>
+<li>
+<p>Configure OpenShift Streams for Apache Kafka for use with Connectors.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Determining which OpenShift environment to use for your Connectors namespace</strong></p>
+</div>
+<div class="paragraph">
+<p>You have three choices:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>The hosted preview environment</strong></p>
+<div class="ulist">
+<ul>
+<li>
+<p>The Connectors instances are hosted on a multitenant OpenShift Dedicated cluster that is owned by Red Hat.</p>
+</li>
+<li>
+<p>You can create four Connectors instances at a time.</p>
+</li>
+<li>
+<p>The preview environment applies 48-hour expiration windows, as described in <a href="https://access.redhat.com/documentation/en-us/openshift_connectors/1/guide/8190dc9e-249c-4207-bd69-096e5dd5bc64" target="_blank" rel="noopener">Red Hat OpenShift Connectors Preview guidelines</a>.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>Your own OpenShift Dedicated Trial environment</strong></p>
+<div class="ulist">
+<ul>
+<li>
+<p>You have access to your own OpenShift Dedicated Trial environment.</p>
+</li>
+<li>
+<p>You can create an unlimited number of Connectors instances.</p>
+</li>
+<li>
+<p>Your OpenShift Dedicated Trial cluster expires after 60 days.</p>
+</li>
+<li>
+<p>A cluster administrator must install the Connectors add-on as described in <a href="https://access.redhat.com/documentation/en-us/openshift_connectors/1/guide/15a79de0-8827-4bf1-b445-8e3b3eef7b01" target="_blank" rel="noopener">Adding the Red Hat OpenShift Connectors add-on to your OpenShift cluster</a>.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>Your own OpenShift Service for AWS cluster</strong></p>
+<div class="ulist">
+<ul>
+<li>
+<p>You have access to your own OpenShift Service for AWS (ROSA) environment.</p>
+</li>
+<li>
+<p>You can create Connectors instances depending on your subscription, as described in <a href="https://access.redhat.com/articles/6990631" target="_blank" rel="noopener">Red Hat OpenShift Connectors Tiers</a>.</p>
+</li>
+<li>
+<p>A cluster administrator must install the Connectors add-on as described in <a href="https://access.redhat.com/documentation/en-us/openshift_connectors/1/guide/15a79de0-8827-4bf1-b445-8e3b3eef7b01" target="_blank" rel="noopener">Adding the Red Hat OpenShift Connectors add-on to your OpenShift cluster</a>.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Configuring OpenShift Streams for Apache Kafka for use with Connectors</strong></p>
+</div>
+<div class="paragraph">
+<p>Complete the steps in <a href="https://github.com/redhat-developer/app-services-guides/tree/main/docs/kafka/getting-started-kafka/README.adoc" target="_blank" rel="noopener">Getting started with OpenShift Streams for Apache Kafka</a> to set up the following components:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>A <em>Kafka instance</em> that you can use for Connectors. For this example, the Kafka instance is <code>test-connect</code>.</p>
+</li>
+<li>
+<p>A <em>Kafka topic</em> to store messages sent by data sources and make the messages available to data sinks. For this example, the Kafka topic is <code>test-topic</code>.</p>
+</li>
+<li>
+<p>A <em>service account</em> that allows you to connect and authenticate your Connectors instances with your Kafka instance.</p>
+</li>
+<li>
+<p><em>Access rules</em> for the service account that define how your Connectors instances can access and use the topics in your Kafka instance.</p>
+</li>
+</ul>
+</div>
+<div class="ulist">
+<div class="title">Verification</div>
+<ul>
+<li>
+<p>Verify that the Kafka instance is listed on the <strong>Kafka Instances</strong> page and that the state of the Kafka instance is shown as <strong>Ready</strong>.</p>
+</li>
+<li>
+<p>Verify that your service account was successfully created on the <strong>Service Accounts</strong> page.</p>
+</li>
+<li>
+<p>Verify that you saved your service account credentials to a secure location.</p>
+</li>
+<li>
+<p>Verify that the permissions for your service account are listed on the <strong>Access</strong> page of the Kafka instance.</p>
+</li>
+<li>
+<p>Verify that the Kafka topic that you created for Connectors is listed on the <strong>Topics</strong> page of the Kafka instance.</p>
+</li>
+<li>
+<p>If you plan to use your own OpenShift cluster (OpenShift Dedicated Trial or ROSA) to deploy your Connectors instances, verify that a cluster administrator added the Connectors add-on to your Trial cluster.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="proc-creating-source-connector_getting-started-connectors">Creating a Connectors instance for a data source</h2>
+<div class="sectionbody">
+<div class="paragraph _abstract">
+<p>A <em>source</em> connector consumes events from an external data source and produces Kafka messages.</p>
+</div>
+<div class="paragraph">
+<p>You configure your Connectors instance to listen for events from the data source and produce a Kafka message for each event. Your Connectors instance sends the messages at regular intervals to the Kafka topic that you created for Connectors.</p>
+</div>
+<div class="paragraph">
+<p>For this example, you create an instance of the Data Generator source connector. The Data Generator is provided for development and testing purposes. You specify the text for a message and how often to send the message.</p>
 </div>
 <div class="ulist">
 <div class="title">Prerequisites</div>
 <ul>
 <li>
-<p>You have a running Kafka instance in Streams for Apache Kafka (see <a href="https://github.com/redhat-developer/app-services-guides/tree/main/docs/kafka/getting-started-kafka/README.adoc" target="_blank" rel="noopener">Getting started with OpenShift Streams for Apache Kafka</a>).</p>
+<p>If you want to use a dead letter queue (DLQ) to handle any messaging errors, create a Kafka topic for the DLQ.</p>
 </li>
 <li>
-<p>You have a command-line terminal application.</p>
-</li>
-<li>
-<p><a href="https://github.com/git-guides/" target="_blank" rel="noopener">Git</a> is installed.</p>
-</li>
-<li>
-<p>You have an IDE such as <a href="https://www.jetbrains.com/idea/download/" target="_blank" rel="noopener">IntelliJ IDEA</a>, <a href="https://www.eclipse.org/downloads/" target="_blank" rel="noopener">Eclipse</a>, or <a href="https://code.visualstudio.com/Download" target="_blank" rel="noopener">Visual Studio Code</a>.</p>
-</li>
-<li>
-<p><a href="https://nodejs.org/en/download/" target="_blank" rel="noopener">Node.js 14</a> or later is installed.</p>
+<p>You&#8217;re logged in to the OpenShift Connectors web console at <a href="https://console.redhat.com/application-services/connectors" class="bare" target="_blank" rel="noopener">https://console.redhat.com/application-services/connectors</a>.</p>
 </li>
 </ul>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<div class="title">Note</div>
-</td>
-<td class="content">
-The example Node.js application in this quick start uses the <a href="https://kafka.js.org/" target="_blank" rel="noopener">KafkaJS</a> client by default. If you want to use the <a href="https://github.com/blizzard/node-rdkafka" target="_blank" rel="noopener">node-rdkafka</a> client, you must install some development tools locally on your computer or use a container runtime such as Podman or Docker to run a specified container image and configure a development environment. To learn more, see the <a href="https://github.com/nodeshift-starters/reactive-example/tree/node-rdkafka#node-rdkafka-and-kafkajs">documentation</a> for the example Node.js application.
-</td>
-</tr>
-</table>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="proc-importing-nodejs-sample-code_using-nodejs">Importing the Node.js sample code</h2>
-<div class="sectionbody">
-<div class="paragraph _abstract">
-<p>For this quick start, you&#8217;ll use sample code from the Nodeshift Application Starters <a href="https://github.com/nodeshift-starters/reactive-example" target="_blank" rel="noopener">reactive-example</a> repository in GitHub. After you understand the concepts and tasks in this quick start, you can use your own Node.js applications with OpenShift Streams for Apache Kafka in the same way.</p>
 </div>
 <div class="olist arabic">
 <div class="title">Procedure</div>
 <ol class="arabic">
 <li>
-<p>On the command line, clone the Nodeshift Application Starters <a href="https://github.com/nodeshift-starters/reactive-example" target="_blank" rel="noopener">reactive-example</a> repository from GitHub.</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>$ git clone https://github.com/nodeshift-starters/reactive-example.git</code></pre>
+<p>In the OpenShift Connectors web console, click <strong>Create a Connectors instance</strong>.</p>
+</li>
+<li>
+<p>Select the connector that you want to use for connecting to a data source.</p>
+<div class="paragraph">
+<p>You can browse through the catalog of available connectors. You can also search for a particular connector by name, and filter for sink or source connectors.</p>
 </div>
+<div class="paragraph">
+<p>For example, to find the Data Generator source connector, type <code>data</code> in the search box. The list is filtered to show only the <strong>Data Generator source</strong> card.</p>
+</div>
+<div class="paragraph">
+<p>Click the card to select the connector, and then click <strong>Next</strong>.</p>
 </div>
 </li>
 <li>
-<p>In your IDE, open the <code>reactive-example</code> directory of the repository that you cloned.</p>
+<p>On the <strong>Kafka Instance</strong> page, click the card for the Streams for Apache Kafka instance that you configured for Connectors. For example, click the <strong>test-connect</strong> card.</p>
+<div class="paragraph">
+<p>Click <strong>Next</strong>.</p>
+</div>
+</li>
+<li>
+<p>On the <strong>Deployment</strong> page, the namespace that you select depends on your OpenShift environment.</p>
+<div class="paragraph">
+<p>If you&#8217;re using your own OpenShift environment, select the card for the namespace that was created when a cluster administrator added the Connectors service to your cluster, as described in <a href="https://access.redhat.com/documentation/en-us/openshift_connectors/1/guide/15a79de0-8827-4bf1-b445-8e3b3eef7b01" target="_blank" rel="noopener">Adding the Red Hat OpenShift Connectors add-on to your OpenShift cluster</a>.</p>
+</div>
+<div class="paragraph">
+<p>If you&#8217;re using the hosted preview environment, click <strong>Create preview namespace</strong> to provision a namespace for hosting the Connectors instances that you create.</p>
+</div>
+<div class="paragraph">
+<p>Click <strong>Next</strong>.</p>
+</div>
+</li>
+<li>
+<p>Specify the core configuration for your Connectors instance:</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Type a name for your Connectors instance. For example, type <code>hello world generator</code>.</p>
+</li>
+<li>
+<p>In the <strong>Client ID</strong> and <strong>Client Secret</strong> fields, type the credentials for the service account that you created for Connectors and then click <strong>Next</strong>.</p>
 </li>
 </ol>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="proc-configuring-nodejs_using-nodejs">Configuring the Node.js example application to connect to a Kafka instance</h2>
-<div class="sectionbody">
-<div class="paragraph _abstract">
-<p>To enable your Node.js application to access a Kafka instance, you must configure a connection by specifying the following details:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>The bootstrap server endpoint for your Kafka instance</p>
 </li>
 <li>
-<p>The generated credentials for your OpenShift Streams for Apache Kafka service account</p>
+<p>Provide connector-specific configuration. For the Data Generator, provide the following information:</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p><strong>Topic Name</strong>: Type the name of the Kafka topic that you created for Connectors. For example, type <code>test-topic</code>.</p>
 </li>
 <li>
-<p>The Simple Authentication and Security Layer (SASL) mechanism that the client will use to authenticate with the Kafka instance</p>
+<p><strong>Content Type</strong>: Accept the default, <code>text/plain</code>.</p>
 </li>
-</ul>
-</div>
+<li>
+<p><strong>Message</strong>: Type the content of the message that you want the Connectors instance to send to the Kafka topic. For example, type <code>Hello World!!</code>.</p>
+</li>
+<li>
+<p><strong>Period</strong>: Specify the interval (in milliseconds) at which you want the Connectors instance to send messages to the Kafka topic. For example, to send a message every 10 seconds, specify <code>10000</code>.</p>
+</li>
+<li>
+<p><strong>Data Shape Produces Format</strong>: Accept the default, <code>application/octet-stream</code>.</p>
 <div class="paragraph">
-<p>In this task, you&#8217;ll create a new configuration file called <code>rhoas.env</code>. In the file, you&#8217;ll set the required bootstrap server and client credentials as environment variables.</p>
+<p>Click <strong>Next</strong>.</p>
 </div>
-<div class="ulist">
-<div class="title">Prerequisites</div>
-<ul>
-<li>
-<p>You have the bootstrap server endpoint for your Kafka instance. To get the server endpoint, select your Kafka instance in the Streams for Apache Kafka <a href="https://console.redhat.com/application-services/streams/" target="_blank" rel="noopener">web console</a>, select the options icon (three vertical dots), and click <strong>Connection</strong>.</p>
-</li>
-<li>
-<p>You have the generated credentials for your service account. To reset the credentials, use the <a href="https://console.redhat.com/application-services/service-accounts" target="_blank" rel="noopener">Service Accounts</a> page in the <strong>Application Services</strong> section of the Red Hat Hybrid Cloud Console.</p>
-</li>
-</ul>
-</div>
-<div class="olist arabic">
-<div class="title">Procedure</div>
-<ol class="arabic">
-<li>
-<p>In your IDE, create a new file. Save the file with the name <code>rhoas.env</code>, at the root level of the <code>reactive-example</code> directory for the cloned repository.</p>
-</li>
-<li>
-<p>In the <code>rhoas.env</code> file, set the SASL authentication mechanism and the Kafka instance client credentials as shown in the following configuration. Replace the client ID and client secret values with your own credential information. The configuration uses SASL/OAUTHBEARER authentication, which is the recommended authentication mechanism to use in Streams for Apache Kafka.</p>
-<div class="listingblock">
-<div class="title">Setting environment variables in the rhoas.env file</div>
-<div class="content">
-<pre class="highlight"><code>KAFKA_HOST=<em>&lt;bootstrap_server&gt;</em>
-RHOAS_SERVICE_ACCOUNT_CLIENT_ID=<em>&lt;client_id&gt;</em>
-RHOAS_SERVICE_ACCOUNT_CLIENT_SECRET=<em>&lt;client_secret&gt;</em>
-KAFKA_SASL_MECHANISM=oauthbearer
-RHOAS_TOKEN_ENDPOINT_URL=https://sso.redhat.com/auth/realms/redhat-external/protocol/openid-connect/token</code></pre>
-</div>
-</div>
-</li>
-<li>
-<p>Save the <code>rhoas.env</code> file.</p>
 </li>
 </ol>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="proc-creating-countries-topic_using-nodejs">Creating a Kafka topic in Streams for Apache Kafka</h2>
-<div class="sectionbody">
-<div class="paragraph _abstract">
-<p>The Node.js application in this quick start uses a Kafka topic called <code>countries</code> to produce and consume messages. In this task, you&#8217;ll create the <code>countries</code> topic in your Kafka instance.</p>
-</div>
-<div class="ulist">
-<div class="title">Prerequisites</div>
-<ul>
-<li>
-<p>You have a running Kafka instance in OpenShift Streams for Apache Kafka.</p>
-</li>
-</ul>
-</div>
-<div class="olist arabic">
-<div class="title">Procedure</div>
-<ol class="arabic">
-<li>
-<p>In the Streams for Apache Kafka <a href="https://console.redhat.com/application-services/streams/" target="_blank" rel="noopener">web console</a>, select <strong>Kafka Instances</strong> and then click the name of the Kafka instance that you want to add a topic to.</p>
 </li>
 <li>
-<p>Select the <strong>Topics</strong> tab.</p>
-</li>
-<li>
-<p>Click <strong>Create topic</strong> and follow the guided steps to define the topic details.</p>
-<div class="openblock">
-<div class="content">
-<div class="paragraph">
-<p>You must specify the following topic properties:</p>
-</div>
+<p>Select one of the following error handling policies for your Connectors instance:</p>
 <div class="ulist">
 <ul>
 <li>
-<p><strong>Topic name</strong>: For this quick start, enter <code>countries</code> as the topic name.</p>
+<p><strong>Stop</strong>: If a message fails to send, the Connectors instance stops running and changes its status to the <strong>Failed</strong> state. You can view the error message.</p>
 </li>
 <li>
-<p><strong>Partitions</strong>: Set the number of partitions for the topic. For this quick start, set the value to <code>1</code>.</p>
+<p><strong>Ignore</strong>: If a message fails to send, the Connectors instance ignores the error and continues to run. No error message is logged.</p>
 </li>
 <li>
-<p><strong>Message retention</strong>: Set the message retention time and size. For this quick start, set the retention time to <code>A week</code> and the retention size to <code>Unlimited</code>.</p>
-</li>
-<li>
-<p><strong>Replicas</strong>: For this release of Streams for Apache Kafka, the replica values are preconfigured. The number of partition replicas for the topic is set to <code>3</code> and the minimum number of follower replicas that must be in sync with a partition leader is set to <code>2</code>. For a trial Kafka instance, the number of replicas and the minimum in-sync replica factor are both set to <code>1</code>.</p>
+<p><strong>Dead letter queue</strong>: If a message fails to send, the Connectors instance sends error details to the Kafka topic that you created for the DLQ.</p>
+<div class="paragraph">
+<p>Click <strong>Next</strong>.</p>
+</div>
 </li>
 </ul>
 </div>
+</li>
+<li>
+<p>Review the summary of the configuration properties and then click <strong>Create Connectors instance</strong>.</p>
 <div class="paragraph">
-<p>After you complete the setup, the new topic appears on the <strong>Topics</strong> page. You can now run the Node.js application to start producing and consuming messages.</p>
+<p>Your Connectors instance is listed on the <strong>Connectors Instances</strong> page. After a couple of seconds, the status of your Connectors instance changes to the <strong>Ready</strong> state and it starts producing messages and sending them to its associated Kafka topic.</p>
 </div>
-</div>
+<div class="paragraph">
+<p>From the <strong>Connectors Instances</strong> page, you can stop, start, duplicate, and delete your Connectors instance, as well as edit its configuration, by clicking the options icon (three vertical dots).</p>
 </div>
 </li>
 </ol>
@@ -636,42 +712,51 @@ RHOAS_TOKEN_ENDPOINT_URL=https://sso.redhat.com/auth/realms/redhat-external/prot
 <div class="title">Verification</div>
 <ul>
 <li>
-<p>Verify that the <code>countries</code> topic is listed on the <strong>Topics</strong> page.</p>
+<p>Verify that your source Connectors instance generates messages.</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>In the OpenShift Application Services web console, select <strong>Streams for Apache Kafka</strong> &gt; <strong>Kafka Instances</strong>.</p>
+</li>
+<li>
+<p>Click the Kafka instance that you created for connectors. For example, click <strong>test-connect</strong>.</p>
+</li>
+<li>
+<p>Click the <strong>Topics</strong> tab and then click the topic that you specified for your source Connectors instance. For example, click <strong>test-topic</strong>.</p>
+</li>
+<li>
+<p>Click the <strong>Messages</strong> tab to see a list of <code>Hello World!!</code> messages.</p>
+</li>
+</ol>
+</div>
 </li>
 </ul>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="proc-running-nodejs-example-application_using-nodejs">Running the Node.js example application</h2>
+<h2 id="proc-creating-sink-connector_getting-started-connectors">Creating a Connectors instance for a data sink</h2>
 <div class="sectionbody">
 <div class="paragraph _abstract">
-<p>After you configure your Node.js application to connect to a Kafka instance, and you create the required Kafka topic, you&#8217;re ready to run the application.</p>
+<p>A <em>sink</em> connector consumes messages from a Kafka topic and sends them to an external system.</p>
 </div>
 <div class="paragraph">
-<p>In this task, you&#8217;ll run the following components of the Node.js application:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>A <code>producer-backend</code> component that generates random country names and sends these names to the Kafka topic</p>
-</li>
-<li>
-<p>A <code>consumer-backend</code> component that consumes the country names from the Kafka topic</p>
-</li>
-</ul>
+<p>For this example, you use the <strong>HTTP Sink</strong> connector which consumes the Kafka messages (produced by your Data Generator source Connectors instance) and sends the messages to an HTTP endpoint.</p>
 </div>
 <div class="ulist">
 <div class="title">Prerequisites</div>
 <ul>
 <li>
-<p>You&#8217;ve configured the Node.js example application to connect to a Kafka instance.</p>
+<p>You&#8217;re logged in to the OpenShift Connectors web console at <a href="https://console.redhat.com/application-services/connectors" class="bare" target="_blank" rel="noopener">https://console.redhat.com/application-services/connectors</a>.</p>
 </li>
 <li>
-<p>You&#8217;ve created the <code>countries</code> topic.</p>
+<p>You created a Data Generator source Connectors instance.</p>
 </li>
 <li>
-<p>You&#8217;ve set permissions for your service account to produce and consume messages in the <code>countries</code> topic. For the Node.js application in this example, the consumer group you must specify in your permissions is called <code>consumer-test</code>. To learn how to configure access permissions for a Kafka instance, see <a href="https://github.com/redhat-developer/app-services-guides/tree/main/docs/kafka/access-mgmt-kafka/README.adoc" target="_blank" rel="noopener">Managing account access in OpenShift Streams for Apache Kafka</a>.</p>
+<p>For the data sink example, open the free <a href="https://webhook.site" target="_blank" rel="noopener">webhook.site</a> in a browser window. The <code>webhook.site</code> page provides a unique URL that you copy for use as an HTTP data sink.</p>
+</li>
+<li>
+<p>If you want to use a dead letter queue (DLQ) to handle any messaging errors, create a Kafka topic for the DLQ.</p>
 </li>
 </ul>
 </div>
@@ -679,134 +764,98 @@ RHOAS_TOKEN_ENDPOINT_URL=https://sso.redhat.com/auth/realms/redhat-external/prot
 <div class="title">Procedure</div>
 <ol class="arabic">
 <li>
-<p>On the command line, navigate to the <code>reactive-example</code> directory of the repository that you cloned.</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>$ cd reactive-example</code></pre>
-</div>
+<p>In the OpenShift Connectors web console, click <strong>Create Connectors instance</strong>.</p>
+</li>
+<li>
+<p>Select the sink connector that you want to use:</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>For example, type <code>http</code> in the search field. The list of Connectors is filtered to show the <strong>HTTP sink</strong> connector.</p>
+</li>
+<li>
+<p>Click the <strong>HTTP sink</strong> card and then click <strong>Next</strong>.</p>
+</li>
+</ol>
 </div>
 </li>
 <li>
-<p>Navigate to the directory for the consumer component. Use Node Package Manager (npm) to install the dependencies for this component.</p>
-<div class="listingblock">
-<div class="title">Installing dependencies for the consumer component</div>
-<div class="content">
-<pre class="highlight"><code>$ cd consumer-backend
-$ npm install</code></pre>
-</div>
+<p>On the <strong>Kafka Instance</strong> page, select the Streams for Apache Kafka instance for the connector to work with. For example, select <strong>test-connect</strong>.</p>
+<div class="paragraph">
+<p>Click <strong>Next</strong>.</p>
 </div>
 </li>
 <li>
-<p>Run the consumer component.</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>$ node consumer.js</code></pre>
-</div>
+<p>On the <strong>Deployment</strong> page, the namespace that you select depends on your OpenShift environment.</p>
+<div class="paragraph">
+<p>If you&#8217;re using your own OpenShift environment, select the card for the namespace that was created when a cluster administrator added the Connectors service to your cluster.</p>
 </div>
 <div class="paragraph">
-<p>You see the Node.js application run and connect to the Kafka instance. However, because you haven&#8217;t yet run the producer component, the consumer has no country names to display.</p>
+<p>If you&#8217;re using the hosted preview environment, click the <strong>preview namespace</strong> that you provisioned when you created the source connector.</p>
 </div>
 <div class="paragraph">
-<p>If the application fails to run, review the error log in the command-line window and address any problems. Also, review the steps in this quick start to ensure that the application and Kafka topic are configured correctly.</p>
+<p>Click <strong>Next</strong>.</p>
 </div>
 </li>
 <li>
-<p>Open a second command-line window or tab.</p>
+<p>Provide the core configuration for your connector:</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Type a unique name for the connector. For example, type <code>hello world receiver</code>.</p>
 </li>
 <li>
-<p>On the second command line, navigate to the <code>reactive-example</code> directory of the repository that you cloned.</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>$ cd reactive-example</code></pre>
-</div>
-</div>
+<p>In the <strong>Client ID</strong> and <strong>Client Secret</strong> fields, type the credentials for the service account that you created for Connectors and then click <strong>Next</strong>.</p>
 </li>
-<li>
-<p>Navigate to the directory for the producer component. Use Node Package Manager to install the dependencies for this component.</p>
-<div class="listingblock">
-<div class="title">Installing dependencies for the producer component</div>
-<div class="content">
-<pre class="highlight"><code>$ cd producer-backend
-$ npm install</code></pre>
-</div>
+</ol>
 </div>
 </li>
 <li>
-<p>Run the producer component.</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>$ node producer.js</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>When the producer component runs, you see output like that shown in the following example:</p>
-</div>
-<div class="listingblock">
-<div class="title">Example output from the producer component</div>
-<div class="content">
-<pre class="highlight"><code>Ghana
-Réunion
-Guatemala
-Luxembourg
-Mayotte
-Syria
-United Kingdom
-Bolivia
-Haiti</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>As shown in the example, the producer component runs and generates messages that represent country names.</p>
-</div>
+<p>Provide the connector-specific configuration for your HTTP sink Connectors instance:</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p><strong>Topic Names</strong>: Type the name of the topic that you used for the source Connectors instance. For example, type <code>test-topic</code>.</p>
 </li>
 <li>
-<p>Switch back to the first command-line window.</p>
-<div class="paragraph">
-<p>You now see that the consumer component displays the same country names generated by the producer, and in the same order, as shown in the following example:</p>
-</div>
-<div class="listingblock">
-<div class="title">Example output from the consumer component</div>
-<div class="content">
-<pre class="highlight"><code>Ghana
-Réunion
-Guatemala
-Luxembourg
-Mayotte
-Syria
-United Kingdom
-Bolivia
-Haiti</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The output from both components confirms that they successfully connected to the Kafka instance. The components are using the Kafka topic that you created to produce and consume messages.</p>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<div class="title">Note</div>
-</td>
-<td class="content">
-You can also use the OpenShift Streams for Apache Kafka web console to browse messages in the Kafka topic. For more information, see <a href="https://github.com/redhat-developer/app-services-guides/tree/main/docs/kafka/message-browsing-kafka/README.adoc" target="_blank" rel="noopener">Browsing messages in the OpenShift Streams for Apache Kafka web console</a>.
-</td>
-</tr>
-</table>
-</div>
+<p><strong>Method</strong>: Accept the default, <code>POST</code>.</p>
 </li>
 <li>
-<p>In your IDE, in the <code>producer-backend</code> directory of the repository that you cloned, open the <code>producer.js</code> file.</p>
-<div class="paragraph">
-<p>Observe that the producer component is configured to process environment variables from the <code>rhoas.env</code> file that you created. The component used the bootstrap server endpoint and client credentials stored in this file to connect to the Kafka instance.</p>
-</div>
+<p><strong>URL</strong>: Type your unique URL from the <a href="https://webhook.site" target="_blank" rel="noopener">webhook.site</a>.</p>
 </li>
 <li>
-<p>In the <code>consumer-backend</code> directory, open the <code>consumer.js</code> file.</p>
+<p><strong>Data Shape Consumes Format</strong>: Accept the default, <code>application/octet-stream</code>.</p>
 <div class="paragraph">
-<p>Observe that the consumer component is also configured to process environment variables from the <code>rhoas.env</code> file that you created.</p>
+<p>Click <strong>Next</strong>.</p>
 </div>
 </li>
 </ol>
+</div>
+</li>
+<li>
+<p>Select an error handling policy for your Connectors instance. For example, select <strong>Stop</strong>.</p>
+<div class="paragraph">
+<p>Click <strong>Next</strong>.</p>
+</div>
+</li>
+<li>
+<p>Review the summary of the configuration properties and then click <strong>Create Connectors instance</strong>.</p>
+<div class="paragraph">
+<p>Your Connectors instance is added to the <strong>Connectors Instances</strong> page.</p>
+</div>
+<div class="paragraph">
+<p>After a couple of seconds, the status of your Connectors instance changes to the <strong>Ready</strong> state. It consumes messages from the associated Kafka topic and sends them to the data sink (for this example, the data sink is the HTTP URL that you provided).</p>
+</div>
+</li>
+</ol>
+</div>
+<div class="ulist">
+<div class="title">Verification</div>
+<ul>
+<li>
+<p>Verify that you see HTTP POST calls with <code>"Hello World!!"</code> messages. Open a web browser tab to your custom URL for the <a href="https://webhook.site" target="_blank" rel="noopener">webhook.site</a>.</p>
+</li>
+</ul>
 </div>
 </div>
 </div>

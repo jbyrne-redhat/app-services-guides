@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.18">
-<title>Using Node.js applications with Kafka instances in OpenShift Streams for Apache Kafka</title>
+<title>Getting started with OpenShift Streams for Apache Kafka</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /*! Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -436,18 +436,78 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 @media amzn-kf8{#header,#content,#footnotes,#footer{padding:0}}
 </style>
 </head>
-<body id="chap-using-nodejs" class="article">
+<body id="chap-getting-started" class="article">
 <div id="header">
-<h1>Using Node.js applications with Kafka instances in OpenShift Streams for Apache Kafka</h1>
+<h1>Getting started with OpenShift Streams for Apache Kafka</h1>
 </div>
 <div id="content">
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph _abstract">
-<p>As a developer of applications and services, you can connect Node.js applications to Kafka instances in OpenShift Streams for Apache Kafka. <a href="https://nodejs.org/en/about/" target="_blank" rel="noopener">Node.js</a> is a server-side JavaScript runtime that is designed to build scalable network applications. Node.js provides an I/O model that is based on events and non-blocking operations, which enables efficient applications.</p>
+<p>Test seven. As a developer of applications and services, you can use OpenShift Streams for Apache Kafka to create and set up Kafka instances and connect your applications and services to these instances. Streams for Apache Kafka is a managed cloud service that enables you to add Kafka data-streaming functionality in your applications without having to install, configure, run, and maintain your own Kafka clusters.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="proc-creating-kafka-instance_getting-started">Creating a Kafka instance in Streams for Apache Kafka</h2>
+<div class="sectionbody">
+<div class="paragraph _abstract">
+<p>Use the OpenShift Streams for Apache Kafka web console to create and configure a Kafka instance for your applications or services. A Kafka instance in Streams for Apache Kafka includes a Kafka cluster, bootstrap server, and the configuration details needed for producers and consumers to connect to the instance.</p>
+</div>
+<div class="ulist">
+<div class="title">Prerequisites</div>
+<ul>
+<li>
+<p>You&#8217;re logged in to the Streams for Apache Kafka web console at <a href="https://console.redhat.com/application-services/streams/" class="bare" target="_blank" rel="noopener">https://console.redhat.com/application-services/streams/</a>.</p>
+</li>
+<li>
+<p>You&#8217;re familiar with the different Kafka instance sizes that you can create in Streams for Apache Kafka, and the capacities that correspond to those sizes. For more information about the capacities and service limits of your Kafka instance, see <a href="https://access.redhat.com/articles/5979061">Red Hat OpenShift Streams for Apache Kafka Service Limits</a>.</p>
+</li>
+</ul>
+</div>
+<div class="olist arabic">
+<div class="title">Procedure</div>
+<ol class="arabic">
+<li>
+<p>On the <strong>Kafka Instances</strong> page of the Streams for Apache Kafka <a href="https://console.redhat.com/application-services/streams/" target="_blank" rel="noopener">web console</a>, click <strong>Create Kafka instance</strong>.</p>
+</li>
+<li>
+<p>Complete the <strong>Create a Kafka instance</strong> form to define the following instance details. Some instance details currently have only one option.</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Instance name</strong>: Enter a unique name for the Kafka instance, such as <code>my-first-kafka-instance</code>.</p>
+</li>
+<li>
+<p><strong>Cloud provider</strong>: For a production Kafka instance, accept the default value of <strong>Amazon Web Services</strong>. If you&#8217;re creating a trial instance, you also have the option to select <strong>Google Cloud Platform</strong>.</p>
+</li>
+<li>
+<p><strong>Cloud region</strong>: Select a cloud provider region from the list.</p>
+</li>
+<li>
+<p><strong>Availability zones</strong>: The selection for availability zones is preconfigured as <strong>Multi</strong> for a production instance and <strong>Single</strong> for a trial instance.</p>
+</li>
+<li>
+<p><strong>Size</strong>: If you&#8217;ve purchased a subscription for Streams for Apache Kafka, use the slider to select an instance size. In Streams for Apache Kafka, you can create Kafka instances of 1 or 2 streaming units depending on the capacity required. If you&#8217;re creating a trial instance, the instance size is preconfigured.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Click <strong>Create instance</strong> to start the creation process for your Kafka instance.</p>
+<div class="openblock">
+<div class="content">
+<div class="paragraph">
+<p>The new Kafka instance is listed on the <strong>Kafka Instances</strong> page. Typically, you need to wait a few minutes for the instance creation process to finish.</p>
 </div>
 <div class="paragraph">
-<p>In this quick start, you&#8217;ll use the Streams for Apache Kafka web console to collect connection information for a Kafka instance. Then you&#8217;ll manually configure a connection from an example Node.js application to the Kafka instance and start producing and consuming messages.</p>
+<p>When the instance has a status of <strong>Ready</strong>, you can start using the instance. As shown in the following figure, you can click the options icon (three vertical dots) to view instance and connection details, change the instance owner, or delete the instance.</p>
+</div>
+<div class="imageblock screencapture">
+<div class="content">
+<img src="./images/sak-kafka-instance-options.png" alt="Image of Kafka instance options menu">
+</div>
+<div class="title">Figure 1. Kafka instance options menu</div>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -456,30 +516,195 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="title">Note</div>
 </td>
 <td class="content">
-When you&#8217;ve completed this quick start and understand the required connection configuration for a Kafka instance, you can use the OpenShift Application Services command-line interface (CLI) to generate this type of configuration in a more automated way. To learn more, see <a href="https://github.com/redhat-developer/app-services-guides/tree/main/docs/rhoas/rhoas-service-contexts/README.adoc" target="_blank" rel="noopener">Connecting client applications to OpenShift Application Services using the rhoas CLI</a>.
+Although you can see Kafka instances created by other users in your organization, you might not be able to manage or connect to those instances. Only the instance owner or users with permissions to access the instance can edit or delete the instance, access the associated service account and topics, or connect to the instance.
 </td>
 </tr>
 </table>
+</div>
+</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="olist arabic">
+<div class="title">Verification</div>
+<ol class="arabic">
+<li>
+<p>Verify that the new Kafka instance is listed on the <strong>Kafka Instances</strong> page.</p>
+</li>
+<li>
+<p>Verify that the status of the new Kafka instance is shown as <strong>Ready</strong>.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="proc-creating-service-account_getting-started">Creating a service account to connect to a Kafka instance in OpenShift Streams for Apache Kafka</h2>
+<div class="sectionbody">
+<div class="paragraph _abstract">
+<p>To connect your applications or services to a Kafka instance in OpenShift Streams for Apache Kafka, you need to create a service account that&#8217;s associated with the instance. You then need to save the generated service account credentials, the authentication token endpoint, and the bootstrap server endpoint for the instance to a secure location. You&#8217;ll use these details when you configure an application to connect to the Kafka instance.</p>
 </div>
 <div class="ulist">
 <div class="title">Prerequisites</div>
 <ul>
 <li>
-<p>You have a running Kafka instance in Streams for Apache Kafka (see <a href="https://github.com/redhat-developer/app-services-guides/tree/main/docs/kafka/getting-started-kafka/README.adoc" target="_blank" rel="noopener">Getting started with OpenShift Streams for Apache Kafka</a>).</p>
-</li>
-<li>
-<p>You have a command-line terminal application.</p>
-</li>
-<li>
-<p><a href="https://github.com/git-guides/" target="_blank" rel="noopener">Git</a> is installed.</p>
-</li>
-<li>
-<p>You have an IDE such as <a href="https://www.jetbrains.com/idea/download/" target="_blank" rel="noopener">IntelliJ IDEA</a>, <a href="https://www.eclipse.org/downloads/" target="_blank" rel="noopener">Eclipse</a>, or <a href="https://code.visualstudio.com/Download" target="_blank" rel="noopener">Visual Studio Code</a>.</p>
-</li>
-<li>
-<p><a href="https://nodejs.org/en/download/" target="_blank" rel="noopener">Node.js 14</a> or later is installed.</p>
+<p>You have a running Kafka instance in Streams for Apache Kafka.</p>
 </li>
 </ul>
+</div>
+<div class="olist arabic">
+<div class="title">Procedure</div>
+<ol class="arabic">
+<li>
+<p>On the <strong>Kafka Instances</strong> page of the Streams for Apache Kafka <a href="https://console.redhat.com/application-services/streams/" target="_blank" rel="noopener">web console</a>, select the options icon (three vertical dots) for your Kafka instance and click <strong>Connection</strong>.</p>
+</li>
+<li>
+<p>On the <strong>Connection</strong> page, copy the <strong>Bootstrap server</strong> endpoint to a secure location. You&#8217;ll specify this endpoint when configuring a connection to the Kafka instance.</p>
+<div class="paragraph">
+<p>The remainder of this section describes how to create a service account and copy the generated credentials.
+If you want to use the credentials of an <em>existing</em> service account, you can skip to the next section.</p>
+</div>
+</li>
+<li>
+<p>Open the <a href="https://console.redhat.com/application-services/service-accounts" target="_blank" rel="noopener">Service Accounts</a> page in the <strong>Application Services</strong> section of the Red Hat Hybrid Cloud Console.</p>
+</li>
+<li>
+<p>Click <strong>Create service account</strong> to set up the account that you&#8217;ll use to access this Kafka instance.</p>
+</li>
+<li>
+<p>Enter a short description such as <code>my-service-account</code> and click <strong>Create</strong>.</p>
+</li>
+<li>
+<p>Copy the generated <strong>Client ID</strong> and <strong>Client secret</strong> values to a secure location. You&#8217;ll specify these credentials when configuring a connection to the Kafka instance.</p>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Important</div>
+</td>
+<td class="content">
+The generated credentials are displayed only once, so ensure that you&#8217;ve successfully and securely saved the copied credentials before closing the credentials window.
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>After you save the generated credentials to a secure location, select the confirmation check box in the credentials window and close the window.</p>
+</li>
+<li>
+<p>Under <strong>Authentication method</strong>, copy the SASL/OAUTHBEARER <strong>Token endpoint URL</strong> value to a secure location. This is the endpoint that you&#8217;ll use with your service account credentials to authenticate the connection to the Kafka instance.</p>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+SASL/PLAIN authentication is also available for tools and libraries that don&#8217;t support SASL/OAUTHBEARER, but SASL/OAUTHBEARER is recommended whenever possible. With SASL/PLAIN authentication, you use only service account credentials to authenticate the connection to the Kafka instance.
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>(Optional) To review, reset, or delete the service account, use the <a href="https://console.redhat.com/application-services/service-accounts" target="_blank" rel="noopener">Service Accounts</a> page.</p>
+</li>
+</ol>
+</div>
+<div class="olist arabic">
+<div class="title">Verification</div>
+<ol class="arabic">
+<li>
+<p>Verify that the bootstrap server, client credentials, and authentication token endpoint are saved to a secure location.</p>
+</li>
+<li>
+<p>Verify that your service account was successfully created on the <strong>Service Accounts</strong> page.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="proc-setting-service-account-permissions_getting-started">Setting permissions for a service account in a Kafka instance in Streams for Apache Kafka</h2>
+<div class="sectionbody">
+<div class="paragraph _abstract">
+<p>After you create a service account to connect to a Kafka instance, you must also set the appropriate level of access for that new account in an Access Control List (ACL) for the Kafka instance. OpenShift Streams for Apache Kafka uses ACLs provided by Kafka that enable you to manage how other user accounts and service accounts are permitted to interact with the Kafka resources that you create.</p>
+</div>
+<div class="ulist">
+<div class="title">Prerequisites</div>
+<ul>
+<li>
+<p>You have a running Kafka instance in Streams for Apache Kafka.</p>
+</li>
+<li>
+<p>You&#8217;ve created a service account that you want to allow to access the running Kafka instance.</p>
+</li>
+</ul>
+</div>
+<div class="olist arabic">
+<div class="title">Procedure</div>
+<ol class="arabic">
+<li>
+<p>In the OpenShift Streams for Apache Kafka <a href="https://console.redhat.com/application-services/streams/" target="_blank" rel="noopener">web console</a>, select <strong>Kafka Instances</strong> and then click the name of the Kafka instance that you want the service account to access.</p>
+</li>
+<li>
+<p>Click the <strong>Access</strong> tab to view the current ACL for this instance.</p>
+</li>
+<li>
+<p>To modify the ACL, click <strong>Manage access</strong>.</p>
+</li>
+<li>
+<p>In the <strong>Manage access</strong> dialog box, use the <strong>Account</strong> list to select the service account that you previously created, and click <strong>Next</strong>.</p>
+</li>
+<li>
+<p>Under <strong>Assign Permissions</strong>, use the list to select the <strong>Consume from a topic</strong> and the <strong>Produce to a topic</strong> permission options, and set all resource identifiers to <code>Is</code> and all identifier values to <code>*</code>.</p>
+<div class="openblock">
+<div class="content">
+<div class="paragraph">
+<p>These settings result in the following ACL permissions for the new service account:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. Example ACL permissions for a new service account</caption>
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Resource type</p></th>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Resource identifier and value</p></th>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Access type</p></th>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Operation</p></th>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Topic</code></p>
+<p class="tableblock">(For consuming)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Is</code> = <code>*</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Allow</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Read</code>, <code>Describe</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Consumer group</code></p>
+<p class="tableblock">(For consuming)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Is</code> = <code>*</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Allow</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Read</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Topic</code></p>
+<p class="tableblock">(For producing)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Is</code> = <code>*</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Allow</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Write</code>, <code>Create</code>, <code>Describe</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The permissions shown in the table enable applications associated with the service account to create topics in the Kafka instance, to produce and consume messages in any topic in the instance, and to use any consumer group.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -488,101 +713,45 @@ When you&#8217;ve completed this quick start and understand the required connect
 <div class="title">Note</div>
 </td>
 <td class="content">
-The example Node.js application in this quick start uses the <a href="https://kafka.js.org/" target="_blank" rel="noopener">KafkaJS</a> client by default. If you want to use the <a href="https://github.com/blizzard/node-rdkafka" target="_blank" rel="noopener">node-rdkafka</a> client, you must install some development tools locally on your computer or use a container runtime such as Podman or Docker to run a specified container image and configure a development environment. To learn more, see the <a href="https://github.com/nodeshift-starters/reactive-example/tree/node-rdkafka#node-rdkafka-and-kafkajs">documentation</a> for the example Node.js application.
+Alternatively, you can click <strong>Add permission</strong> to create individual permissions as needed. For example, you can create one <code>Topic</code> entry and one <code>Consumer group</code> entry, both with <code>Allow</code> access to <code>All</code> operations. This enables both consuming and producing for the specified topic in a single entry, and enables all permissions for the consumer group in another single entry. But you must configure these entries individually without using the predefined permission options.
 </td>
 </tr>
 </table>
 </div>
 </div>
 </div>
-<div class="sect1">
-<h2 id="proc-importing-nodejs-sample-code_using-nodejs">Importing the Node.js sample code</h2>
-<div class="sectionbody">
-<div class="paragraph _abstract">
-<p>For this quick start, you&#8217;ll use sample code from the Nodeshift Application Starters <a href="https://github.com/nodeshift-starters/reactive-example" target="_blank" rel="noopener">reactive-example</a> repository in GitHub. After you understand the concepts and tasks in this quick start, you can use your own Node.js applications with OpenShift Streams for Apache Kafka in the same way.</p>
-</div>
-<div class="olist arabic">
-<div class="title">Procedure</div>
-<ol class="arabic">
-<li>
-<p>On the command line, clone the Nodeshift Application Starters <a href="https://github.com/nodeshift-starters/reactive-example" target="_blank" rel="noopener">reactive-example</a> repository from GitHub.</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>$ git clone https://github.com/nodeshift-starters/reactive-example.git</code></pre>
-</div>
-</div>
 </li>
 <li>
-<p>In your IDE, open the <code>reactive-example</code> directory of the repository that you cloned.</p>
+<p>After you add these permissions for the service account, click <strong>Save</strong> to finish.</p>
 </li>
 </ol>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="proc-configuring-nodejs_using-nodejs">Configuring the Node.js example application to connect to a Kafka instance</h2>
-<div class="sectionbody">
-<div class="paragraph _abstract">
-<p>To enable your Node.js application to access a Kafka instance, you must configure a connection by specifying the following details:</p>
-</div>
 <div class="ulist">
+<div class="title">Verification</div>
 <ul>
 <li>
-<p>The bootstrap server endpoint for your Kafka instance</p>
-</li>
-<li>
-<p>The generated credentials for your OpenShift Streams for Apache Kafka service account</p>
-</li>
-<li>
-<p>The Simple Authentication and Security Layer (SASL) mechanism that the client will use to authenticate with the Kafka instance</p>
+<p>Verify that the new permissions for the service account are listed on the <strong>Access</strong> page of the Kafka instance.</p>
 </li>
 </ul>
 </div>
-<div class="paragraph">
-<p>In this task, you&#8217;ll create a new configuration file called <code>rhoas.env</code>. In the file, you&#8217;ll set the required bootstrap server and client credentials as environment variables.</p>
-</div>
-<div class="ulist">
-<div class="title">Prerequisites</div>
+<div class="ulist _additional-resources">
+<div class="title">Additional resources</div>
 <ul>
 <li>
-<p>You have the bootstrap server endpoint for your Kafka instance. To get the server endpoint, select your Kafka instance in the Streams for Apache Kafka <a href="https://console.redhat.com/application-services/streams/" target="_blank" rel="noopener">web console</a>, select the options icon (three vertical dots), and click <strong>Connection</strong>.</p>
+<p><a href="https://github.com/redhat-developer/app-services-guides/tree/main/docs/kafka/access-mgmt-kafka/README.adoc" target="_blank" rel="noopener">Managing account access in OpenShift Streams for Apache Kafka</a></p>
 </li>
 <li>
-<p>You have the generated credentials for your service account. To reset the credentials, use the <a href="https://console.redhat.com/application-services/service-accounts" target="_blank" rel="noopener">Service Accounts</a> page in the <strong>Application Services</strong> section of the Red Hat Hybrid Cloud Console.</p>
+<p><a href="https://kafka.apache.org/documentation/#security_authz" target="_blank" rel="noopener">Authorization and ACLs</a> in the Apache Kafka documentation</p>
 </li>
 </ul>
-</div>
-<div class="olist arabic">
-<div class="title">Procedure</div>
-<ol class="arabic">
-<li>
-<p>In your IDE, create a new file. Save the file with the name <code>rhoas.env</code>, at the root level of the <code>reactive-example</code> directory for the cloned repository.</p>
-</li>
-<li>
-<p>In the <code>rhoas.env</code> file, set the SASL authentication mechanism and the Kafka instance client credentials as shown in the following configuration. Replace the client ID and client secret values with your own credential information. The configuration uses SASL/OAUTHBEARER authentication, which is the recommended authentication mechanism to use in Streams for Apache Kafka.</p>
-<div class="listingblock">
-<div class="title">Setting environment variables in the rhoas.env file</div>
-<div class="content">
-<pre class="highlight"><code>KAFKA_HOST=<em>&lt;bootstrap_server&gt;</em>
-RHOAS_SERVICE_ACCOUNT_CLIENT_ID=<em>&lt;client_id&gt;</em>
-RHOAS_SERVICE_ACCOUNT_CLIENT_SECRET=<em>&lt;client_secret&gt;</em>
-KAFKA_SASL_MECHANISM=oauthbearer
-RHOAS_TOKEN_ENDPOINT_URL=https://sso.redhat.com/auth/realms/redhat-external/protocol/openid-connect/token</code></pre>
-</div>
-</div>
-</li>
-<li>
-<p>Save the <code>rhoas.env</code> file.</p>
-</li>
-</ol>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="proc-creating-countries-topic_using-nodejs">Creating a Kafka topic in Streams for Apache Kafka</h2>
+<h2 id="proc-creating-kafka-topic_getting-started">Creating a Kafka topic in Streams for Apache Kafka</h2>
 <div class="sectionbody">
 <div class="paragraph _abstract">
-<p>The Node.js application in this quick start uses a Kafka topic called <code>countries</code> to produce and consume messages. In this task, you&#8217;ll create the <code>countries</code> topic in your Kafka instance.</p>
+<p>After you create a Kafka instance, you can create Kafka topics to start producing and consuming messages in your applications and services.</p>
 </div>
 <div class="ulist">
 <div class="title">Prerequisites</div>
@@ -596,13 +765,19 @@ RHOAS_TOKEN_ENDPOINT_URL=https://sso.redhat.com/auth/realms/redhat-external/prot
 <div class="title">Procedure</div>
 <ol class="arabic">
 <li>
-<p>In the Streams for Apache Kafka <a href="https://console.redhat.com/application-services/streams/" target="_blank" rel="noopener">web console</a>, select <strong>Kafka Instances</strong> and then click the name of the Kafka instance that you want to add a topic to.</p>
+<p>In the OpenShift Streams for Apache Kafka <a href="https://console.redhat.com/application-services/streams/" target="_blank" rel="noopener">web console</a>, select <strong>Kafka Instances</strong> and then click the name of the Kafka instance that you want to add a topic to.</p>
 </li>
 <li>
 <p>Select the <strong>Topics</strong> tab.</p>
 </li>
 <li>
-<p>Click <strong>Create topic</strong> and follow the guided steps to define the topic details.</p>
+<p>Click <strong>Create topic</strong> and follow the guided steps to define the topic details, as shown in the figure.</p>
+<div class="imageblock screencapture">
+<div class="content">
+<img src="./images/sak-create-topic.png" alt="Image of wizard to create a topic">
+</div>
+<div class="title">Figure 2. Guided steps to define topic details</div>
+</div>
 <div class="openblock">
 <div class="content">
 <div class="paragraph">
@@ -611,175 +786,21 @@ RHOAS_TOKEN_ENDPOINT_URL=https://sso.redhat.com/auth/realms/redhat-external/prot
 <div class="ulist">
 <ul>
 <li>
-<p><strong>Topic name</strong>: For this quick start, enter <code>countries</code> as the topic name.</p>
+<p><strong>Topic name</strong>: Enter a unique topic name, such as <code>my-first-kafka-topic</code>.</p>
 </li>
 <li>
-<p><strong>Partitions</strong>: Set the number of partitions for the topic. For this quick start, set the value to <code>1</code>.</p>
+<p><strong>Partitions</strong>: Set the number of partitions for this topic. This example sets the partitions value to <code>1</code>. Partitions are distinct lists of messages within a topic and enable parts of a topic to be distributed over multiple brokers in the cluster. A topic can contain one or more partitions, enabling producer and consumer loads to be scaled.</p>
 </li>
 <li>
-<p><strong>Message retention</strong>: Set the message retention time and size. For this quick start, set the retention time to <code>A week</code> and the retention size to <code>Unlimited</code>.</p>
+<p><strong>Message retention</strong>: Set the message retention time and size to the relevant value and increment. This example sets the retention time to <code>A week</code> and the retention size to <code>Unlimited</code>. Message retention time is the amount of time that messages are retained in a topic before they are deleted or compacted, depending on the cleanup policy. Retention size is the maximum total size of all log segments in a partition before they are deleted or compacted.</p>
 </li>
 <li>
-<p><strong>Replicas</strong>: For this release of Streams for Apache Kafka, the replica values are preconfigured. The number of partition replicas for the topic is set to <code>3</code> and the minimum number of follower replicas that must be in sync with a partition leader is set to <code>2</code>. For a trial Kafka instance, the number of replicas and the minimum in-sync replica factor are both set to <code>1</code>.</p>
+<p><strong>Replicas</strong>: Replicas are copies of partitions in a topic. For this release of Streams for Apache Kafka, the replica values are preconfigured. For a standard Kafka instance, the number of partition replicas for the topic is set to <code>3</code> and the minimum number of follower replicas that must be in sync with a partition leader is set to <code>2</code>. For a trial Kafka instance, the number of replicas and the minimum in-sync replica factor are both set to <code>1</code>. Partition replicas are distributed over multiple brokers in the cluster to ensure topic availability if a broker fails. When a follower replica is in sync with a partition leader, the follower replica can become the new partition leader if needed.</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>After you complete the setup, the new topic appears on the <strong>Topics</strong> page. You can now run the Node.js application to start producing and consuming messages.</p>
-</div>
-</div>
-</div>
-</li>
-</ol>
-</div>
-<div class="ulist">
-<div class="title">Verification</div>
-<ul>
-<li>
-<p>Verify that the <code>countries</code> topic is listed on the <strong>Topics</strong> page.</p>
-</li>
-</ul>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="proc-running-nodejs-example-application_using-nodejs">Running the Node.js example application</h2>
-<div class="sectionbody">
-<div class="paragraph _abstract">
-<p>After you configure your Node.js application to connect to a Kafka instance, and you create the required Kafka topic, you&#8217;re ready to run the application.</p>
-</div>
-<div class="paragraph">
-<p>In this task, you&#8217;ll run the following components of the Node.js application:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>A <code>producer-backend</code> component that generates random country names and sends these names to the Kafka topic</p>
-</li>
-<li>
-<p>A <code>consumer-backend</code> component that consumes the country names from the Kafka topic</p>
-</li>
-</ul>
-</div>
-<div class="ulist">
-<div class="title">Prerequisites</div>
-<ul>
-<li>
-<p>You&#8217;ve configured the Node.js example application to connect to a Kafka instance.</p>
-</li>
-<li>
-<p>You&#8217;ve created the <code>countries</code> topic.</p>
-</li>
-<li>
-<p>You&#8217;ve set permissions for your service account to produce and consume messages in the <code>countries</code> topic. For the Node.js application in this example, the consumer group you must specify in your permissions is called <code>consumer-test</code>. To learn how to configure access permissions for a Kafka instance, see <a href="https://github.com/redhat-developer/app-services-guides/tree/main/docs/kafka/access-mgmt-kafka/README.adoc" target="_blank" rel="noopener">Managing account access in OpenShift Streams for Apache Kafka</a>.</p>
-</li>
-</ul>
-</div>
-<div class="olist arabic">
-<div class="title">Procedure</div>
-<ol class="arabic">
-<li>
-<p>On the command line, navigate to the <code>reactive-example</code> directory of the repository that you cloned.</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>$ cd reactive-example</code></pre>
-</div>
-</div>
-</li>
-<li>
-<p>Navigate to the directory for the consumer component. Use Node Package Manager (npm) to install the dependencies for this component.</p>
-<div class="listingblock">
-<div class="title">Installing dependencies for the consumer component</div>
-<div class="content">
-<pre class="highlight"><code>$ cd consumer-backend
-$ npm install</code></pre>
-</div>
-</div>
-</li>
-<li>
-<p>Run the consumer component.</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>$ node consumer.js</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>You see the Node.js application run and connect to the Kafka instance. However, because you haven&#8217;t yet run the producer component, the consumer has no country names to display.</p>
-</div>
-<div class="paragraph">
-<p>If the application fails to run, review the error log in the command-line window and address any problems. Also, review the steps in this quick start to ensure that the application and Kafka topic are configured correctly.</p>
-</div>
-</li>
-<li>
-<p>Open a second command-line window or tab.</p>
-</li>
-<li>
-<p>On the second command line, navigate to the <code>reactive-example</code> directory of the repository that you cloned.</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>$ cd reactive-example</code></pre>
-</div>
-</div>
-</li>
-<li>
-<p>Navigate to the directory for the producer component. Use Node Package Manager to install the dependencies for this component.</p>
-<div class="listingblock">
-<div class="title">Installing dependencies for the producer component</div>
-<div class="content">
-<pre class="highlight"><code>$ cd producer-backend
-$ npm install</code></pre>
-</div>
-</div>
-</li>
-<li>
-<p>Run the producer component.</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>$ node producer.js</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>When the producer component runs, you see output like that shown in the following example:</p>
-</div>
-<div class="listingblock">
-<div class="title">Example output from the producer component</div>
-<div class="content">
-<pre class="highlight"><code>Ghana
-Réunion
-Guatemala
-Luxembourg
-Mayotte
-Syria
-United Kingdom
-Bolivia
-Haiti</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>As shown in the example, the producer component runs and generates messages that represent country names.</p>
-</div>
-</li>
-<li>
-<p>Switch back to the first command-line window.</p>
-<div class="paragraph">
-<p>You now see that the consumer component displays the same country names generated by the producer, and in the same order, as shown in the following example:</p>
-</div>
-<div class="listingblock">
-<div class="title">Example output from the consumer component</div>
-<div class="content">
-<pre class="highlight"><code>Ghana
-Réunion
-Guatemala
-Luxembourg
-Mayotte
-Syria
-United Kingdom
-Bolivia
-Haiti</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The output from both components confirms that they successfully connected to the Kafka instance. The components are using the Kafka topic that you created to produce and consume messages.</p>
+<p>After you complete the topic setup, the new topic is listed on the <strong>Topics</strong> page. You can now start producing and consuming messages to and from this topic using applications that you connect to the Kafka instance.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -788,25 +809,56 @@ Haiti</code></pre>
 <div class="title">Note</div>
 </td>
 <td class="content">
-You can also use the OpenShift Streams for Apache Kafka web console to browse messages in the Kafka topic. For more information, see <a href="https://github.com/redhat-developer/app-services-guides/tree/main/docs/kafka/message-browsing-kafka/README.adoc" target="_blank" rel="noopener">Browsing messages in the OpenShift Streams for Apache Kafka web console</a>.
+If the topic creation is unsuccessful and you see a <code>400 Bad Request</code> error message, try to create your topic again later. This situation might occur, for example, if your selected cloud provider has a temporary availability problem that affects your Kafka instance.
 </td>
 </tr>
 </table>
 </div>
-</li>
-<li>
-<p>In your IDE, in the <code>producer-backend</code> directory of the repository that you cloned, open the <code>producer.js</code> file.</p>
-<div class="paragraph">
-<p>Observe that the producer component is configured to process environment variables from the <code>rhoas.env</code> file that you created. The component used the bootstrap server endpoint and client credentials stored in this file to connect to the Kafka instance.</p>
+</div>
 </div>
 </li>
 <li>
-<p>In the <code>consumer-backend</code> directory, open the <code>consumer.js</code> file.</p>
-<div class="paragraph">
-<p>Observe that the consumer component is also configured to process environment variables from the <code>rhoas.env</code> file that you created.</p>
-</div>
+<p>(Optional) To edit or delete the topic, click the options icon (three vertical dots) next to the topic name, as shown in the figure.</p>
 </li>
 </ol>
+</div>
+<div class="ulist">
+<div class="title">Verification</div>
+<ul>
+<li>
+<p>Verify that the new Kafka topic is listed on the <strong>Topics</strong> page.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1 _additional-resources">
+<h2 id="_additional_resources">Additional resources</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://console.redhat.com/application-services/streams/overview">Purchase a subscription to OpenShift Streams for Apache Kafka</a></p>
+</li>
+<li>
+<p><a href="https://access.redhat.com/documentation/en-us/red_hat_openshift_streams_for_apache_kafka/1/guide/7d28aec8-e146-44db-a4a5-fafc1f426ca5" target="_blank" rel="noopener">Configuring topics in OpenShift Streams for Apache Kafka</a></p>
+</li>
+<li>
+<p><a href="https://github.com/redhat-developer/app-services-guides/tree/main/docs/kafka/rhoas-cli-getting-started-kafka/README.adoc" target="_blank" rel="noopener">Getting started with the rhoas CLI for OpenShift Streams for Apache Kafka</a></p>
+</li>
+<li>
+<p><a href="https://github.com/redhat-developer/app-services-cli/tree/main/docs/commands" target="_blank" rel="noopener">CLI command reference (rhoas)</a></p>
+</li>
+<li>
+<p><a href="https://github.com/redhat-developer/app-services-guides/tree/main/docs/kafka/kcat-kafka/README.adoc" target="_blank" rel="noopener">Configuring and connecting Kcat with OpenShift Streams for Apache Kafka</a></p>
+</li>
+<li>
+<p><a href="https://github.com/redhat-developer/app-services-guides/tree/main/docs/kafka/kafka-bin-scripts-kafka/README.adoc" target="_blank" rel="noopener">Configuring and connecting Kafka scripts with OpenShift Streams for Apache Kafka</a></p>
+</li>
+<li>
+<p><a href="https://github.com/redhat-developer/app-services-guides/tree/main/docs/kafka/quarkus-kafka/README.adoc" target="_blank" rel="noopener">Using Quarkus applications with Kafka instances in OpenShift Streams for Apache Kafka</a></p>
+</li>
+</ul>
 </div>
 </div>
 </div>

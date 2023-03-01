@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.18">
-<title>Using Node.js applications with Kafka instances in OpenShift Streams for Apache Kafka</title>
+<title>Getting started with OpenShift API Designer</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /*! Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -436,19 +436,69 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 @media amzn-kf8{#header,#content,#footnotes,#footer{padding:0}}
 </style>
 </head>
-<body id="chap-using-nodejs" class="article">
+<body id="chap-getting-started-api-designer" class="article">
 <div id="header">
-<h1>Using Node.js applications with Kafka instances in OpenShift Streams for Apache Kafka</h1>
+<h1>Getting started with OpenShift API Designer</h1>
 </div>
 <div id="content">
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph _abstract">
-<p>As a developer of applications and services, you can connect Node.js applications to Kafka instances in OpenShift Streams for Apache Kafka. <a href="https://nodejs.org/en/about/" target="_blank" rel="noopener">Node.js</a> is a server-side JavaScript runtime that is designed to build scalable network applications. Node.js provides an I/O model that is based on events and non-blocking operations, which enables efficient applications.</p>
+<p>As an API owner or developer, you can use OpenShift API Designer to design event schemas and API definitions that comply with vendor-neutral and portable open specifications.
+OpenShift API Designer is a managed cloud service that enables you to design schemas and API definitions without having to install, configure, run, and maintain your own API Designer infrastructure.</p>
 </div>
 <div class="paragraph">
-<p>In this quick start, you&#8217;ll use the Streams for Apache Kafka web console to collect connection information for a Kafka instance. Then you&#8217;ll manually configure a connection from an example Node.js application to the Kafka instance and start producing and consuming messages.</p>
+<p>For more overview information, see the <a href="https://access.redhat.com/documentation/en-us/red_hat_openshift_api-designer/1" target="_blank" rel="noopener">OpenShift API Designer user documentation</a>.</p>
 </div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="proc-creating-api-design_getting-started-ad">Creating an API design</h2>
+<div class="sectionbody">
+<div class="paragraph _abstract">
+<p>Use the OpenShift API Designer web console to create an OpenAPI or AsyncAPI definition.</p>
+</div>
+<div class="ulist">
+<div class="title">Prerequisites</div>
+<ul>
+<li>
+<p>You&#8217;re logged in to the OpenShift API Designer web console at <a href="https://console.redhat.com/application-services/api-designer/" class="bare" target="_blank" rel="noopener">https://console.redhat.com/application-services/api-designer/</a>.</p>
+</li>
+</ul>
+</div>
+<div class="olist arabic">
+<div class="title">Procedure</div>
+<ol class="arabic">
+<li>
+<p>In the <a href="https://console.redhat.com/application-services/api-designer/" target="_blank" rel="noopener">OpenShift API Designer web console</a>, click <strong>Create design</strong>.</p>
+</li>
+<li>
+<p>Complete the form to provide the following details for the new design:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Name</strong>: Enter a unique design name, such as <code>My API Design</code>.</p>
+</li>
+<li>
+<p><strong>Description</strong> <em>(Optional)</em>: Enter a short description of the design.</p>
+</li>
+<li>
+<p><strong>Type</strong>: Accept the default value <strong>OpenAPI</strong>, or select another API type from the list.</p>
+</li>
+<li>
+<p><strong>Version</strong> <em>(OpenAPI only)</em>: Accept the default value <strong>3.0.2</strong>, or select another version from the list.</p>
+</li>
+<li>
+<p><strong>Template</strong>: Select the <strong>Pet Store Example</strong> template, or select another template from the list.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Click <strong>Create</strong>. The new API design opens in the design editor.</p>
+</li>
+<li>
+<p>Select the design title and click the pen icon. Change the design title to <strong>Orders</strong> and click the <strong>Save changes</strong> icon.</p>
 <div class="admonitionblock note">
 <table>
 <tr>
@@ -456,31 +506,325 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="title">Note</div>
 </td>
 <td class="content">
-When you&#8217;ve completed this quick start and understand the required connection configuration for a Kafka instance, you can use the OpenShift Application Services command-line interface (CLI) to generate this type of configuration in a more automated way. To learn more, see <a href="https://github.com/redhat-developer/app-services-guides/tree/main/docs/rhoas/rhoas-service-contexts/README.adoc" target="_blank" rel="noopener">Connecting client applications to OpenShift Application Services using the rhoas CLI</a>.
+Editing the design <em>title</em> does not change the design <em>name</em>. To rename a design, click <strong>Actions &gt; Edit design metadata</strong>, edit the design name, and click <strong>Save</strong>.
 </td>
 </tr>
 </table>
+</div>
+</li>
+<li>
+<p>Click the <strong>Design</strong> tab, and optionally edit the design as follows:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Provide a version number and a description.</p>
+</li>
+<li>
+<p><em>(AsyncAPI only)</em> Define terms of service.</p>
+</li>
+<li>
+<p>Add your contact information: name, email address, and URL.</p>
+</li>
+<li>
+<p>Select a license.</p>
+</li>
+<li>
+<p><em>(OpenAPI only)</em> Define tags.</p>
+</li>
+<li>
+<p>Define one or more servers.</p>
+</li>
+<li>
+<p>Configure a security scheme.</p>
+</li>
+<li>
+<p><em>(OpenAPI only)</em> Specify security requirements.</p>
+</li>
+<li>
+<p><em>(OpenAPI only)</em> Configure vendor extensions.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Click the <strong>Source</strong> tab, and review the live preview of the design.
+The content of the <strong>Source</strong> tab automatically updates when you edit values on the editor page.</p>
+</li>
+<li>
+<p><em>(Optional)</em> To see the changes that you made since the last save, click <strong>Actions &gt; Show design changes</strong>.</p>
+</li>
+<li>
+<p><em>(Optional)</em> In the left pane of the design editor, you can add the following items:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><em>(OpenAPI only)</em> Resource paths, data types, and responses</p>
+</li>
+<li>
+<p><em>(AsyncAPI only)</em> Channels, data types, messages, operation traits, and message traits</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Click <strong>Save</strong>.</p>
+<div class="paragraph">
+<p>The new design is listed on the <strong>API and Schema Designs</strong> page.
+You can use the options icon (three vertical dots) to view or edit the design details, edit the design content, export the design to OpenShift Service Registry, download the design to a file, or delete the design.</p>
+</div>
+</li>
+</ol>
+</div>
+<div class="olist arabic">
+<div class="title">Verification</div>
+<ol class="arabic">
+<li>
+<p>Verify that the new design is listed on the designs page.</p>
+</li>
+<li>
+<p>Verify that the design details are correct.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="proc-creating-schema-design_getting-started-ad">Creating a schema design</h2>
+<div class="sectionbody">
+<div class="paragraph _abstract">
+<p>Use the OpenShift API Designer web console to create an Apache Avro, JSON Schema, or Google Protocol Buffers (Protobuf) event schema.</p>
 </div>
 <div class="ulist">
 <div class="title">Prerequisites</div>
 <ul>
 <li>
-<p>You have a running Kafka instance in Streams for Apache Kafka (see <a href="https://github.com/redhat-developer/app-services-guides/tree/main/docs/kafka/getting-started-kafka/README.adoc" target="_blank" rel="noopener">Getting started with OpenShift Streams for Apache Kafka</a>).</p>
-</li>
-<li>
-<p>You have a command-line terminal application.</p>
-</li>
-<li>
-<p><a href="https://github.com/git-guides/" target="_blank" rel="noopener">Git</a> is installed.</p>
-</li>
-<li>
-<p>You have an IDE such as <a href="https://www.jetbrains.com/idea/download/" target="_blank" rel="noopener">IntelliJ IDEA</a>, <a href="https://www.eclipse.org/downloads/" target="_blank" rel="noopener">Eclipse</a>, or <a href="https://code.visualstudio.com/Download" target="_blank" rel="noopener">Visual Studio Code</a>.</p>
-</li>
-<li>
-<p><a href="https://nodejs.org/en/download/" target="_blank" rel="noopener">Node.js 14</a> or later is installed.</p>
+<p>You&#8217;re logged in to the OpenShift API Designer web console at <a href="https://console.redhat.com/application-services/api-designer/" class="bare" target="_blank" rel="noopener">https://console.redhat.com/application-services/api-designer/</a>.</p>
 </li>
 </ul>
 </div>
+<div class="olist arabic">
+<div class="title">Procedure</div>
+<ol class="arabic">
+<li>
+<p>In the <a href="https://console.redhat.com/application-services/api-designer/" target="_blank" rel="noopener">OpenShift API Designer web console</a>, click <strong>Create design</strong>.</p>
+</li>
+<li>
+<p>Complete the form to provide the following details for the new design:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Name</strong>: Enter a unique design name, such as <code>My Schema Design</code>.</p>
+</li>
+<li>
+<p><strong>Description</strong> <em>(Optional)</em>: Enter a short description of the design.</p>
+</li>
+<li>
+<p><strong>Type</strong>: From the list, select <strong>Apache Avro</strong>, or select another schema type.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Click <strong>Create</strong>. The new schema design opens in the design editor.</p>
+</li>
+<li>
+<p>Edit the design source to provide your content.</p>
+</li>
+<li>
+<p><em>(Optional)</em> To see the changes that you made since the last save, click <strong>Actions &gt; Show design changes</strong>.</p>
+</li>
+<li>
+<p><em>(Optional)</em> For Apache Avro or JSON Schema designs, you can click <strong>Actions &gt; Format design content</strong> to insert spaces and tabs that align your design content correctly.</p>
+</li>
+<li>
+<p>Click <strong>Save</strong>.</p>
+<div class="paragraph">
+<p>The new design is listed on the <strong>API and Schema Designs</strong> page.
+You can use the options icon (three vertical dots) to view or edit the design details, edit the design content, export the design to OpenShift Service Registry, download the design to a file, or delete the design.</p>
+</div>
+</li>
+</ol>
+</div>
+<div class="olist arabic">
+<div class="title">Verification</div>
+<ol class="arabic">
+<li>
+<p>Verify that the new design is listed on the designs page.</p>
+</li>
+<li>
+<p>Verify that the design details are correct.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="proc-importing-schema-api-design_getting-started-ad">Importing a schema or API design</h2>
+<div class="sectionbody">
+<div class="paragraph _abstract">
+<p>You can import an event schema or API definition into OpenShift API Designer from a URL, from a file, or from a running OpenShift Service Registry instance.</p>
+</div>
+<div class="ulist">
+<div class="title">Prerequisites</div>
+<ul>
+<li>
+<p>You&#8217;re logged in to the OpenShift API Designer web console at <a href="https://console.redhat.com/application-services/api-designer/" class="bare" target="_blank" rel="noopener">https://console.redhat.com/application-services/api-designer/</a>.</p>
+</li>
+<li>
+<p>You can access a running Service Registry instance in your organization, if you want to import from OpenShift Service Registry.
+For more information, see <a href="https://github.com/redhat-developer/app-services-guides/tree/main/docs/registry/getting-started-registry/README.adoc" target="_blank" rel="noopener">Getting started with OpenShift Service Registry</a>.</p>
+</li>
+</ul>
+</div>
+<div class="olist arabic">
+<div class="title">Procedure</div>
+<ol class="arabic">
+<li>
+<p>In the <a href="https://console.redhat.com/application-services/api-designer/" target="_blank" rel="noopener">OpenShift API Designer web console</a>, click <strong>Import design</strong>, and then click one of the following options:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Import from Service Registry</strong>: From the instances list, select a Service Registry instance.
+Browse the list of artifacts for that instance, and select an artifact.</p>
+</li>
+<li>
+<p><strong>Import from URL</strong>: Enter a valid and accessible URL, and click <strong>Fetch</strong>.</p>
+</li>
+<li>
+<p><strong>Import from file</strong>: Click <strong>Browse</strong> and select a file, or drag and drop a file.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>When prompted, provide additional information such as version (<em>OpenAPI only</em>), name, type, and description in the import dialog. You can overwrite any autopopulated values.</p>
+</li>
+<li>
+<p>Click <strong>Import</strong>.
+The design editor opens automatically.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>When you finish editing, you can export the updated design to Service Registry as a new artifact or as a new version of the existing artifact.
+You can export the design from the design editor or from the <strong>API and Schema Designs</strong> page.
+You can also save your changes locally, or download the content to a file.</p>
+</div>
+<div class="olist arabic">
+<div class="title">Verification</div>
+<ol class="arabic">
+<li>
+<p>Verify that the imported design is listed on the designs page.</p>
+</li>
+<li>
+<p>Verify that the design details are correct.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="proc-testing-schema-api-design_getting-started-ad">Testing a schema or API design</h2>
+<div class="sectionbody">
+<div class="paragraph _abstract">
+<p>You can test that your schema or API design content is valid and compatible with existing content by applying the rules of an existing OpenShift Service Registry instance.
+You can test the design while working in the OpenShift API Designer editor, without exporting the design to OpenShift Service Registry.</p>
+</div>
+<div class="ulist">
+<div class="title">Prerequisites</div>
+<ul>
+<li>
+<p>You&#8217;re logged in to the OpenShift API Designer web console at <a href="https://console.redhat.com/application-services/api-designer/" class="bare" target="_blank" rel="noopener">https://console.redhat.com/application-services/api-designer/</a>.</p>
+</li>
+<li>
+<p>You&#8217;ve created or imported a design in API Designer.</p>
+</li>
+<li>
+<p>You can access a running Service Registry instance in your organization.
+Within that instance, you know the artifact ID of an artifact with the required rules configured.
+For more information, see <a href="https://github.com/redhat-developer/app-services-guides/tree/main/docs/registry/getting-started-registry/README.adoc" target="_blank" rel="noopener">Getting started with OpenShift Service Registry</a>.</p>
+</li>
+</ul>
+</div>
+<div class="olist arabic">
+<div class="title">Procedure</div>
+<ol class="arabic">
+<li>
+<p>On the <strong>API and Schema Designs</strong> page of the <a href="https://console.redhat.com/application-services/api-designer/" target="_blank" rel="noopener">OpenShift API Designer web console</a>, select the design that you want to test.</p>
+</li>
+<li>
+<p>Click the options icon (three vertical dots), and click <strong>Edit design content</strong> to open the design editor.</p>
+</li>
+<li>
+<p>From the <strong>Actions</strong> menu, click <strong>Run Service Registry check</strong>.</p>
+</li>
+<li>
+<p>From the <strong>Registry instance</strong> list, select a Service Registry instance.</p>
+</li>
+<li>
+<p>In the <strong>Group</strong> and <strong>ID</strong> fields, specify the artifact details.</p>
+</li>
+<li>
+<p>Click <strong>Test</strong>.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>A new pane in the design editor window shows the registration issues found by the test:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>If the design content obeys the specified rules, the registration issues pane contains the following text:
+<code>Registry Test completed with no issues</code></p>
+</li>
+<li>
+<p>If the registration issues pane provides details of any issues, resolve the issues and click <strong>Retry</strong> to retest the content using the same artifact rules.</p>
+</li>
+</ul>
+</div>
+<div class="olist arabic">
+<div class="title">Verification</div>
+<ol class="arabic">
+<li>
+<p>Verify that the registration issues pane is shown in the design editor.</p>
+</li>
+<li>
+<p>Verify that the test results are correct.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="proc-exporting-schema-api-design_getting-started-ad">Exporting a schema or API design</h2>
+<div class="sectionbody">
+<div class="paragraph _abstract">
+<p>When you&#8217;re happy with the changes to your OpenShift API Designer event schema or API definition, and you want to use the design in your application, you can export the content to an existing OpenShift Service Registry instance.</p>
+</div>
+<div class="ulist">
+<div class="title">Prerequisites</div>
+<ul>
+<li>
+<p>You&#8217;re logged in to the OpenShift API Designer web console at <a href="https://console.redhat.com/application-services/api-designer/" class="bare" target="_blank" rel="noopener">https://console.redhat.com/application-services/api-designer/</a>.</p>
+</li>
+<li>
+<p>You&#8217;ve created or imported a design in API Designer.</p>
+</li>
+<li>
+<p>You can access a running Service Registry instance in your organization.
+For more information, see <a href="https://github.com/redhat-developer/app-services-guides/tree/main/docs/registry/getting-started-registry/README.adoc" target="_blank" rel="noopener">Getting started with OpenShift Service Registry</a>.</p>
+</li>
+</ul>
+</div>
+<div class="olist arabic">
+<div class="title">Procedure</div>
+<ol class="arabic">
+<li>
+<p>On the <strong>API and Schema Designs</strong> page of the <a href="https://console.redhat.com/application-services/api-designer/" target="_blank" rel="noopener">OpenShift API Designer web console</a>, select the design that you want to export.</p>
+</li>
+<li>
+<p>Click the options icon (three vertical dots), and click <strong>Export design to Service Registry</strong>.</p>
 <div class="admonitionblock note">
 <table>
 <tr>
@@ -488,325 +832,99 @@ When you&#8217;ve completed this quick start and understand the required connect
 <div class="title">Note</div>
 </td>
 <td class="content">
-The example Node.js application in this quick start uses the <a href="https://kafka.js.org/" target="_blank" rel="noopener">KafkaJS</a> client by default. If you want to use the <a href="https://github.com/blizzard/node-rdkafka" target="_blank" rel="noopener">node-rdkafka</a> client, you must install some development tools locally on your computer or use a container runtime such as Podman or Docker to run a specified container image and configure a development environment. To learn more, see the <a href="https://github.com/nodeshift-starters/reactive-example/tree/node-rdkafka#node-rdkafka-and-kafkajs">documentation</a> for the example Node.js application.
+You can also select <strong>Export design to Service Registry</strong> from the <strong>Actions</strong> menu in the design editor.
 </td>
 </tr>
 </table>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="proc-importing-nodejs-sample-code_using-nodejs">Importing the Node.js sample code</h2>
-<div class="sectionbody">
-<div class="paragraph _abstract">
-<p>For this quick start, you&#8217;ll use sample code from the Nodeshift Application Starters <a href="https://github.com/nodeshift-starters/reactive-example" target="_blank" rel="noopener">reactive-example</a> repository in GitHub. After you understand the concepts and tasks in this quick start, you can use your own Node.js applications with OpenShift Streams for Apache Kafka in the same way.</p>
-</div>
-<div class="olist arabic">
-<div class="title">Procedure</div>
-<ol class="arabic">
+</li>
 <li>
-<p>On the command line, clone the Nodeshift Application Starters <a href="https://github.com/nodeshift-starters/reactive-example" target="_blank" rel="noopener">reactive-example</a> repository from GitHub.</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>$ git clone https://github.com/nodeshift-starters/reactive-example.git</code></pre>
+<p>Complete the form to specify where to save the new design. Provide the following details:</p>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+If the design was originally imported from OpenShift Service Registry, the fields are prepopulated with the details of the original Service Registry instance, and the <strong>Version</strong> field is blank.
+</td>
+</tr>
+</table>
 </div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Registry Instance</strong>: Select the required instance from the list.</p>
+</li>
+<li>
+<p><strong>Group</strong> <em>(Optional)</em>: Enter a unique group name such as <code>my-org</code> to organize the artifact in a named collection.
+Each group contains a logically related set of schemas or API designs, typically managed by a single entity, belonging to a particular application or organization.</p>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+Specifying a group is optional when using the web console. If no group is specified, Service Registry uses the <code>default</code> group.
+</td>
+</tr>
+</table>
 </div>
 </li>
 <li>
-<p>In your IDE, open the <code>reactive-example</code> directory of the repository that you cloned.</p>
+<p><strong>ID</strong> <em>(Optional)</em>: Enter a unique ID for this artifact, such as <code>my-ID</code>.
+If you don&#8217;t specify a unique artifact ID, Service Registry generates one automatically as a UUID.</p>
+</li>
+<li>
+<p><strong>Version</strong> <em>(Optional)</em>: Specify the version number.
+If you don&#8217;t specify a version number, Service Registry sets the version to 1 for the first version, or increments the latest version by 1 for subsequent versions.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Click <strong>Export</strong>.
+The exported design is listed on the artifacts page of the specified Service Registry instance.</p>
 </li>
 </ol>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="proc-configuring-nodejs_using-nodejs">Configuring the Node.js example application to connect to a Kafka instance</h2>
-<div class="sectionbody">
-<div class="paragraph _abstract">
-<p>To enable your Node.js application to access a Kafka instance, you must configure a connection by specifying the following details:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>The bootstrap server endpoint for your Kafka instance</p>
-</li>
-<li>
-<p>The generated credentials for your OpenShift Streams for Apache Kafka service account</p>
-</li>
-<li>
-<p>The Simple Authentication and Security Layer (SASL) mechanism that the client will use to authenticate with the Kafka instance</p>
-</li>
-</ul>
-</div>
 <div class="paragraph">
-<p>In this task, you&#8217;ll create a new configuration file called <code>rhoas.env</code>. In the file, you&#8217;ll set the required bootstrap server and client credentials as environment variables.</p>
-</div>
-<div class="ulist">
-<div class="title">Prerequisites</div>
-<ul>
-<li>
-<p>You have the bootstrap server endpoint for your Kafka instance. To get the server endpoint, select your Kafka instance in the Streams for Apache Kafka <a href="https://console.redhat.com/application-services/streams/" target="_blank" rel="noopener">web console</a>, select the options icon (three vertical dots), and click <strong>Connection</strong>.</p>
-</li>
-<li>
-<p>You have the generated credentials for your service account. To reset the credentials, use the <a href="https://console.redhat.com/application-services/service-accounts" target="_blank" rel="noopener">Service Accounts</a> page in the <strong>Application Services</strong> section of the Red Hat Hybrid Cloud Console.</p>
-</li>
-</ul>
-</div>
-<div class="olist arabic">
-<div class="title">Procedure</div>
-<ol class="arabic">
-<li>
-<p>In your IDE, create a new file. Save the file with the name <code>rhoas.env</code>, at the root level of the <code>reactive-example</code> directory for the cloned repository.</p>
-</li>
-<li>
-<p>In the <code>rhoas.env</code> file, set the SASL authentication mechanism and the Kafka instance client credentials as shown in the following configuration. Replace the client ID and client secret values with your own credential information. The configuration uses SASL/OAUTHBEARER authentication, which is the recommended authentication mechanism to use in Streams for Apache Kafka.</p>
-<div class="listingblock">
-<div class="title">Setting environment variables in the rhoas.env file</div>
-<div class="content">
-<pre class="highlight"><code>KAFKA_HOST=<em>&lt;bootstrap_server&gt;</em>
-RHOAS_SERVICE_ACCOUNT_CLIENT_ID=<em>&lt;client_id&gt;</em>
-RHOAS_SERVICE_ACCOUNT_CLIENT_SECRET=<em>&lt;client_secret&gt;</em>
-KAFKA_SASL_MECHANISM=oauthbearer
-RHOAS_TOKEN_ENDPOINT_URL=https://sso.redhat.com/auth/realms/redhat-external/protocol/openid-connect/token</code></pre>
-</div>
-</div>
-</li>
-<li>
-<p>Save the <code>rhoas.env</code> file.</p>
-</li>
-</ol>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="proc-creating-countries-topic_using-nodejs">Creating a Kafka topic in Streams for Apache Kafka</h2>
-<div class="sectionbody">
-<div class="paragraph _abstract">
-<p>The Node.js application in this quick start uses a Kafka topic called <code>countries</code> to produce and consume messages. In this task, you&#8217;ll create the <code>countries</code> topic in your Kafka instance.</p>
-</div>
-<div class="ulist">
-<div class="title">Prerequisites</div>
-<ul>
-<li>
-<p>You have a running Kafka instance in OpenShift Streams for Apache Kafka.</p>
-</li>
-</ul>
-</div>
-<div class="olist arabic">
-<div class="title">Procedure</div>
-<ol class="arabic">
-<li>
-<p>In the Streams for Apache Kafka <a href="https://console.redhat.com/application-services/streams/" target="_blank" rel="noopener">web console</a>, select <strong>Kafka Instances</strong> and then click the name of the Kafka instance that you want to add a topic to.</p>
-</li>
-<li>
-<p>Select the <strong>Topics</strong> tab.</p>
-</li>
-<li>
-<p>Click <strong>Create topic</strong> and follow the guided steps to define the topic details.</p>
-<div class="openblock">
-<div class="content">
-<div class="paragraph">
-<p>You must specify the following topic properties:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><strong>Topic name</strong>: For this quick start, enter <code>countries</code> as the topic name.</p>
-</li>
-<li>
-<p><strong>Partitions</strong>: Set the number of partitions for the topic. For this quick start, set the value to <code>1</code>.</p>
-</li>
-<li>
-<p><strong>Message retention</strong>: Set the message retention time and size. For this quick start, set the retention time to <code>A week</code> and the retention size to <code>Unlimited</code>.</p>
-</li>
-<li>
-<p><strong>Replicas</strong>: For this release of Streams for Apache Kafka, the replica values are preconfigured. The number of partition replicas for the topic is set to <code>3</code> and the minimum number of follower replicas that must be in sync with a partition leader is set to <code>2</code>. For a trial Kafka instance, the number of replicas and the minimum in-sync replica factor are both set to <code>1</code>.</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>After you complete the setup, the new topic appears on the <strong>Topics</strong> page. You can now run the Node.js application to start producing and consuming messages.</p>
-</div>
-</div>
-</div>
-</li>
-</ol>
+<p>You can use OpenShift Service Registry to manage the versions of a design from OpenShift API Designer.
+You can also download a design from API Designer to a file, either for local client code generation or to import the design into OpenShift API Management.</p>
 </div>
 <div class="ulist">
 <div class="title">Verification</div>
 <ul>
 <li>
-<p>Verify that the <code>countries</code> topic is listed on the <strong>Topics</strong> page.</p>
+<p>Verify that the design is listed as an artifact in OpenShift Service Registry.</p>
+</li>
+<li>
+<p>Verify that the artifact details are correct.</p>
 </li>
 </ul>
 </div>
 </div>
 </div>
-<div class="sect1">
-<h2 id="proc-running-nodejs-example-application_using-nodejs">Running the Node.js example application</h2>
+<div class="sect1 _additional-resources">
+<h2 id="_additional_resources">Additional resources</h2>
 <div class="sectionbody">
-<div class="paragraph _abstract">
-<p>After you configure your Node.js application to connect to a Kafka instance, and you create the required Kafka topic, you&#8217;re ready to run the application.</p>
-</div>
-<div class="paragraph">
-<p>In this task, you&#8217;ll run the following components of the Node.js application:</p>
-</div>
 <div class="ulist">
 <ul>
 <li>
-<p>A <code>producer-backend</code> component that generates random country names and sends these names to the Kafka topic</p>
+<p><a href="https://access.redhat.com/documentation/en-us/red_hat_openshift_api_designer/1" target="_blank" rel="noopener">OpenShift API Designer user documentation</a></p>
 </li>
 <li>
-<p>A <code>consumer-backend</code> component that consumes the country names from the Kafka topic</p>
+<p><a href="https://access.redhat.com/documentation/en-us/red_hat_openshift_api_management/1" target="_blank" rel="noopener">OpenShift API Management user documentation</a></p>
+</li>
+<li>
+<p><a href="https://access.redhat.com/documentation/en-us/red_hat_openshift_service_registry/1" target="_blank" rel="noopener">OpenShift Service Registry user documentation</a></p>
+</li>
+<li>
+<p><a href="https://access.redhat.com/documentation/en-us/red_hat_openshift_streams_for_apache_kafka/1" target="_blank" rel="noopener">OpenShift Streams for Apache Kafka user documentation</a></p>
 </li>
 </ul>
-</div>
-<div class="ulist">
-<div class="title">Prerequisites</div>
-<ul>
-<li>
-<p>You&#8217;ve configured the Node.js example application to connect to a Kafka instance.</p>
-</li>
-<li>
-<p>You&#8217;ve created the <code>countries</code> topic.</p>
-</li>
-<li>
-<p>You&#8217;ve set permissions for your service account to produce and consume messages in the <code>countries</code> topic. For the Node.js application in this example, the consumer group you must specify in your permissions is called <code>consumer-test</code>. To learn how to configure access permissions for a Kafka instance, see <a href="https://github.com/redhat-developer/app-services-guides/tree/main/docs/kafka/access-mgmt-kafka/README.adoc" target="_blank" rel="noopener">Managing account access in OpenShift Streams for Apache Kafka</a>.</p>
-</li>
-</ul>
-</div>
-<div class="olist arabic">
-<div class="title">Procedure</div>
-<ol class="arabic">
-<li>
-<p>On the command line, navigate to the <code>reactive-example</code> directory of the repository that you cloned.</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>$ cd reactive-example</code></pre>
-</div>
-</div>
-</li>
-<li>
-<p>Navigate to the directory for the consumer component. Use Node Package Manager (npm) to install the dependencies for this component.</p>
-<div class="listingblock">
-<div class="title">Installing dependencies for the consumer component</div>
-<div class="content">
-<pre class="highlight"><code>$ cd consumer-backend
-$ npm install</code></pre>
-</div>
-</div>
-</li>
-<li>
-<p>Run the consumer component.</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>$ node consumer.js</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>You see the Node.js application run and connect to the Kafka instance. However, because you haven&#8217;t yet run the producer component, the consumer has no country names to display.</p>
-</div>
-<div class="paragraph">
-<p>If the application fails to run, review the error log in the command-line window and address any problems. Also, review the steps in this quick start to ensure that the application and Kafka topic are configured correctly.</p>
-</div>
-</li>
-<li>
-<p>Open a second command-line window or tab.</p>
-</li>
-<li>
-<p>On the second command line, navigate to the <code>reactive-example</code> directory of the repository that you cloned.</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>$ cd reactive-example</code></pre>
-</div>
-</div>
-</li>
-<li>
-<p>Navigate to the directory for the producer component. Use Node Package Manager to install the dependencies for this component.</p>
-<div class="listingblock">
-<div class="title">Installing dependencies for the producer component</div>
-<div class="content">
-<pre class="highlight"><code>$ cd producer-backend
-$ npm install</code></pre>
-</div>
-</div>
-</li>
-<li>
-<p>Run the producer component.</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>$ node producer.js</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>When the producer component runs, you see output like that shown in the following example:</p>
-</div>
-<div class="listingblock">
-<div class="title">Example output from the producer component</div>
-<div class="content">
-<pre class="highlight"><code>Ghana
-Réunion
-Guatemala
-Luxembourg
-Mayotte
-Syria
-United Kingdom
-Bolivia
-Haiti</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>As shown in the example, the producer component runs and generates messages that represent country names.</p>
-</div>
-</li>
-<li>
-<p>Switch back to the first command-line window.</p>
-<div class="paragraph">
-<p>You now see that the consumer component displays the same country names generated by the producer, and in the same order, as shown in the following example:</p>
-</div>
-<div class="listingblock">
-<div class="title">Example output from the consumer component</div>
-<div class="content">
-<pre class="highlight"><code>Ghana
-Réunion
-Guatemala
-Luxembourg
-Mayotte
-Syria
-United Kingdom
-Bolivia
-Haiti</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The output from both components confirms that they successfully connected to the Kafka instance. The components are using the Kafka topic that you created to produce and consume messages.</p>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<div class="title">Note</div>
-</td>
-<td class="content">
-You can also use the OpenShift Streams for Apache Kafka web console to browse messages in the Kafka topic. For more information, see <a href="https://github.com/redhat-developer/app-services-guides/tree/main/docs/kafka/message-browsing-kafka/README.adoc" target="_blank" rel="noopener">Browsing messages in the OpenShift Streams for Apache Kafka web console</a>.
-</td>
-</tr>
-</table>
-</div>
-</li>
-<li>
-<p>In your IDE, in the <code>producer-backend</code> directory of the repository that you cloned, open the <code>producer.js</code> file.</p>
-<div class="paragraph">
-<p>Observe that the producer component is configured to process environment variables from the <code>rhoas.env</code> file that you created. The component used the bootstrap server endpoint and client credentials stored in this file to connect to the Kafka instance.</p>
-</div>
-</li>
-<li>
-<p>In the <code>consumer-backend</code> directory, open the <code>consumer.js</code> file.</p>
-<div class="paragraph">
-<p>Observe that the consumer component is also configured to process environment variables from the <code>rhoas.env</code> file that you created.</p>
-</div>
-</li>
-</ol>
 </div>
 </div>
 </div>
