@@ -98,6 +98,8 @@ ifdef::context[:parent-context: {context}]
 [role="_abstract"]
 As a developer of applications and services, you can use {product-long-kafka} to create and set up Kafka instances and connect your applications and services to these instances. {product-kafka} is a managed cloud service that enables you to add Kafka data-streaming functionality in your applications without having to install, configure, run, and maintain your own Kafka clusters.
 
+Test 2.
+
 //For more overview information about {product-kafka}, see [variablized link to overview here https://access.redhat.com/documentation/en-us/red_hat_openshift_streams_for_apache_kafka/].
 
 
