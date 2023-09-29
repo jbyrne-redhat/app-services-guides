@@ -40,6 +40,7 @@
 == Core guides
 
 * link:./docs/rhoas/rhoas-cli-installation[Installing and configuring the {product-long-rhoas} CLI]
+* link:./docs/rhoas/rhoas-api-overview[Interacting with {product-long-rhoas} using APIs]
 * link:./docs/rhoas/rhoas-produce-consume[Producing and consuming messages by using the {product-long-rhoas} CLI]
 * link:./docs/rhoas/iac_tools_rhoas[Automating deployment and management of Kafka instances in {product-long-kafka}]
 
